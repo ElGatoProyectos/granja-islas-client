@@ -26,6 +26,7 @@ import { useState } from "react";
 import { Image as AddImage, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface company {
   ruc: string;
@@ -49,15 +50,15 @@ export function CompanyForm({ type, company }: Props) {
   const form = useForm<z.infer<typeof companySchema>>({
     resolver: zodResolver(companySchema),
     defaultValues: {
-      ruc: "",
-      corporate_name: "",
-      type: "",
-      status: "",
-      fiscal_address: "",
-      country_code: "",
-      phone: "",
-      user_sunnat: "",
-      password_sunnat: "",
+      ruc: company?.ruc ?? "",
+      corporate_name: company?.corporate_name ?? "",
+      type: company?.type ?? "",
+      status: company?.status ?? "",
+      fiscal_address: company?.fiscal_address ?? "",
+      country_code: company?.country_code ?? "",
+      phone: company?.phone ?? "",
+      user_sunnat: company?.user_sunnat ?? "",
+      password_sunnat: company?.password_sunnat ?? "",
     },
   });
 
@@ -66,8 +67,8 @@ export function CompanyForm({ type, company }: Props) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[500px] max-h-dvh overflow-y-scroll overflow-x-hidden touch-none select-none transition-colors">
-      <DialogHeader className="text-center">
+    <DialogContent className="sm:max-w-[500px] h-full overflow-y-scroll overflow-x-hidden gap-0">
+      <DialogHeader>
         <DialogTitle className="text-3xl font-bold">
           {type === "create" ? "Nueva" : "Editar"} Empresa
         </DialogTitle>

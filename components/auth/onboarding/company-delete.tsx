@@ -10,8 +10,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
-export function CompanyDelete({ ruc, name }: { ruc: string; name: string }) {
+export function CompanyDelete({
+  ruc,
+  corporate_name,
+}: {
+  ruc: string;
+  corporate_name: string;
+}) {
   const [value, setValue] = useState<string>();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.currentTarget.value);
+  };
 
   return (
     <DialogContent className="sm:max-w-[500px]">
@@ -25,7 +35,7 @@ export function CompanyDelete({ ruc, name }: { ruc: string; name: string }) {
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col justify-center items-center font-semibold">
-        <h3 className="text-foreground text-sm">{name}</h3>
+        <h3 className="text-foreground text-sm">{corporate_name}</h3>
         <p className="text-foreground text-sm">{ruc}</p>
       </div>
 
@@ -33,11 +43,7 @@ export function CompanyDelete({ ruc, name }: { ruc: string; name: string }) {
         Para confirmar, escribe &quot;{ruc}&quot; en el cuadro a continuacion.
       </p>
 
-      <Input
-        type="text"
-        onChange={(e) => setValue(e.currentTarget.value)}
-        value={value}
-      />
+      <Input type="text" value={value} onChange={handleChange} />
 
       <Button variant="destructive" disabled={value !== ruc}>
         Borrar esta empresa

@@ -3,24 +3,27 @@ import { CompanyForm } from "@/components/auth/onboarding/company-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { getCompanies } from "@/lib/actions/company.actions";
 import { Pencil, Plus, Trash } from "lucide-react";
 
 const companys = [
   {
     ruc: "20535014940",
-    name: "Empresa de Transporte Don Agusto",
+    corporate_name: "Empresa de Transporte Don Agusto",
   },
   {
     ruc: "61868881388",
-    name: "Empresa de Maiz Don Pedro",
+    corporate_name: "Empresa de Maiz Don Pedro",
   },
   {
     ruc: "89165185168",
-    name: "Empresa de Eventos Don Javier",
+    corporate_name: "Empresa de Eventos Don Javier",
   },
 ];
 
-export default function Page() {
+export default async function Page() {
+  const companies = await getCompanies();
+  console.log("data", companies);
   return (
     <div className="h-dvh flex justify-center items-center">
       <section className="flex flex-col max-w-[450px] sm:p-12 bg-white rounded-xl relative shadow-lg">
@@ -33,8 +36,8 @@ export default function Page() {
           </p>
         </header>
 
-        {companys.map(({ ruc, name }) => (
-          <div key={ruc} className="relative group">
+        {companies?.map((company) => (
+          <div key={company.ruc} className="relative group">
             <Card className="border-0 hover:bg-gray-100 shadow-none cursor-pointer">
               <CardHeader className="flex-row justify-start items-center space-y-0 py-4 h-[82px]">
                 <img
@@ -43,8 +46,10 @@ export default function Page() {
                   className="rounded-full h-10 w-10 mr-3"
                 />
                 <div className="flex flex-col justify-center">
-                  <h3 className="font-semibold text-sm">{name}</h3>
-                  <p className="text-gray-500 text-sm">{ruc}</p>
+                  <h3 className="font-semibold text-sm">
+                    {company.corporate_name}
+                  </h3>
+                  <p className="text-gray-500 text-sm">{company.ruc}</p>
                 </div>
               </CardHeader>
             </Card>
@@ -53,18 +58,23 @@ export default function Page() {
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="icon">
                     <Pencil className="stroke-primary" />
+                    <span className="sr-only">Editar empresa</span>
                   </Button>
                 </DialogTrigger>
-                <CompanyForm type="edit" />
+                <CompanyForm type="edit" company={company} />
               </Dialog>
 
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="icon">
                     <Trash className="stroke-red-500" />
+                    <span className="sr-only">Borrar empresa</span>
                   </Button>
                 </DialogTrigger>
-                <CompanyDelete ruc={ruc} name={name} />
+                <CompanyDelete
+                  ruc={company.ruc}
+                  corporate_name={company.corporate_name}
+                />
               </Dialog>
             </div>
           </div>
