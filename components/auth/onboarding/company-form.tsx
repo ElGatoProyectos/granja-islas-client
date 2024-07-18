@@ -26,7 +26,6 @@ import { useState } from "react";
 import { Image as AddImage, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface company {
   ruc: string;

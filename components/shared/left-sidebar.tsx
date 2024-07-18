@@ -23,7 +23,7 @@ export function LeftSidebar() {
               href={route}
               className={`${buttonVariants({
                 variant: `${isActive ? "default" : "ghost"}`,
-              })} !justify-start`}
+              })} !justify-start dark:text-white`}
             >
               {icon}
               {label}

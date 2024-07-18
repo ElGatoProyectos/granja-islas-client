@@ -58,7 +58,7 @@ export function CodeCountry({ form }: { form: any }) {
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="w-[140px] p-0">
               <Command>
                 <CommandInput placeholder="Codigo..." />
                 <CommandEmpty>Codigo no encontrado</CommandEmpty>

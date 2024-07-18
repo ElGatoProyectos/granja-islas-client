@@ -38,7 +38,7 @@ export default async function Page() {
 
         {companies?.map((company) => (
           <div key={company.ruc} className="relative group">
-            <Card className="border-0 hover:bg-gray-100 shadow-none cursor-pointer">
+            <Card className="border-0 hover:bg-gray-100 cursor-pointer">
               <CardHeader className="flex-row justify-start items-center space-y-0 py-4 h-[82px]">
                 <img
                   src="/assets/photo-bussines.png"

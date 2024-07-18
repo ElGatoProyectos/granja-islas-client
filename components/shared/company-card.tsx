@@ -12,7 +12,7 @@ import { CopyButtom } from "../copy-button";
 
 export function CompanyCard() {
   return (
-    <Card className="border-0 shadow-none mt-6">
+    <Card className="border-0 mt-6">
       <CardHeader className="p-0 space-y-0">
         <Dialog>
           <DialogTrigger asChild>
