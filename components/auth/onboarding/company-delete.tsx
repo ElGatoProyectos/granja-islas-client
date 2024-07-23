@@ -17,7 +17,7 @@ export function CompanyDelete({
   ruc: string;
   corporate_name: string;
 }) {
-  const [value, setValue] = useState<string>();
+  const [value, setValue] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.currentTarget.value);
@@ -38,12 +38,14 @@ export function CompanyDelete({
         <h3 className="text-foreground text-sm">{corporate_name}</h3>
         <p className="text-foreground text-sm">{ruc}</p>
       </div>
+      <div className="flex flex-col gap-y-1">
+        <p className="text-sm font-medium text-foreground">
+          Para confirmar, escribe la contraseña de administrador en el cuadro a
+          continuacion.
+        </p>
 
-      <p className="text-sm text-muted-foreground">
-        Para confirmar, escribe &quot;{ruc}&quot; en el cuadro a continuacion.
-      </p>
-
-      <Input type="text" value={value} onChange={handleChange} />
+        <Input type="text" value={value} onChange={handleChange} />
+      </div>
 
       <Button variant="destructive" disabled={value !== ruc}>
         Borrar esta empresa

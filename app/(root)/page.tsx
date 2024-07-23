@@ -88,7 +88,7 @@ const contents = [
 export default function Home() {
   return (
     <section>
-      <h1 className="text-4xl font-bold ml-8">Panel de control</h1>
+      <h1 className="text-4xl font-bold ml-8">Registro de compras</h1>
       <div className="grid grid-cols-4 gap-4 mt-6">
         {cardsInfo.map(({ value, title, date }) => (
           <Card key={title}>

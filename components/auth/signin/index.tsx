@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useToggle } from "@/lib/hooks/use-toggle";
+import { useToggle } from "@/hooks/use-toggle";
 
 export function SignIn() {
   const form = useForm<z.infer<typeof signinSchema>>({

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { LeftSidebar } from "@/components/shared/left-sidebar";
 import { TopBar } from "@/components/shared/top-bar";
+import { LeftSidebar } from "@/components/shared/left-sidebar";
 
 export const metadata: Metadata = {
   title: "Dashboard",

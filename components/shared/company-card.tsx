@@ -9,27 +9,43 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CopyButtom } from "../copy-button";
+import { cn } from "@/lib/utils";
 
-export function CompanyCard() {
+export function CompanyCard({ isOpen }: { isOpen: boolean }) {
   return (
-    <Card className="border-0 mt-6">
-      <CardHeader className="p-0 space-y-0">
+    <Card
+      className={cn("border-0 mt-6 h-[160px]", isOpen === false ? "flex" : "")}
+    >
+      <CardHeader
+        className={cn(
+          "p-0 space-y-0",
+          isOpen === false ? "justify-end items-end" : ""
+        )}
+      >
         <Dialog>
           <DialogTrigger asChild>
             <Button
               variant="link"
-              className="text-wrap p-0 hover:no-underline text-left flex-col h-fit gap-y-2"
+              className={cn(
+                "text-wrap p-0 hover:no-underline text-left flex-col h-fit gap-y-2",
+                isOpen === false ? "justify-end items-end" : ""
+              )}
             >
               <img
                 src="/assets/photo-bussines.png"
                 alt="photo-bussines"
-                className="rounded-full h-14 w-14"
+                className={cn(
+                  "rounded-full h-14 w-14 aspect-square",
+                  isOpen === false ? "h-[53px]" : ""
+                )}
               />
-              Empresa de Transporte Don Agusto S.A.C
+              <span className={cn(isOpen === false ? "hidden" : "block")}>
+                Empresa de Transporte Don Agusto S.A.C
+              </span>
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[500px] ">
+          <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold">Empresa</DialogTitle>
               <DialogDescription>
@@ -77,7 +93,12 @@ export function CompanyCard() {
             </div>
           </DialogContent>
         </Dialog>
-        <div className="flex justify-between items-center">
+        <div
+          className={cn(
+            "flex justify-between items-center",
+            isOpen === false ? "hidden" : ""
+          )}
+        >
           <span className="text-sm">RUC 20535014940</span>
           <CopyButtom copytext="20535014940" />
         </div>

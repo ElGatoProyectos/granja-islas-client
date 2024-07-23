@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
 import { labels } from "./data-test";
 import { taskSchema } from "./schematask";
+import { supplierSchemaTable } from "./supplier-schema-table";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,7 +28,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = taskSchema.parse(row.original);
+  const supplier = supplierSchemaTable.parse(row.original);
 
   return (
     <DropdownMenu>
@@ -45,10 +46,10 @@ export function DataTableRowActions<TData>({
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuSub>
+        {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
+            <DropdownMenuRadioGroup value={supplier.label}>
               {labels.map((label) => (
                 <DropdownMenuRadioItem key={label.value} value={label.value}>
                   {label.label}
@@ -56,7 +57,7 @@ export function DataTableRowActions<TData>({
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        </DropdownMenuSub> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem>Delete</DropdownMenuItem>
       </DropdownMenuContent>

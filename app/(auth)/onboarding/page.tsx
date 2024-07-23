@@ -28,7 +28,7 @@ export default async function Page() {
     <div className="h-dvh flex justify-center items-center">
       <section className="flex flex-col max-w-[450px] sm:p-12 bg-white rounded-xl relative shadow-lg">
         <header className="flex flex-col mb-3">
-          <h1 className="text-2xl sm:text-4xl font-bold">Elegir Ruc</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold">Elegir Empresa</h1>
           <p className="text-gray-500 leading-tight text-sm mt-2">
             Esta selección te permitirá acceder a toda la información
             relacionada con el RUC elegido, como proveedores, compras,
@@ -38,8 +38,8 @@ export default async function Page() {
 
         {companies?.map((company) => (
           <div key={company.ruc} className="relative group">
-            <Card className="border-0 hover:bg-gray-100 cursor-pointer">
-              <CardHeader className="flex-row justify-start items-center space-y-0 py-4 h-[82px]">
+            <Card className="border-0 cursor-pointer">
+              <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
                 <img
                   src="/assets/photo-bussines.png"
                   alt="photo-bussines"

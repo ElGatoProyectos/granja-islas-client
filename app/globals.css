@@ -32,7 +32,73 @@
     scrollbar-color: #3b82f6 #e6e6e6;
   }
 
+  /* .dark {
+    --gradient: linear-gradient(to top left, #4776e6, #8e54e9);
+
+    --background: 236 49.4% 4.72%;
+    --foreground: 236 7.6% 97.95%;
+
+    --muted: 236 38% 17.7%;
+    --muted-foreground: 236 7.6% 55.9%;
+
+    --popover: 236 49.8% 7.67%;
+    --popover-foreground: 236 7.6% 97.95%;
+
+    --card: 236 49.8% 7.67%;
+    --card-foreground: 236 7.6% 97.95%;
+
+    --border: 236 38% 17.7%;
+    --input: 236 38% 17.7%;
+
+    --primary: 236 76% 59%;
+    --primary-foreground: 236 7.6% 5.8999999999999995%;
+
+    --secondary: 236 38% 17.7%;
+    --secondary-foreground: 236 7.6% 97.95%;
+
+    --accent: 236 38% 17.7%;
+    --accent-foreground: 236 7.6% 97.95%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 236 7.6% 97.95%;
+
+    --ring: 236 76% 59%;
+    --chart-1: 236 76% 59%;
+    --chart-2: 236 76% 40%;
+    --chart-3: 236 50% 30%;
+    --chart-4: 236 20 59%;
+    --chart-5: 236 55% 55%;
+  } */
+
   .dark {
+    --background: 118 52% 1%;
+    --foreground: 118 37% 98%;
+    --muted: 118 35% 15%;
+    --muted-foreground: 118 3% 74%;
+    --popover: 118 52% 1%;
+    --popover-foreground: 118 37% 98%;
+    --card: 118 52% 1%;
+    --card-foreground: 118 37% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --primary: 118 82% 63%;
+    --primary-foreground: 118 82% 3%;
+    --secondary: 118 5% 12%;
+    --secondary-foreground: 118 5% 72%;
+    --accent: 118 11% 19%;
+    --accent-foreground: 118 11% 79%;
+    --destructive: 15 90% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 118 82% 63%;
+    --chart-1: 118 84% 52%;
+    --chart-2: 118 59% 41%;
+    --chart-3: 118 33% 60%;
+    --chart-4: 118 52% 18%;
+    --chart-5: 118 12% 28%;
+    scrollbar-color: #12c02f #131615;
+  }
+
+  /* .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -57,9 +123,8 @@
     --chart-3: 213.3 96.9% 87.3%;
     --chart-4: 217.2 91.2% 59.8%;
     --chart-5: 224.3 76.3% 48%;
-
     scrollbar-color: #3b82f6 #1f2937;
-  }
+  } */
 }
 
 @layer base {

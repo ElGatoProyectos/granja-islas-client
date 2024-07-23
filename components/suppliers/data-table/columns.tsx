@@ -2,20 +2,11 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Task } from "./schematask";
 import { DataTableColumnHeader } from "./table-column-header";
-import { Badge } from "@/components/ui/badge";
 import { DataTableRowActions } from "./table-row-actions";
-import { labels, priorities, statuses } from "./data-test";
+import { Supplier } from "./supplier-schema-table";
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<Supplier>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -43,50 +34,54 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Task" />
+      <DataTableColumnHeader column={column} title="Ids" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="w-fit">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "title",
+    accessorKey: "ruc",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="RUC" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const label = labels.find((label) => label.value === row.original.label);
 
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("title")}
-          </span>
-        </div>
+        <span className="max-w-[500px] truncate font-medium">
+          {row.getValue("ruc")}
+        </span>
+        // <div className="flex space-x-2">
+        //   {label && <Badge variant="outline">{label.label}</Badge>}
+        //   <span className="max-w-[500px] truncate font-medium">
+        //     {row.getValue("ruc")}
+        //   </span>
+        // </div>
       );
     },
+    enableSorting: false,
   },
   {
-    accessorKey: "status",
+    accessorKey: "corporate_name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Razón social" />
     ),
     cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue("status")
-      );
+      // const status = statuses.find(
+      //   (status) => status.value === row.getValue("corporate_name")
+      // );
 
-      if (!status) {
-        return null;
-      }
+      // if (!status) {
+      //   return null;
+      // }
 
       return (
         <div className="flex w-[100px] items-center">
-          {status.icon && (
+          {/* {status.icon && (
             <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
+          )} */}
+          <span>{row.getValue("corporate_name")}</span>
         </div>
       );
     },
@@ -95,25 +90,25 @@ export const columns: ColumnDef<Task>[] = [
     },
   },
   {
-    accessorKey: "priority",
+    accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
+      <DataTableColumnHeader column={column} title="Tipo" />
     ),
     cell: ({ row }) => {
-      const priority = priorities.find(
-        (priority) => priority.value === row.getValue("priority")
-      );
+      // const priority = priorities.find(
+      //   (priority) => priority.value === row.getValue("type")
+      // );
 
-      if (!priority) {
-        return null;
-      }
+      // if (!priority) {
+      //   return null;
+      // }
 
       return (
         <div className="flex items-center">
-          {priority.icon && (
+          {/* {priority.icon && (
             <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{priority.label}</span>
+          )} */}
+          <span>{row.getValue("type")}</span>
         </div>
       );
     },
@@ -121,6 +116,66 @@ export const columns: ColumnDef<Task>[] = [
       return value.includes(row.getValue(id));
     },
   },
+
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Estado" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("status")}</span>
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+
+  {
+    accessorKey: "fiscal_address",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Dirección fiscal" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("fiscal_address")}</span>
+        </div>
+      );
+    },
+  },
+
+  {
+    accessorKey: "country_code",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Código de pais" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("country_code")}</span>
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+
+  {
+    accessorKey: "phone",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Celular" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("phone")}</span>
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

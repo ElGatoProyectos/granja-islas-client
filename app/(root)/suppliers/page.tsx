@@ -1,6 +1,7 @@
 import { AddSupplier } from "@/components/suppliers/add-supplier";
-import { columns, Payment } from "@/components/suppliers/data-table/columns";
+import { columns } from "@/components/suppliers/data-table/columns";
 import { datatasks } from "@/components/suppliers/data-table/datatasks";
+import { suppliersData } from "@/components/suppliers/data-table/suppliersData";
 import { Searcher } from "@/components/suppliers/searcher";
 import { ViewToggle } from "@/components/suppliers/viewtoggle";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ export default async function Page() {
         </main>
       </Tabs> */}
       <div className="mx-auto">
-        <DataTable columns={columns} data={datatasks} />
+        <DataTable columns={columns} data={suppliersData} />
       </div>
     </section>
   );
