@@ -62,7 +62,7 @@ export function CollapseMenuButton({
         asChild
       >
         <Button
-          variant={active ? "secondary" : "ghost"}
+          variant={active ? "default" : "ghost"}
           className="w-full justify-start h-10"
         >
           <div className="w-full items-center flex justify-between">
@@ -102,19 +102,20 @@ export function CollapseMenuButton({
           <Button
             key={index}
             variant={active ? "secondary" : "ghost"}
-            className="w-full justify-start h-10 mb-1"
+            className={"w-full justify-start h-10 mb-1 bg-transparent"}
             asChild
           >
             <Link href={href}>
               <span className="mr-4 ml-2">
-                <Dot size={18} />
+                <Dot size={18} className={cn(active ? "stroke-primary" : "")} />
               </span>
               <p
                 className={cn(
                   "max-w-[170px] truncate",
                   isOpen
                     ? "translate-x-0 opacity-100"
-                    : "-translate-x-96 opacity-0"
+                    : "-translate-x-96 opacity-0",
+                  active ? "text-primary" : ""
                 )}
               >
                 {label}

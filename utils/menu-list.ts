@@ -38,7 +38,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/",
           label: "Registro de compras",
-          active: pathname.includes("/"),
+          active: pathname === "/",
           icon: LayoutDashboard,
           submenus: [],
         },
@@ -51,12 +51,12 @@ export function getMenuList(pathname: string): Group[] {
             {
               href: "/analytics/general",
               label: "General",
-              active: pathname === "/general",
+              active: pathname === "/analytics/general",
             },
             {
               href: "/analytics/specific",
               label: "Específico",
-              active: pathname === "/specific",
+              active: pathname === "/analytics/specific",
             },
           ],
         },

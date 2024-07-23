@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +13,7 @@ import {
 import { CopyButtom } from "../copy-button";
 import { cn } from "@/lib/utils";
 
-export function CompanyCard({ isOpen }: { isOpen: boolean }) {
+export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
   return (
     <Card
       className={cn("border-0 mt-6 h-[160px]", isOpen === false ? "flex" : "")}
