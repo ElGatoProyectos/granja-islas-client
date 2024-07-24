@@ -1,3 +1,4 @@
+import { ShoppingRecordTable } from "@/components/home/shopping-record-table";
 import { LayerPage } from "@/components/layer-page";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -29,7 +30,7 @@ export default function Home() {
   return (
     <LayerPage title="Registro de compras">
       <ScrollArea className="w-[calc(100vw-3.75rem)] lg:w-full whitespace-nowrap rounded-md">
-        <div className="flex w-max space-x-4 pb-6 lg:grid lg:grid-cols-4 lg:w-full">
+        <div className="flex w-max pb-6 lg:grid lg:grid-cols-2 xl:grid-cols-4 lg:w-full gap-4">
           {cardsInfo.map(({ value, title, date }) => (
             <Card key={title}>
               <CardHeader className="flex flex-row justify-between space-y-0 pb-0">
@@ -42,6 +43,7 @@ export default function Home() {
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+      <ShoppingRecordTable />
     </LayerPage>
   );
 }

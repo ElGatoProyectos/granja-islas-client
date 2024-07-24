@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
+import { translateString } from "@/utils/change-name";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -33,7 +34,7 @@ export function DataTableViewOptions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[180px]">
-        <DropdownMenuLabel>Alternar columnas</DropdownMenuLabel>
+        <DropdownMenuLabel>Ocultar Columnas</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -49,7 +50,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {translateString(column.id)}
               </DropdownMenuCheckboxItem>
             );
           })}

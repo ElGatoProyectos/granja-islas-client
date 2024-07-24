@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
-import { DataTableViewOptions } from "./table-view-options";
 import { X } from "lucide-react";
 import { DataTableFacetedFilter } from "./table-faceted-filter";
-import { priorities, statuses } from "./data-test";
+import { states } from "./supplier-filters";
+import { DataTableViewOptions } from "./table-view-options";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -21,7 +21,7 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
+          placeholder="Buscar razón social"
           value={
             (table.getColumn("corporate_name")?.getFilterValue() as string) ??
             ""
@@ -37,16 +37,10 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Estado"
-            options={statuses}
+            options={states}
           />
         )}
-        {/* {table.getColumn("corporate_name") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("corporate_name")}
-            title="Razón social"
-            options={priorities}
-          />
-        )} */}
+
         {isFiltered && (
           <Button
             variant="ghost"

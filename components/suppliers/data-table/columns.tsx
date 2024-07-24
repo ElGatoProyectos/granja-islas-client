@@ -5,41 +5,33 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./table-column-header";
 import { DataTableRowActions } from "./table-row-actions";
 import { Supplier } from "./supplier-schema-table";
+import { states } from "./supplier-filters";
 
 export const columns: ColumnDef<Supplier>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ids" />
-    ),
-    cell: ({ row }) => <div className="w-fit">{row.getValue("id")}</div>,
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "ruc",
     header: ({ column }) => (
@@ -49,7 +41,7 @@ export const columns: ColumnDef<Supplier>[] = [
       // const label = labels.find((label) => label.value === row.original.label);
 
       return (
-        <span className="max-w-[500px] truncate font-medium">
+        <span className="w-fit truncate font-medium">
           {row.getValue("ruc")}
         </span>
         // <div className="flex space-x-2">
@@ -68,25 +60,13 @@ export const columns: ColumnDef<Supplier>[] = [
       <DataTableColumnHeader column={column} title="Razón social" />
     ),
     cell: ({ row }) => {
-      // const status = statuses.find(
-      //   (status) => status.value === row.getValue("corporate_name")
-      // );
-
-      // if (!status) {
-      //   return null;
-      // }
+      const corporate_name = row.getValue("corporate_name") as string;
 
       return (
-        <div className="flex w-[100px] items-center">
-          {/* {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )} */}
-          <span>{row.getValue("corporate_name")}</span>
+        <div className="flex w-[200px] items-center">
+          <span className="capitalize">{corporate_name.toLowerCase()}</span>
         </div>
       );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
     },
   },
   {
@@ -95,41 +75,40 @@ export const columns: ColumnDef<Supplier>[] = [
       <DataTableColumnHeader column={column} title="Tipo" />
     ),
     cell: ({ row }) => {
-      // const priority = priorities.find(
-      //   (priority) => priority.value === row.getValue("type")
-      // );
-
-      // if (!priority) {
-      //   return null;
-      // }
+      const type = row.getValue("type") as string;
 
       return (
-        <div className="flex items-center">
-          {/* {priority.icon && (
-            <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )} */}
-          <span>{row.getValue("type")}</span>
+        <div className="flex max-w-[220px] items-center">
+          <span className="capitalize">{type.toLowerCase()}</span>
         </div>
       );
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    enableSorting: false,
   },
-
   {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => {
+      const state = states.find(
+        (state) => state.value === row.getValue("status")
+      );
+
+      if (!state) {
+        return null;
+      }
+
       return (
         <div className="flex items-center">
-          <span>{row.getValue("status")}</span>
+          <span>{state.label}</span>
         </div>
       );
     },
     enableSorting: false,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
 
   {
@@ -145,30 +124,15 @@ export const columns: ColumnDef<Supplier>[] = [
       );
     },
   },
-
-  {
-    accessorKey: "country_code",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Código de pais" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue("country_code")}</span>
-        </div>
-      );
-    },
-    enableSorting: false,
-  },
-
   {
     accessorKey: "phone",
+    accessorFn: (row) => `${row.country_code} ${row.phone}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Celular" />
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex items-center">
+        <div className="flex gap-x-2 items-center">
           <span>{row.getValue("phone")}</span>
         </div>
       );

@@ -1,5 +1,5 @@
-import { PurchasesPerMoth } from "@/components/home/puchases-per-month";
-import { SuppliersTable } from "@/components/home/suppliers-table";
+import { PurchasesPerMoth } from "@/components/analytics/general/puchases-per-month";
+import { SuppliersTable } from "@/components/analytics/general/suppliers-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

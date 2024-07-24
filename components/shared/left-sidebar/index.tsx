@@ -12,7 +12,7 @@ export function LeftSidebar() {
   return (
     <aside
       className={cn(
-        "sticky left-0 top-0 z-20 h-screen lg:flex flex-col justify-between border-r px-6 ease-in-out duration-300 hidden ",
+        "sticky left-0 top-0 z-20 h-screen lg:flex flex-col border-r px-6 ease-in-out duration-300 hidden ",
         !sidebar === false ? "w-[100px]" : "w-64"
       )}
     >

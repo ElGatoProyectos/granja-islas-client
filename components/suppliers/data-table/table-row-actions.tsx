@@ -17,8 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
-import { labels } from "./data-test";
-import { taskSchema } from "./schematask";
 import { supplierSchemaTable } from "./supplier-schema-table";
 
 interface DataTableRowActionsProps<TData> {
@@ -38,13 +36,16 @@ export function DataTableRowActions<TData>({
           className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
         >
           <Ellipsis className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">Abrir menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(supplier.ruc)}
+        >
+          Copiar RUC
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
@@ -58,8 +59,8 @@ export function DataTableRowActions<TData>({
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub> */}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+
+        <DropdownMenuItem>Ver Proveedor</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
