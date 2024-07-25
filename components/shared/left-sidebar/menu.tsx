@@ -14,6 +14,7 @@ import {
 import { getMenuList } from "@/utils/menu-list";
 import { CollapseMenuButton } from "./collapse-menu-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { signOut } from "next-auth/react";
 
 interface MenuProps {
   isOpen: boolean;
@@ -107,7 +108,7 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={() => signOut()}
                     variant="outline"
                     className="w-full justify-center h-10 my-5"
                   >

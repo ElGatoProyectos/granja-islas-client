@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { companySchema } from "@/lib/validations/auth/company";
+import { companySchema, CompanyType } from "@/lib/validations/auth/company";
 import {
   DialogClose,
   DialogContent,
@@ -26,23 +26,18 @@ import { useState } from "react";
 import { Image as AddImage, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
-
-interface company {
-  ruc: string;
-  corporate_name: string;
-  type: string;
-  status: string;
-  fiscal_address: string;
-  country_code: string;
-  phone: string;
-  user_sunnat: string;
-  password_sunnat: string;
-}
+import { useSession } from "next-auth/react";
+import { unformatCompany } from "@/utils/format-company";
+import { backend_url } from "@/constants/config";
 
 interface Props {
   type: "create" | "edit";
-  company?: company;
+  company?: CompanyType;
 }
+
+type CompanyFormValues = CompanyType & {
+  image: FileList;
+};
 
 export function CompanyForm({ type, company }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -61,8 +56,51 @@ export function CompanyForm({ type, company }: Props) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof companySchema>) {
+  const { data: session }: { data: any } = useSession();
+
+  async function onSubmit(values: z.infer<typeof companySchema>) {
     console.log(values);
+
+    const { image, ...rest } = values;
+    const company = unformatCompany(rest);
+    const formData = new FormData();
+
+    // Agregar los campos del objeto company al FormData
+    (Object.keys(company) as (keyof typeof company)[]).forEach((key) => {
+      formData.append(key, company[key]);
+    });
+
+    // Agregar los otros campos al FormData
+    (Object.keys(values) as (keyof CompanyFormValues)[]).forEach((key) => {
+      if (key !== "image") {
+        formData.append(key, values[key] as string | Blob);
+      }
+    });
+
+    // Agregar el archivo al FormData
+    if (values.image && values.image.length > 0) {
+      formData.append("company-profile", values.image[0]); // Usar el primer archivo del FileList
+    }
+    try {
+      const res = await fetch(`${backend_url}/api/companies`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.user.tokenBack}`,
+          "Content-Type": "application/json",
+        },
+        body: formData,
+      });
+
+      console.log("res", res);
+
+      if (!res.ok) {
+        throw new Error("Failed to post companies");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    console.log("todo xvr");
   }
 
   return (

@@ -1,3 +1,5 @@
+"use client";
+
 import { LogOut, Settings, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -10,8 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut, useSession } from "next-auth/react";
+import { SUPERADMIN } from "@/constants/roles";
 
 export function DropdownMenuDemo() {
+  const { data: session } = useSession({
+    required: true,
+  });
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,8 +32,12 @@ export function DropdownMenuDemo() {
             <AvatarFallback>A</AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start">
-            <p className="text-sm font-bold">Jorge Flores</p>
-            <span className="text-sm text-muted-foreground">Administrador</span>
+            <p className="text-sm font-bold">{session?.user.full_name}</p>
+            <span className="text-sm text-muted-foreground ">
+              {session?.user.role === SUPERADMIN
+                ? "Super Admin."
+                : session?.user.role}
+            </span>
           </div>
         </Button>
       </DropdownMenuTrigger>
@@ -71,7 +83,11 @@ export function DropdownMenuDemo() {
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            signOut();
+          }}
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Cerrar Sessión</span>
         </DropdownMenuItem>

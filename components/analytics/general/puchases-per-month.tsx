@@ -10,6 +10,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { formatNumberWithCommas } from "@/utils/format-number-comas";
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -46,13 +47,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function formatNumberWithCommas(value: any) {
-  return `S/.${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-}
+
 
 export function PurchasesPerMoth() {
   return (
-    <ChartContainer config={chartConfig} className="h-full w-full">
+    <ChartContainer config={chartConfig} className="h-[450px] w-full">
       <BarChart accessibilityLayer data={purchases}>
         <CartesianGrid vertical={false} />
         <XAxis

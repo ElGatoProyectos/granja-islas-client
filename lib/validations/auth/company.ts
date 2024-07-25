@@ -46,3 +46,5 @@ export const companySchema = z.object({
   user_sunnat: z.string().min(1, "El usuario Sunnat es obligatorio."),
   password_sunnat: z.string().min(1, "La contraseña Sunnat es obligatoria."),
 });
+
+export type CompanyType = z.infer<typeof companySchema>;

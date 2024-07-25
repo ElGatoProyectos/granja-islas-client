@@ -88,7 +88,7 @@ export function SuppliersTable({ suppliers }: Props) {
           </TableBody>
         </Table>
       ) : (
-        <div className="h-full flex justify-center items-center">
+        <div className="h-full w-full flex justify-center items-center my-20">
           <div className="flex flex-col items-center gap-y-2">
             <Search className="stroke-gray-600 h-12 w-12" />
             <span className="text-gray-600 text-balance text-center">

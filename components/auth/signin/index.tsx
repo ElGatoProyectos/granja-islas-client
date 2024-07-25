@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/form";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useToggle } from "@/hooks/use-toggle";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export function SignIn() {
   const form = useForm<z.infer<typeof signinSchema>>({
@@ -26,8 +29,35 @@ export function SignIn() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof signinSchema>) {
-    console.log(values);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  async function onSubmit(values: z.infer<typeof signinSchema>) {
+    try {
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+
+      if (!res?.ok) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Ocurrio un error.",
+          description: "Verifica tus credenciales.",
+        });
+        return;
+      }
+
+      toast({
+        variant: "success",
+        title: "Has iniciado sessión",
+      });
+
+      router.push("/onboarding");
+    } catch (e) {
+      console.log("error al iniciar session", e);
+    }
   }
 
   const [showPassword, togglePassword] = useToggle();
@@ -47,11 +77,7 @@ export function SignIn() {
               <FormItem>
                 <FormLabel>Correo Electrónico</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="correo@gmail.com"
-                    {...field}
-                    className="placeholder:text-neutral-300 bg-white"
-                  />
+                  <Input placeholder="correo@gmail.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -67,7 +93,6 @@ export function SignIn() {
                   <Input
                     placeholder="********"
                     {...field}
-                    className="placeholder:text-neutral-300 bg-white"
                     type={showPassword ? "text" : "password"}
                   />
                 </FormControl>

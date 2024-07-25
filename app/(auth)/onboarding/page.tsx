@@ -3,27 +3,14 @@ import { CompanyForm } from "@/components/auth/onboarding/company-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { backend_url } from "@/constants/config";
 import { getCompanies } from "@/lib/actions/company.actions";
 import { Pencil, Plus, Trash } from "lucide-react";
-
-const companys = [
-  {
-    ruc: "20535014940",
-    corporate_name: "Empresa de Transporte Don Agusto",
-  },
-  {
-    ruc: "61868881388",
-    corporate_name: "Empresa de Maiz Don Pedro",
-  },
-  {
-    ruc: "89165185168",
-    corporate_name: "Empresa de Eventos Don Javier",
-  },
-];
 
 export default async function Page() {
   const companies = await getCompanies();
   console.log("data", companies);
+
   return (
     <div className="h-dvh flex justify-center items-center">
       <section className="flex flex-col max-w-[450px] sm:p-12 bg-white rounded-xl relative shadow-lg">
@@ -41,7 +28,7 @@ export default async function Page() {
             <Card className="border-0 cursor-pointer">
               <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
                 <img
-                  src="/assets/photo-bussines.png"
+                  src={`${backend_url}/api/companies/file/${company.id}`}
                   alt="photo-bussines"
                   className="rounded-full h-10 w-10 mr-3"
                 />
