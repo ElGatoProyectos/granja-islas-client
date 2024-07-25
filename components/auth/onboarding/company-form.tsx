@@ -33,13 +33,14 @@ import { backend_url } from "@/constants/config";
 interface Props {
   type: "create" | "edit";
   company?: CompanyType;
+  companyId?: number;
 }
 
 type CompanyFormValues = CompanyType & {
   image: FileList;
 };
 
-export function CompanyForm({ type, company }: Props) {
+export function CompanyForm({ type, company, companyId }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const form = useForm<z.infer<typeof companySchema>>({
     resolver: zodResolver(companySchema),
@@ -103,34 +104,7 @@ export function CompanyForm({ type, company }: Props) {
     console.log("todo xvr");
   }
 
-  //  const imageSrc = selectedImage
-  //   ? URL.createObjectURL(selectedImage)
-  //   : `${backend_url}/api/companies/file/${company?.id}`;
-  const [files, setFiles] = useState<File[]>([]);
-  const handleImage = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: string) => void
-  ) => {
-    e.preventDefault();
-
-    const fileReader = new FileReader();
-
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setFiles(Array.from(e.target.files));
-
-      if (!file.type.includes("image")) return;
-
-      fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || "";
-        fieldChange(imageDataUrl);
-      };
-
-      fileReader.readAsDataURL(file);
-    }
-  };
-
-  console.log(`${backend_url}/api/companies/file/${form.getValues("id")}`);
+  const urlUpdate = `${backend_url}/api/companies/file/${companyId}`;
 
   return (
     <DialogContent className="sm:max-w-[500px] h-full overflow-y-scroll overflow-x-hidden gap-0">
@@ -151,19 +125,20 @@ export function CompanyForm({ type, company }: Props) {
         >
           <div className="flex items-center justify-center">
             <div
-              className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row 
-                        
-            `}
+              className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row`}
             >
               {selectedImage ? (
                 <div className="md:max-w-[100px]">
                   <img
-                    src={URL.createObjectURL(
-                      selectedImage ??
-                        `${backend_url}/api/companies/file/${form.getValues(
-                          "id"
-                        )}`
-                    )}
+                    src={URL.createObjectURL(selectedImage)}
+                    alt="Selected"
+                    className="rounded-full aspect-square"
+                  />
+                </div>
+              ) : companyId ? (
+                <div className="md:max-w-[100px]">
+                  <img
+                    src={urlUpdate}
                     alt="Selected"
                     className="rounded-full aspect-square"
                   />

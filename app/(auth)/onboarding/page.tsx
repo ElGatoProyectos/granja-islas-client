@@ -9,7 +9,6 @@ import { Pencil, Plus, Trash } from "lucide-react";
 
 export default async function Page() {
   const companies = await getCompanies();
-  console.log("data", companies);
 
   return (
     <div className="h-dvh flex justify-center items-center">
@@ -48,7 +47,11 @@ export default async function Page() {
                     <span className="sr-only">Editar empresa</span>
                   </Button>
                 </DialogTrigger>
-                <CompanyForm type="edit" company={company} />
+                <CompanyForm
+                  type="edit"
+                  company={company}
+                  companyId={company.id}
+                />
               </Dialog>
 
               <Dialog>

@@ -7,15 +7,17 @@ export default withAuth(
     const { pathname } = req.nextUrl;
     const { token } = req.nextauth;
 
-    console.log(pathname);
-    console.log(token?.role);
-
     // Redirigir desde la raíz "/" a "/signin" si no está autenticado
     if (pathname === "/") {
       if (!token) {
         return NextResponse.rewrite(new URL("/signin", req.url));
-      } else {
-        return NextResponse.rewrite(new URL("/onboarding", req.url));
+      }
+      // Redirigir usuarios autenticados según su rol
+      if (token.role === SUPERADMIN || token.role === ADMIN) {
+        return NextResponse.rewrite(new URL("/dashboard", req.url));
+      }
+      if (token.role === USER) {
+        return NextResponse.rewrite(new URL("/payments", req.url));
       }
     }
 
@@ -36,13 +38,6 @@ export default withAuth(
         return NextResponse.rewrite(new URL("/signin", req.url));
       }
     }
-
-    // Permitir acceso a /onboarding para usuarios autenticados
-    if (pathname === "/onboarding") {
-      if (!token) {
-        return NextResponse.rewrite(new URL("/signin", req.url));
-      }
-    }
   },
   {
     callbacks: {
@@ -52,5 +47,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/payments", "/onboarding"],
+  matcher: ["/", "/dashboard/:path*", "/payments"],
 };
