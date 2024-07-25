@@ -40,7 +40,7 @@ type CompanyFormValues = CompanyType & {
 };
 
 export function CompanyForm({ type, company }: Props) {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>({ company.id  ? "" : ""});
   const form = useForm<z.infer<typeof companySchema>>({
     resolver: zodResolver(companySchema),
     defaultValues: {
@@ -102,6 +102,10 @@ export function CompanyForm({ type, company }: Props) {
 
     console.log("todo xvr");
   }
+
+   const imageSrc = selectedImage
+    ? URL.createObjectURL(selectedImage)
+    : `${backend_url}/api/companies/file/${company?.id}`;
 
   return (
     <DialogContent className="sm:max-w-[500px] h-full overflow-y-scroll overflow-x-hidden gap-0">
