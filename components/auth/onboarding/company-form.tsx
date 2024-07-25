@@ -77,16 +77,16 @@ export function CompanyForm({ type, company }: Props) {
       }
     });
 
-    // Agregar el archivo al FormData
-    if (values.image && values.image.length > 0) {
-      formData.append("company-profile", values.image[0]); // Usar el primer archivo del FileList
-    }
+    // // Agregar el archivo al FormData
+    // if (values.image && values.image.length > 0) {
+    //   formData.append("company-profile", values.image[0]); // Usar el primer archivo del FileList
+    // }
+
     try {
       const res = await fetch(`${backend_url}/api/companies`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session.user.tokenBack}`,
-          "Content-Type": "application/json",
         },
         body: formData,
       });
@@ -106,6 +106,31 @@ export function CompanyForm({ type, company }: Props) {
   //  const imageSrc = selectedImage
   //   ? URL.createObjectURL(selectedImage)
   //   : `${backend_url}/api/companies/file/${company?.id}`;
+  const [files, setFiles] = useState<File[]>([]);
+  const handleImage = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    fieldChange: (value: string) => void
+  ) => {
+    e.preventDefault();
+
+    const fileReader = new FileReader();
+
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setFiles(Array.from(e.target.files));
+
+      if (!file.type.includes("image")) return;
+
+      fileReader.onload = async (event) => {
+        const imageDataUrl = event.target?.result?.toString() || "";
+        fieldChange(imageDataUrl);
+      };
+
+      fileReader.readAsDataURL(file);
+    }
+  };
+
+  console.log(`${backend_url}/api/companies/file/${form.getValues("id")}`);
 
   return (
     <DialogContent className="sm:max-w-[500px] h-full overflow-y-scroll overflow-x-hidden gap-0">
@@ -133,7 +158,12 @@ export function CompanyForm({ type, company }: Props) {
               {selectedImage ? (
                 <div className="md:max-w-[100px]">
                   <img
-                    src={URL.createObjectURL(selectedImage)}
+                    src={URL.createObjectURL(
+                      selectedImage ??
+                        `${backend_url}/api/companies/file/${form.getValues(
+                          "id"
+                        )}`
+                    )}
                     alt="Selected"
                     className="rounded-full aspect-square"
                   />

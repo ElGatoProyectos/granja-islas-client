@@ -11,6 +11,7 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 
 const countryIsoCodes = countryCodes.map((entry) => entry.code);
 export const companySchema = z.object({
+  id: z.number().optional(),
   image: z
     .any()
     .refine((files) => {

@@ -1,5 +1,5 @@
 export type CompanyFetch = {
-  id: string;
+  id: number;
   ruc: string;
   business_type: string;
   country_code: string;
@@ -12,7 +12,7 @@ export type CompanyFetch = {
 };
 
 export type FormattedCompany = {
-  id: string;
+  id: number;
   ruc: string;
   type: string;
   country_code: string;
