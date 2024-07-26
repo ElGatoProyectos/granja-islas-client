@@ -1,5 +1,6 @@
 import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fiscal-consumption-linechart";
-import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/FiscalConsumption-Measure-Linechart";
+import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
+import { LastShoppingLinechart } from "@/components/analytics/specific/last-shopping-linechart";
 import { RadioDates } from "@/components/radio-dates";
 import {
   Select,
@@ -61,6 +62,10 @@ export default function Page() {
         />
         <FiscalConsumptionMeasureLinechart
           label={"Maiz (medida)"}
+          date={"25 de Enero,2024 - 25 de Julio,2024"}
+        />
+        <LastShoppingLinechart
+          label={"Maiz"}
           date={"25 de Enero,2024 - 25 de Julio,2024"}
         />
       </main>

@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
 import { SUPERADMIN } from "@/constants/roles";
+import Link from "next/link";
+import { backend_url } from "@/constants/config";
 
-export function DropdownMenuDemo() {
-  const { data: session } = useSession({
-    required: true,
-  });
+export function UserDropdown() {
+  const { data: session }: { data: any } = useSession();
 
   return (
     <DropdownMenu>
@@ -28,11 +28,13 @@ export function DropdownMenuDemo() {
           className="gap-x-3 hover:bg-transparent p-0 focus-visible:ring-0"
         >
           <Avatar>
-            <AvatarImage src="https://i.pinimg.com/564x/b4/41/fa/b441fa9378b93beed358d838e1c11a3c.jpg" />
+            <AvatarImage
+              src={`${backend_url}/api/users/file/${session.user.id}`}
+            />
             <AvatarFallback>A</AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start">
-            <p className="text-sm font-bold">{session?.user.full_name}</p>
+            <p className="text-sm font-bold">{session.user.full_name}</p>
             <span className="text-sm text-muted-foreground ">
               {session?.user.role === SUPERADMIN
                 ? "Super Admin."
@@ -75,11 +77,12 @@ export function DropdownMenuDemo() {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub> */}
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-
-            <span>Configuración</span>
-          </DropdownMenuItem>
+          <Link href="/onboarding">
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Configuración</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

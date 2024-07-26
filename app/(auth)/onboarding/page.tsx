@@ -1,18 +1,13 @@
-import { CompanyDelete } from "@/components/auth/onboarding/company-delete";
 import { CompanyForm } from "@/components/auth/onboarding/company-form";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { backend_url } from "@/constants/config";
+import { CompanyList } from "@/components/auth/onboarding/company-list";
 import { getCompanies } from "@/lib/actions/company.actions";
-import { Pencil, Plus, Trash } from "lucide-react";
 
 export default async function Page() {
   const companies = await getCompanies();
 
   return (
     <div className="h-dvh flex justify-center items-center">
-      <section className="flex flex-col max-w-[450px] sm:p-12 bg-white rounded-xl relative shadow-lg">
+      <section className="flex flex-col max-w-[450px] sm:p-12 bg-background border border-border rounded-xl relative shadow-lg">
         <header className="flex flex-col mb-3">
           <h1 className="text-2xl sm:text-4xl font-bold">Elegir Empresa</h1>
           <p className="text-gray-500 leading-tight text-sm mt-2">
@@ -21,63 +16,8 @@ export default async function Page() {
             transacciones y más.
           </p>
         </header>
-
-        {companies?.map((company) => (
-          <div key={company.ruc} className="relative group">
-            <Card className="border-0 cursor-pointer">
-              <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
-                <img
-                  src={`${backend_url}/api/companies/file/${company.id}`}
-                  alt="photo-bussines"
-                  className="rounded-full h-10 w-10 mr-3"
-                />
-                <div className="flex flex-col justify-center">
-                  <h3 className="font-semibold text-sm">
-                    {company.corporate_name}
-                  </h3>
-                  <p className="text-gray-500 text-sm">{company.ruc}</p>
-                </div>
-              </CardHeader>
-            </Card>
-            <div className="absolute top-0 -right-10 flex flex-col justify-center group-hover:opacity-100 opacity-0 transition-opacity">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Pencil className="stroke-primary" />
-                    <span className="sr-only">Editar empresa</span>
-                  </Button>
-                </DialogTrigger>
-                <CompanyForm
-                  type="edit"
-                  company={company}
-                  companyId={company.id}
-                />
-              </Dialog>
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Trash className="stroke-red-500" />
-                    <span className="sr-only">Borrar empresa</span>
-                  </Button>
-                </DialogTrigger>
-                <CompanyDelete
-                  ruc={company.ruc}
-                  corporate_name={company.corporate_name}
-                />
-              </Dialog>
-            </div>
-          </div>
-        ))}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="ghost" className="hover:text-primary mt-2">
-              <Plus className="h-5 w-5 mr-2" />
-              Nueva Empresa
-            </Button>
-          </DialogTrigger>
-          <CompanyForm type="create" />
-        </Dialog>
+        <CompanyList companies={companies} />
+        <CompanyForm type="create" />
       </section>
     </div>
   );

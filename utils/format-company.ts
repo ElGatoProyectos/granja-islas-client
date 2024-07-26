@@ -20,14 +20,14 @@ export function formatCompany(data: {
 
 export function unformatCompany(data: CompanyType) {
   return {
-    ruc: data.ruc,
     business_type: data.type,
-    country_code: data.country_code,
-    phone: data.phone,
-    business_status: data.status,
-    user: data.user_sunnat,
     business_name: data.corporate_name,
     business_direction_fiscal: data.fiscal_address,
+    business_status: data.status,
+    country_code: data.country_code,
+    ruc: data.ruc,
     key: data.password_sunnat,
+    user: data.user_sunnat,
+    phone: data.phone,
   };
 }

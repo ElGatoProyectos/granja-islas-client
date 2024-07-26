@@ -23,3 +23,5 @@ export type FormattedCompany = {
   fiscal_address: string;
   password_sunnat: string;
 };
+
+export type RoleType = "SUPERADMIN" | "ADMIN" | "USER";

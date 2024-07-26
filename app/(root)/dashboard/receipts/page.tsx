@@ -1,3 +1,7 @@
 export default function Page() {
-  return <section>comprobantes</section>;
+  return (
+    <section>
+      <div className="mx-auto"></div>
+    </section>
+  );
 }

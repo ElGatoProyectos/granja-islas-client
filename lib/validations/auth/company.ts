@@ -14,15 +14,13 @@ export const companySchema = z.object({
   image: z
     .any()
     .refine((files) => {
-      return files?.length > 0;
-    }, `Imagen es requerida.`)
-    .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
     }, `Tamaño maximo de 5mb.`)
     .refine(
       (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
       "Solo .jpg, .jpeg, .png and .webp formatos soportados."
-    ),
+    )
+    .optional(),
   ruc: z.string().min(1, "El RUC es obligatorio."),
   corporate_name: z.string().min(1, "La razón social es obligatoria."),
   type: z.string().min(1, "El tipo es obligatorio."),

@@ -1,7 +1,6 @@
 "use client";
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -69,6 +68,10 @@ interface Props {
   date: string;
 }
 
+// labelFormatter={(value) =>
+//             new Date(value).toLocaleDateString()
+//         }
+
 export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
   return (
     <Card>
@@ -77,7 +80,10 @@ export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
         <CardDescription>{date}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px]">
+        <ChartContainer
+          config={chartConfig}
+          className="min-h-[200px] h-[300px]"
+        >
           <LineChart
             accessibilityLayer
             data={monthlyExpense}
@@ -103,7 +109,10 @@ export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
                 `${v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} kg`
               }
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="line" />}
+            />
             <Line
               dataKey="expense"
               type="monotone"

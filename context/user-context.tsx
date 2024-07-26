@@ -1,74 +1,55 @@
 "use client";
 
-import { Session } from "next-auth";
-import { getSession, useSession } from "next-auth/react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { FormattedCompany } from "@/types";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-type RoleType = "SUPERADMIN" | "ADMIN" | "USER";
-
-type UserContextType = {
-  email: `${string}@${string}`;
-  full_name: string;
-  role: RoleType;
-};
-
-type User = {
-  email: `${string}@${string}`;
-  id: number;
-  full_name: string;
-  role: RoleType;
-  iat: number;
-  exp: number;
-  jti: string;
-};
-
-type SessionType = {
-  user: User;
-  expires: Date;
-};
-
-interface ExtendedSession extends Session {
-  token?: {
-    user: {
-      id: number;
-      role: RoleType;
-      full_name: string;
-      tokenBack: string;
-    };
-  };
+interface CompanyContextType {
+  company: FormattedCompany | null;
+  setCompany: Dispatch<SetStateAction<FormattedCompany | null>>;
 }
 
-export const UserSessionContext = createContext<ExtendedSession | null>(null);
+export const CompanyContext = createContext<CompanyContextType | null>(null);
 
-export const UserSessionProvider = ({
+export const CompanyProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const { data: session, status } = useSession();
+  const [company, setCompany] = useState<FormattedCompany | null>(null);
 
-  console.log("session", session);
-  // const sessionData = {
-  //   token: {
-  //     id: (session as ExtendedSession).token.user.id,
-  //     role: (session as ExtendedSession).token.user.role,
-  //     full_name: (session as ExtendedSession).token.user.full_name,
-  //     tokenBack: (session as ExtendedSession).token.user.tokenBack,
-  //   },
-  //   expires: session?.expires,
-  // };
+  useEffect(() => {
+    const storedCompany = localStorage.getItem("selectedCompany");
+    if (storedCompany) {
+      setCompany(JSON.parse(storedCompany));
+    }
+  }, []);
 
+  useEffect(() => {
+    if (company) {
+      localStorage.setItem("selectedCompany", JSON.stringify(company));
+    } else {
+      localStorage.removeItem("selectedCompany");
+    }
+  }, [company]);
+
+  const value = useMemo(() => ({ company, setCompany }), [company]);
   return (
-    <UserSessionContext.Provider value={session}>
-      {children}
-    </UserSessionContext.Provider>
+    <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>
   );
 };
 
-export function useUserSession() {
-  const context = useContext(UserSessionContext);
+export function useCompanySession() {
+  const context = useContext(CompanyContext);
   if (!context) {
-    throw new Error("useUsersession");
+    throw new Error("useCompany should be used inside of provider");
   }
   return context;
 }

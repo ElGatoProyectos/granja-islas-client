@@ -1,7 +1,7 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { ModeToggle } from "../dark-mode/mode-toggle";
-import { DropdownMenuDemo } from "./user-dropdown";
 import { SheetMenu } from "./left-sidebar/sheet-menu";
+import { UserDropdown } from "./user-dropdown";
 
 export function TopBar() {
   const now = new Date();
@@ -10,6 +10,7 @@ export function TopBar() {
     month: "long",
     day: "numeric",
   });
+
   return (
     <Card className="w-full mb-6 flex-row justify-between border-0 lg:border">
       <CardHeader className="p-0 lg:p-8 lg:py-4 flex-row justify-between space-y-0 items-center">
@@ -21,7 +22,7 @@ export function TopBar() {
         <div className="flex gap-2">
           <ModeToggle />
           <div className="flex gap-x-2">
-            <DropdownMenuDemo />
+            <UserDropdown />
           </div>
         </div>
       </CardHeader>
