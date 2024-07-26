@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { CopyButtom } from "../copy-button";
 import { cn } from "@/lib/utils";
-import { useCompanySession } from "@/context/user-context";
+import { useCompanySession } from "@/context/company-context";
 import { Skeleton } from "../ui/skeleton";
 import { backend_url } from "@/constants/config";
 

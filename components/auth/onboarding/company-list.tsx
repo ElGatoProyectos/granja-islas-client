@@ -5,7 +5,7 @@ import { backend_url } from "@/constants/config";
 import { FormattedCompany } from "@/types";
 import { CompanyForm } from "./company-form";
 import { CompanyDelete } from "./company-delete";
-import { useCompanySession } from "@/context/user-context";
+import { useCompanySession } from "@/context/company-context";
 import { useRouter } from "next/navigation";
 
 export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {

@@ -3,7 +3,7 @@ import { ModeToggle } from "../dark-mode/mode-toggle";
 import { SheetMenu } from "./left-sidebar/sheet-menu";
 import { UserDropdown } from "./user-dropdown";
 
-export function TopBar() {
+export async function TopBar() {
   const now = new Date();
   const formattedDate = now.toLocaleDateString("es-ES", {
     year: "numeric",

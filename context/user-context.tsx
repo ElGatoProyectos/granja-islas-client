@@ -1,55 +1,97 @@
 "use client";
 
-import { FormattedCompany } from "@/types";
+import { backend_url } from "@/constants/config";
+import { UserType } from "@/types";
+import { useSession } from "next-auth/react";
 import {
   createContext,
   Dispatch,
   SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 
-interface CompanyContextType {
-  company: FormattedCompany | null;
-  setCompany: Dispatch<SetStateAction<FormattedCompany | null>>;
+interface UserContextType {
+  userInfo: UserType | null;
+  setUserInfo: Dispatch<SetStateAction<UserType | null>>;
+  loading: boolean;
 }
 
-export const CompanyContext = createContext<CompanyContextType | null>(null);
+interface DataUser {
+  error: boolean;
+  statusCode: number;
+  message: string;
+  payload: UserType;
+}
 
-export const CompanyProvider = ({
+export const userInfoContext = createContext<UserContextType | null>(null);
+
+export const UserInfoProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [company, setCompany] = useState<FormattedCompany | null>(null);
+  const [userInfo, setUserInfo] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(false);
+  const {
+    data: session,
+    status,
+  }: { data: any; status: "loading" | "authenticated" | "unauthenticated" } =
+    useSession();
+
+  const getUser = useCallback(async () => {
+    if (!session?.user?.id || !session?.user?.tokenBack) return;
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${backend_url}/api/users/${session.user.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session.user.tokenBack}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch user");
+      }
+      const data: DataUser = await res.json();
+      if (data.error) {
+        throw new Error("Failed to fetch user backend");
+      }
+
+      setUserInfo(data.payload);
+    } catch (error) {
+      console.error("Error fetching user", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [session?.user?.id, session?.user?.tokenBack]);
 
   useEffect(() => {
-    const storedCompany = localStorage.getItem("selectedCompany");
-    if (storedCompany) {
-      setCompany(JSON.parse(storedCompany));
+    if (status === "authenticated") {
+      getUser();
     }
-  }, []);
+  }, [getUser, status]);
 
-  useEffect(() => {
-    if (company) {
-      localStorage.setItem("selectedCompany", JSON.stringify(company));
-    } else {
-      localStorage.removeItem("selectedCompany");
-    }
-  }, [company]);
-
-  const value = useMemo(() => ({ company, setCompany }), [company]);
+  const value = useMemo(
+    () => ({ userInfo, setUserInfo, loading }),
+    [loading, userInfo]
+  );
   return (
-    <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>
+    <userInfoContext.Provider value={value}>
+      {children}
+    </userInfoContext.Provider>
   );
 };
 
-export function useCompanySession() {
-  const context = useContext(CompanyContext);
+export function useUserInfo() {
+  const context = useContext(userInfoContext);
   if (!context) {
-    throw new Error("useCompany should be used inside of provider");
+    throw new Error("useUserInfo should be used inside of provider");
   }
   return context;
 }

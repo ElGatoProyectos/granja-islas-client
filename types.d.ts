@@ -25,3 +25,14 @@ export type FormattedCompany = {
 };
 
 export type RoleType = "SUPERADMIN" | "ADMIN" | "USER";
+
+export type UserType = {
+  id: number;
+  role: RoleType;
+  name: string;
+  last_name: string;
+  phone: string;
+  country_code: string;
+  email: string;
+  dni: string;
+};
