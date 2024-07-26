@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN, SUPERADMIN, USER } from "./constants/roles";
 import { withAuth } from "next-auth/middleware";
+import { getToken } from "next-auth/jwt";
 
 export default withAuth(
-  function middleware(req: NextRequest) {
+  async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
-    const { token } = req.nextauth;
+    const token = await getToken({ req });
 
     // Redirigir desde la raíz "/" a "/signin" si no está autenticado
     if (pathname === "/") {
