@@ -62,6 +62,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
   });
 
   const { data: session }: { data: any } = useSession();
+
   const route = useRouter();
   async function onSubmit(values: z.infer<typeof companySchema>) {
     setSubmitting(true);

@@ -2,13 +2,13 @@
 
 import { authOptions } from "@/app/api/auth-options";
 import { backend_url } from "@/constants/config";
+import { UserTypeIn } from "@/types";
 import { getServerSession } from "next-auth";
 
-export const getUser = async () => {
+export async function getUsers(): Promise<UserTypeIn[] | undefined> {
   const session = await getServerSession(authOptions);
-
   try {
-    const res = await fetch(`${backend_url}/api/users/${session.user.id}`, {
+    const res = await fetch(`${backend_url}/api/users`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${session.user.tokenBack}`,
@@ -17,17 +17,60 @@ export const getUser = async () => {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch user");
+      throw new Error("Failed to fetch users");
     }
 
     const data = await res.json();
 
-    console.log("data", data);
-
-    // const formatCompaines = formatCompany(data);
-
-    // return formatCompaines;
+    return data.payload;
   } catch (error) {
-    console.error("Error to fetch user", error);
+    console.error("Error to fetch data", error);
   }
-};
+}
+
+export async function createUser({
+  tokenBack,
+  formData,
+}: {
+  tokenBack: string;
+  formData: FormData;
+}) {
+  console.log("tokenBack", tokenBack);
+  const res = await fetch(`${backend_url}/api/users`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${tokenBack}`,
+      "Content-Type": "multipart/form-data",
+    },
+    body: formData,
+  });
+
+  console.log("res", res);
+
+  if (!res.ok) {
+    throw new Error("Failed to post user");
+  }
+}
+
+export async function updateUser({
+  tokenBack,
+  userId,
+  formData,
+}: {
+  tokenBack: string;
+  userId?: number;
+  formData: FormData;
+}) {
+  if (!userId) throw new Error("No id for update user");
+  const res = await fetch(`${backend_url}/api/users/${userId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${tokenBack}`,
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update user");
+  }
+}

@@ -17,7 +17,7 @@ export default async function Page() {
               <Download className="h-4 w-4 mr-2" />
               Excel
             </Button>
-            <AddSupplier />
+            <SupplierForm />
           </div>
         </div>
         <main>

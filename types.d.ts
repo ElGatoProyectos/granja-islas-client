@@ -1,3 +1,5 @@
+import { UserType } from "./lib/validations/user";
+
 export type CompanyFetch = {
   id: number;
   ruc: string;
@@ -26,13 +28,16 @@ export type FormattedCompany = {
 
 export type RoleType = "SUPERADMIN" | "ADMIN" | "USER";
 
-export type UserType = {
+type ModifiedUserType = Omit<
+  UserType,
+  "image" | "password" | "confirmPassword"
+> & { id: number };
+
+type UpdateUserType = Omit<UserType, "email"> & { id: string };
+
+export type UserTypeIn = Omit<
+  UserType,
+  "image" | "password" | "confirmPassword"
+> & {
   id: number;
-  role: RoleType;
-  name: string;
-  last_name: string;
-  phone: string;
-  country_code: string;
-  email: string;
-  dni: string;
 };

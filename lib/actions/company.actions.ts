@@ -3,8 +3,38 @@
 import { authOptions } from "@/app/api/auth-options";
 import { backend_url } from "@/constants/config";
 import { FormattedCompany } from "@/types";
-import { formatCompany } from "@/utils/format-company";
+import { formatCompanies, formatCompany } from "@/utils/format-company";
 import { getServerSession } from "next-auth";
+
+export async function getCompany({
+  idCompany,
+}: {
+  idCompany: string | number;
+}) {
+  const session = await getServerSession(authOptions);
+
+  try {
+    const res = await fetch(`${backend_url}/api/companies/${idCompany}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session.user.tokenBack}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch company");
+    }
+
+    const data = await res.json();
+    const formatedCompany = formatCompany(data);
+
+    return formatedCompany;
+  } catch (error) {
+    console.error("Error to fetch company data", error);
+    return null;
+  }
+}
 
 export const getCompanies = async (): Promise<
   FormattedCompany[] | undefined
@@ -26,7 +56,7 @@ export const getCompanies = async (): Promise<
 
     const data = await res.json();
 
-    const formatCompaines = formatCompany(data);
+    const formatCompaines = formatCompanies(data);
 
     return formatCompaines;
   } catch (error) {
@@ -100,6 +130,6 @@ export async function updateCompany({
   });
 
   if (!res.ok) {
-    throw new Error("Failed to post companies");
+    throw new Error("Failed to update company");
   }
 }

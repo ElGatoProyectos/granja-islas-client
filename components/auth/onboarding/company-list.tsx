@@ -7,12 +7,19 @@ import { CompanyForm } from "./company-form";
 import { CompanyDelete } from "./company-delete";
 import { useCompanySession } from "@/context/company-context";
 import { useRouter } from "next/navigation";
+import { useUserInfo } from "@/context/user-context";
+import { USER } from "@/constants/roles";
 
 export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {
   const { setCompany } = useCompanySession();
   const route = useRouter();
+  const { userInfo } = useUserInfo();
+
   const handleCompany = ({ company }: { company: FormattedCompany }) => {
     setCompany(company);
+    if (userInfo?.role === USER) {
+      route.push("/payments");
+    }
     route.push("/dashboard");
   };
   return (

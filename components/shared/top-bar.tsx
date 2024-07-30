@@ -2,6 +2,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { ModeToggle } from "../dark-mode/mode-toggle";
 import { SheetMenu } from "./left-sidebar/sheet-menu";
 import { UserDropdown } from "./user-dropdown";
+import { getCompanies } from "@/lib/actions/company.actions";
 
 export async function TopBar() {
   const now = new Date();
@@ -10,7 +11,7 @@ export async function TopBar() {
     month: "long",
     day: "numeric",
   });
-
+  const companies = await getCompanies();
   return (
     <Card className="w-full mb-6 flex-row justify-between border-0 lg:border">
       <CardHeader className="p-0 lg:p-8 lg:py-4 flex-row justify-between space-y-0 items-center">
@@ -22,7 +23,7 @@ export async function TopBar() {
         <div className="flex gap-2">
           <ModeToggle />
           <div className="flex gap-x-2">
-            <UserDropdown />
+            <UserDropdown companies={companies} />
           </div>
         </div>
       </CardHeader>

@@ -1,7 +1,8 @@
 "use client";
 
 import { backend_url } from "@/constants/config";
-import { UserType } from "@/types";
+import { UserTypeIn } from "@/types";
+
 import { useSession } from "next-auth/react";
 import {
   createContext,
@@ -15,16 +16,17 @@ import {
 } from "react";
 
 interface UserContextType {
-  userInfo: UserType | null;
-  setUserInfo: Dispatch<SetStateAction<UserType | null>>;
+  userInfo: UserTypeIn | null;
+  setUserInfo: Dispatch<SetStateAction<UserTypeIn | null>>;
   loading: boolean;
+  tokenBack: string;
 }
 
 interface DataUser {
   error: boolean;
   statusCode: number;
   message: string;
-  payload: UserType;
+  payload: UserTypeIn;
 }
 
 export const userInfoContext = createContext<UserContextType | null>(null);
@@ -34,7 +36,7 @@ export const UserInfoProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [userInfo, setUserInfo] = useState<UserType | null>(null);
+  const [userInfo, setUserInfo] = useState<UserTypeIn | null>(null);
   const [loading, setLoading] = useState(false);
   const {
     data: session,
@@ -78,9 +80,15 @@ export const UserInfoProvider = ({
   }, [getUser, status]);
 
   const value = useMemo(
-    () => ({ userInfo, setUserInfo, loading }),
-    [loading, userInfo]
+    () => ({
+      userInfo,
+      setUserInfo,
+      loading,
+      tokenBack: session?.user?.tokenBack,
+    }),
+    [loading, session?.user?.tokenBack, userInfo]
   );
+
   return (
     <userInfoContext.Provider value={value}>
       {children}

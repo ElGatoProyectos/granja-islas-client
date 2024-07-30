@@ -9,6 +9,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -19,14 +21,36 @@ import { backend_url } from "@/constants/config";
 import { UserProfile } from "./user-profile";
 import { Skeleton } from "../ui/skeleton";
 import { useUserInfo } from "@/context/user-context";
+import { FormattedCompany } from "@/types";
+import { useCompanySession } from "@/context/company-context";
+import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { getCompany } from "@/lib/actions/company.actions";
 
-export function UserDropdown() {
+export function UserDropdown({
+  companies,
+}: {
+  companies?: FormattedCompany[];
+}) {
   const { loading, userInfo } = useUserInfo();
+
+  const { company, setCompany } = useCompanySession();
+  const [changeCompany, setChangeCompany] = useState("");
+  const handleCompany = async (value: string) => {
+    setChangeCompany(value);
+    const companyformated = await getCompany({ idCompany: value });
+    setCompany(companyformated);
+  };
+  useEffect(() => {
+    if (company) {
+      setChangeCompany(company?.id.toString());
+    }
+  }, [company]);
 
   return (
     <>
       {loading ? (
-        <div className="h-80px flex gap-2 justify-center items-center">
+        <div className="flex gap-2 justify-center items-center">
           <Skeleton className="h-10 w-10 rounded-full" />
           <div className="space-y-2">
             <Skeleton className="h-3 w-[100px]" />
@@ -56,43 +80,39 @@ export function UserDropdown() {
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-48">
+          <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <UserProfile />
 
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {/* <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <UserPlus className="mr-2 h-4 w-4" />
-              <span>Invite users</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>
-                  <Mail className="mr-2 h-4 w-4" />
-                  <span>Email</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  <span>Message</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  <span>More...</span>
-                </DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub> */}
-              <Link href="/onboarding">
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Configuración</span>
-                </DropdownMenuItem>
-              </Link>
-            </DropdownMenuGroup>
+
+            <DropdownMenuRadioGroup
+              value={changeCompany}
+              onValueChange={handleCompany}
+            >
+              {companies?.map(({ id, corporate_name }) => (
+                <DropdownMenuRadioItem
+                  key={id}
+                  className={cn("pl-2")}
+                  value={id.toString()}
+                >
+                  <img
+                    src={`${backend_url}/api/companies/file/${id}`}
+                    alt={`${corporate_name} image`}
+                    className="mr-2 h-8 w-8 rounded-full"
+                  />
+                  <span className="text-xs">{corporate_name}</span>
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+
+            <Link href="/onboarding">
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Configuración</span>
+              </DropdownMenuItem>
+            </Link>
 
             <DropdownMenuSeparator />
             <DropdownMenuItem
