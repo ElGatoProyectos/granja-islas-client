@@ -25,12 +25,11 @@ export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {
   return (
     <>
       {companies?.map((company) => (
-        <div
-          key={company.ruc}
-          className="relative group"
-          onClick={() => handleCompany({ company })}
-        >
-          <Card className="border-0 cursor-pointer">
+        <div key={company.ruc} className="relative group">
+          <Card
+            className="border-0 cursor-pointer"
+            onClick={() => handleCompany({ company })}
+          >
             <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
               <img
                 src={`${backend_url}/api/companies/file/${company.id}`}

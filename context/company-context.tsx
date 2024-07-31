@@ -49,7 +49,7 @@ export const CompanyProvider = ({
 export function useCompanySession() {
   const context = useContext(CompanyContext);
   if (!context) {
-    throw new Error("useCompany should be used inside of provider");
+    throw new Error("useCompanySession should be used inside of provider");
   }
   return context;
 }

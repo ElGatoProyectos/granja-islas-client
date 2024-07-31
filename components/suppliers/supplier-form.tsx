@@ -61,10 +61,37 @@ export function SupplierForm({ type, supplier }: Props) {
     console.log(values);
   }
 
+  const getRucData = async () => {
+    const name = form.watch("ruc");
+    if (!name) return;
+    try {
+      const res = await fetch(
+        "https://sunat-api.devgustavo.com/ruc/10727759226",
+        {
+          method: "GET",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      const data = await res.json();
+
+      console.log("name", name);
+      form.setValue("corporate_name", "razonsocial");
+      form.setValue("type", "tipo");
+      form.setValue("status", "estado");
+      form.setValue("fiscal_address", "direccion fiscal");
+      console.log("data", data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button>
           <Plus className="h-4 w-4 mr-2" />
           Agregar Proveedor
         </Button>
@@ -98,7 +125,8 @@ export function SupplierForm({ type, supplier }: Props) {
                     type="button"
                     size="icon"
                     variant="ghost"
-                    className="absolute bottom-0 right-0"
+                    className="absolute top-6 right-0"
+                    onClick={getRucData}
                   >
                     <Search className="shrink-0 stroke-primary" />
                   </Button>

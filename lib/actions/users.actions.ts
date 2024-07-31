@@ -35,7 +35,6 @@ export async function createUser({
   tokenBack: string;
   formData: FormData;
 }) {
-  console.log("tokenBack", tokenBack);
   const res = await fetch(`${backend_url}/api/users`, {
     method: "POST",
     headers: {

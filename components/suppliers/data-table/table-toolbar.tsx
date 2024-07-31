@@ -3,10 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { DataTableFacetedFilter } from "./table-faceted-filter";
 import { states } from "./supplier-filters";
 import { DataTableViewOptions } from "./table-view-options";
+import { SupplierForm } from "../supplier-form";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -31,7 +32,7 @@ export function DataTableToolbar<TData>({
               .getColumn("corporate_name")
               ?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="w-[150px] lg:w-[250px]"
         />
         {table.getColumn("status") && (
           <DataTableFacetedFilter
@@ -45,14 +46,21 @@ export function DataTableToolbar<TData>({
           <Button
             variant="ghost"
             onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
+            className="px-2 lg:px-3 "
           >
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex space-x-2">
+        <Button variant="outline">
+          <Download className="h-4 w-4 mr-2" />
+          Excel
+        </Button>
+        <DataTableViewOptions table={table} />
+        <SupplierForm type="create" />
+      </div>
     </div>
   );
 }
