@@ -19,6 +19,7 @@ export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {
     setCompany(company);
     if (userInfo?.role === USER) {
       route.push("/payments");
+      return;
     }
     route.push("/dashboard");
   };

@@ -51,7 +51,7 @@ export function SignIn() {
 
       toast({
         variant: "success",
-        title: "Has iniciado sessión",
+        title: "Has iniciado sesión",
       });
 
       router.push("/onboarding");
