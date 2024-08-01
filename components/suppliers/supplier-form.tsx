@@ -32,8 +32,7 @@ import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { useSuppliers } from "@/hooks/useSuppliers";
+import { useSupplier } from "@/context/supplier-context";
 
 interface Supplier {
   ruc: string;
@@ -68,7 +67,7 @@ export function SupplierForm({ type, supplier }: Props) {
   const { company } = useCompanySession();
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
-  const { getSuppliers } = useSuppliers({ ruc: company?.ruc });
+  const { getSuppliers } = useSupplier();
 
   async function onSubmit(values: z.infer<typeof supplierSchema>) {
     setSubmitting(true);
