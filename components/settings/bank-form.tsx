@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Pencil, SendHorizontal, Trash, X } from "lucide-react";
+import { Loader2, Pencil, SendHorizontal, Trash, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,6 +17,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useBanks } from "@/hooks/useBanks";
+import { useCompanySession } from "@/context/company-context";
+import { createBank, deleteBank, updateBank } from "@/lib/actions/bank.actions";
+import { useUserInfo } from "@/context/user-context";
 
 type ProductLabelType = {
   id: string;
@@ -28,28 +32,29 @@ export function BankForm() {
   const [inputValue, setInputValue] = useState("");
   const [editBankId, setEditBankId] = useState<string | null>(null);
   const [editInputValue, setEditInputValue] = useState("");
+  const { company } = useCompanySession();
+  const { banks, getBanks, loadingBanks } = useBanks({ ruc: company?.ruc });
+  const { tokenBack } = useUserInfo();
 
-  const saveBank = ({ productLabel }: { productLabel: string }) => {
-    const newProductLabel = { id: crypto.randomUUID(), label: productLabel };
-    setBank([newProductLabel, ...bank]);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    saveBank({ productLabel: inputValue });
+    await createBank({ title: inputValue, tokenBack, ruc: company?.ruc });
     setInputValue("");
+    getBanks();
   };
 
-  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editBankId) {
-      setBank((prevLabels) =>
-        prevLabels.map((label) =>
-          label.id === editBankId ? { ...label, label: editInputValue } : label
-        )
-      );
+      await updateBank({
+        idBank: editBankId,
+        title: editInputValue,
+        tokenBack,
+        ruc: company?.ruc,
+      });
       setEditBankId(null);
       setEditInputValue("");
+      getBanks();
     }
   };
 
@@ -58,8 +63,9 @@ export function BankForm() {
     setEditInputValue(label);
   };
 
-  const handleDelete = (id: string) => {
-    setBank((prevLabels) => prevLabels.filter((label) => label.id !== id));
+  const handleDelete = async (id: string) => {
+    await deleteBank({ idBank: id, tokenBack, ruc: company?.ruc });
+    getBanks();
   };
 
   return (
@@ -79,9 +85,13 @@ export function BankForm() {
         <Button type="submit">Agregar</Button>
       </form>
       <ScrollArea className="h-72 w-full mt-2">
-        {bank.length ? (
+        {loadingBanks ? (
+          <div className="flex  justify-center items-center h-[250px]">
+            <Loader2 className="animate-spin stroke-primary h-10 w-10" />
+          </div>
+        ) : banks.length ? (
           <ul className="flex flex-col gap-2 p-2 pr-3">
-            {bank.map(({ id, label }) => (
+            {banks.map(({ id, title }) => (
               <li
                 key={id}
                 className={cn(
@@ -117,12 +127,12 @@ export function BankForm() {
                   </form>
                 ) : (
                   <>
-                    <p className="h-[40px] flex items-center">{label}</p>
+                    <p className="h-[40px] flex items-center">{title}</p>
                     <div className="transition-opacity duration-300 opacity-0 group-hover:opacity-100">
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEditClick(id, label)}
+                        onClick={() => handleEditClick(id, title)}
                       >
                         <Pencil className="stroke-primary h-6 w-6" />
                         <span className="sr-only">Editar banco</span>
@@ -139,7 +149,7 @@ export function BankForm() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>
                               ¿Estas seguro de borrar el banco{" "}
-                              <span className="text-primary">{label}</span>?
+                              <span className="text-primary">{title}</span>?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
                               Esta acción no se puede deshacer. Esto eliminará

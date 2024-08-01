@@ -32,14 +32,16 @@ export const userSchema = z
       .refine(
         (code) => countryIsoCodes.includes(code),
         "Código de país inválido."
-      ),
+      )
+      .optional(),
     phone: z
       .string()
       .min(1, "El número de teléfono es obligatorio.")
       .refine(
         (phone) => /^\d+$/.test(phone),
         "El número de teléfono debe contener solo dígitos."
-      ),
+      )
+      .optional(),
     password: z
       .string()
       .max(30, "La contraseña debe tener como máximo 30 caracteres"),

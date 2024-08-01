@@ -12,6 +12,7 @@ import { backend_url } from "@/constants/config";
 import { useUserInfo } from "@/context/user-context";
 import { User } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
+import { UserForm } from "../users/user-form";
 
 export function UserProfile() {
   const { userInfo } = useUserInfo();
@@ -27,9 +28,12 @@ export function UserProfile() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle className="text-3xl font-bold">
-                Mi perfil
-              </DialogTitle>
+              <div className="flex justify-between">
+                <DialogTitle className="text-3xl font-bold">
+                  Mi perfil
+                </DialogTitle>
+                <UserForm type="edit" userInfo={userInfo} />
+              </div>
               <DialogDescription>
                 Es importante asegurarse de que la información sea precisa y
                 esté actualizada para mantener una comunicación efectiva y el

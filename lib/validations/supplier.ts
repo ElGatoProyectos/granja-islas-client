@@ -8,19 +8,8 @@ export const supplierSchema = z.object({
   type: z.string().min(1, "El tipo es obligatorio."),
   status: z.string().min(1, "El estado es obligatorio."),
   fiscal_address: z.string().min(1, "La dirección fiscal es obligatoria."),
-  country_code: z
-    .string()
-    .min(1, "El código de país es obligatorio.")
-    .refine(
-      (code) => countryIsoCodes.includes(code),
-      "Código de país inválido."
-    ),
-
-  phone: z
-    .string()
-    .min(1, "El número de teléfono es obligatorio.")
-    .refine(
-      (phone) => /^\d+$/.test(phone),
-      "El número de teléfono debe contener solo dígitos."
-    ),
+  country_code: z.string(),
+  phone: z.string(),
 });
+
+export type SupplierType = z.infer<typeof supplierSchema>;

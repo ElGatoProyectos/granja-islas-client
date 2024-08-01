@@ -84,9 +84,7 @@ export function UserDropdown({
             <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <UserProfile />
-
             <DropdownMenuSeparator />
-
             <DropdownMenuRadioGroup
               value={changeCompany}
               onValueChange={handleCompany}

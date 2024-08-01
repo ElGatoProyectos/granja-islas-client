@@ -24,19 +24,16 @@ export function DataTableToolbar<TData>({
         <Input
           placeholder="Buscar razón social"
           value={
-            (table.getColumn("corporate_name")?.getFilterValue() as string) ??
-            ""
+            (table.getColumn("business_name")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table
-              .getColumn("corporate_name")
-              ?.setFilterValue(event.target.value)
+            table.getColumn("business_name")?.setFilterValue(event.target.value)
           }
           className="w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && (
+        {table.getColumn("business_status") && (
           <DataTableFacetedFilter
-            column={table.getColumn("status")}
+            column={table.getColumn("business_status")}
             title="Estado"
             options={states}
           />

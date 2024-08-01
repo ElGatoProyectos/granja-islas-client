@@ -4,10 +4,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./table-column-header";
 import { DataTableRowActions } from "./table-row-actions";
-import { Supplier } from "./supplier-schema-table";
-import { states } from "./supplier-filters";
 
-export const columns: ColumnDef<Supplier>[] = [
+import { states } from "./supplier-filters";
+import { SupplierTypeIn } from "./supplier-schema-table";
+
+export const columns: ColumnDef<SupplierTypeIn>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => (
@@ -55,44 +56,44 @@ export const columns: ColumnDef<Supplier>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "corporate_name",
+    accessorKey: "business_name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Razón social" />
     ),
     cell: ({ row }) => {
-      const corporate_name = row.getValue("corporate_name") as string;
+      const business_name = row.getValue("business_name") as string;
 
       return (
         <div className="flex w-[200px] items-center">
-          <span className="capitalize">{corporate_name.toLowerCase()}</span>
+          <span className="capitalize">{business_name.toLowerCase()}</span>
         </div>
       );
     },
   },
   {
-    accessorKey: "type",
+    accessorKey: "business_type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Tipo" />
     ),
     cell: ({ row }) => {
-      const type = row.getValue("type") as string;
+      const business_type = row.getValue("business_type") as string;
 
       return (
         <div className="flex max-w-[220px] items-center">
-          <span className="capitalize">{type.toLowerCase()}</span>
+          <span className="capitalize">{business_type.toLowerCase()}</span>
         </div>
       );
     },
     enableSorting: false,
   },
   {
-    accessorKey: "status",
+    accessorKey: "business_status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => {
       const state = states.find(
-        (state) => state.value === row.getValue("status")
+        (state) => state.value === row.getValue("business_status")
       );
 
       if (!state) {
@@ -112,14 +113,14 @@ export const columns: ColumnDef<Supplier>[] = [
   },
 
   {
-    accessorKey: "fiscal_address",
+    accessorKey: "business_direction",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Dirección fiscal" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <span>{row.getValue("fiscal_address")}</span>
+          <span>{row.getValue("business_direction")}</span>
         </div>
       );
     },

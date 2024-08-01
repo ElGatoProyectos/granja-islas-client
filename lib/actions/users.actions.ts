@@ -30,21 +30,19 @@ export async function getUsers(): Promise<UserTypeIn[] | undefined> {
 
 export async function createUser({
   tokenBack,
-  formData,
+  userFormInfo,
 }: {
   tokenBack: string;
-  formData: FormData;
+  userFormInfo: any;
 }) {
   const res = await fetch(`${backend_url}/api/users`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${tokenBack}`,
-      "Content-Type": "multipart/form-data",
+      "Content-Type": "application/json",
     },
-    body: formData,
+    body: JSON.stringify(userFormInfo),
   });
-
-  console.log("res", res);
 
   if (!res.ok) {
     throw new Error("Failed to post user");

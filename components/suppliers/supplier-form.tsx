@@ -27,6 +27,13 @@ import {
 import { CodeCountry } from "../auth/onboarding/code-country";
 import { supplierSchema } from "@/lib/validations/supplier";
 import { Plus, Search } from "lucide-react";
+import { createSupplier } from "@/lib/actions/supplier.actions";
+import { useUserInfo } from "@/context/user-context";
+import { useCompanySession } from "@/context/company-context";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { useSuppliers } from "@/hooks/useSuppliers";
 
 interface Supplier {
   ruc: string;
@@ -57,8 +64,41 @@ export function SupplierForm({ type, supplier }: Props) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof supplierSchema>) {
-    console.log(values);
+  const { tokenBack } = useUserInfo();
+  const { company } = useCompanySession();
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+  const { getSuppliers } = useSuppliers({ ruc: company?.ruc });
+
+  async function onSubmit(values: z.infer<typeof supplierSchema>) {
+    setSubmitting(true);
+
+    try {
+      if (type === "create") {
+        await createSupplier({ values, tokenBack, ruc: company?.ruc });
+      }
+      if (type === "edit") {
+      }
+      toast({
+        variant: "success",
+        title: `Se ${
+          type === "create" ? "creó" : "editó"
+        } correctamente el proveedor`,
+      });
+      getSuppliers();
+      setOpen(false);
+      form.reset();
+    } catch (e) {
+      console.error(e);
+      toast({
+        variant: "destructive",
+        title: `Ocurrio un error al ${
+          type === "create" ? "crear" : "editar"
+        } el proveedor, intenta otra vez.`,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const getRucData = async () => {
@@ -88,8 +128,10 @@ export function SupplierForm({ type, supplier }: Props) {
     }
   };
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -101,6 +143,7 @@ export function SupplierForm({ type, supplier }: Props) {
           <DialogTitle className="text-3xl font-bold">
             {type === "create" ? "Registrar" : "Editar"} Proveedor
           </DialogTitle>
+
           <DialogDescription>
             Completa la información requerida para registrar un proveedor,
             incluyendo su RUC, razón social, dirección y otros datos relevantes.

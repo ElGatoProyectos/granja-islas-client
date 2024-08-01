@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export const supplierSchemaTable = z.object({
-  id: z.string(),
+  id: z.number(),
   ruc: z.string(),
-  corporate_name: z.string(),
-  type: z.string(),
-  status: z.string(),
-  fiscal_address: z.string(),
-  country_code: z.string(),
+  business_name: z.string(),
+  business_type: z.string(),
+  business_status: z.string(),
+  business_direction: z.string(),
   phone: z.string(),
+  country_code: z.string(),
 });
 
-export type Supplier = z.infer<typeof supplierSchemaTable>;
+export type SupplierTypeIn = z.infer<typeof supplierSchemaTable>;

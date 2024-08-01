@@ -1,34 +1,36 @@
+"use client";
+
 import { LayerPage } from "@/components/layer-page";
 import { columns } from "@/components/suppliers/data-table/columns";
-import { suppliersData } from "@/components/suppliers/data-table/suppliersData";
+import { SupplierForm } from "@/components/suppliers/supplier-form";
+import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
+import { useCompanySession } from "@/context/company-context";
+import { useSuppliers } from "@/hooks/useSuppliers";
 
-export default async function Page() {
+export default function Page() {
+  const { company } = useCompanySession();
+  const { suppliers, loadingSuppliers, getSuppliers } = useSuppliers({
+    ruc: company?.ruc,
+  });
+  console.log("data page ->", suppliers);
+  console.log("loadingSuppliers ->", loadingSuppliers);
+
   return (
     <LayerPage title="Proveedores">
-      {/* <Tabs defaultValue="table" className="w-full">
-        <div className="flex justify-between">
-          <div className="flex gap-2">
-            <Searcher />
-            <ViewToggle />
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline">
-              <Download className="h-4 w-4 mr-2" />
-              Excel
-            </Button>
-            <SupplierForm />
-          </div>
-        </div>
-        <main>
-          <TabsContent value="table">
-            
-          </TabsContent>
-          <TabsContent value="card">card</TabsContent>
-        </main>
-      </Tabs> */}
+      <Button onClick={getSuppliers}>GetSuuplier</Button>
+      <SupplierForm type="create" />
+      {suppliers.map(({ id, ruc }) => (
+        <div key={id}>{ruc}</div>
+      ))}
       <div className="mx-auto">
-        <DataTable columns={columns} data={suppliersData} />
+        {/* {loadingSuppliers ? (
+          <div>cargadno</div>
+        ) : suppliers.length ? (
+          <DataTable columns={columns} data={suppliers} />
+        ) : (
+          "no hay datos"
+        )} */}
       </div>
     </LayerPage>
   );

@@ -5,12 +5,12 @@ type TranslationDict = {
 const translationDict: TranslationDict = {
   id: "ID",
   ruc: "RUC",
-  corporate_name: "Razón social",
-  type: "Tipo",
-  status: "Estado",
-  fiscal_address: "Dirección fiscal",
-  country_code: "Código de país",
+  business_name: "Razón social",
+  business_type: "Tipo",
+  business_status: "Estado",
+  business_direction: "Dirección fiscal",
   phone: "Teléfono",
+  country_code: "Código de país",
 };
 
 export function translateString(key: string) {

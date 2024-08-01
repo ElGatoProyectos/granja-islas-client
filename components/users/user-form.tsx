@@ -34,12 +34,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EyeIcon, EyeOffIcon, Plus } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Pencil, Plus } from "lucide-react";
 import { useToggle } from "@/hooks/use-toggle";
 import { ADMIN, USER } from "@/constants/roles";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useSession } from "next-auth/react";
 import { useUserInfo } from "@/context/user-context";
 import { useRouter } from "next/navigation";
 import { UserTypeIn } from "@/types";
@@ -71,26 +70,27 @@ export function UserForm({ type, userInfo }: Props) {
   const route = useRouter();
 
   async function onSubmit(values: z.infer<typeof userSchema>) {
-    console.log(values);
     setSubmitting(true);
     const { image, confirmPassword, ...userFormInfo } = values;
     const formData = new FormData();
     if (image) {
-      formData.append("company-profile", image[0]);
+      formData.append("user-profile", image[0]);
     }
 
     type userFormInfoWithoutKey = Omit<UserTypeIn, "id">;
     for (const key in userFormInfo) {
       if (userFormInfo.hasOwnProperty(key)) {
-        formData.append(key, userFormInfo[key as keyof userFormInfoWithoutKey]);
+        const value = userFormInfo[key as keyof userFormInfoWithoutKey];
+        if (value !== undefined) {
+          console.log("value", key, value);
+          formData.append(key, value as string);
+        }
       }
     }
 
-    formData.append("dni", "123456789");
-
     try {
       if (type === "create") {
-        await createUser({ formData, tokenBack });
+        await createUser({ userFormInfo, tokenBack });
       }
 
       if (type === "edit") {
@@ -130,18 +130,18 @@ export function UserForm({ type, userInfo }: Props) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {type === "create" ? (
-          <Button variant="outline">
+          <Button>
             <Plus className="h-4 w-4 mr-2" />
             Crear Usuario
           </Button>
         ) : (
-          <Button variant="outline">
-            <Plus className="h-4 w-4 mr-2" />
-            Actualizar
+          <Button variant="ghost" size="icon">
+            <Pencil className="stroke-primary" />
+            <span className="sr-only">Editar perfil</span>
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] ">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold">
             {type === "create" ? "Nuevo" : "Editar"} Usuario
@@ -191,7 +191,7 @@ export function UserForm({ type, userInfo }: Props) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tipo</FormLabel>
+                  <FormLabel>Correo Electronico</FormLabel>
                   <FormControl>
                     <Input placeholder="correo@gmail.com" {...field} />
                   </FormControl>
@@ -268,33 +268,34 @@ export function UserForm({ type, userInfo }: Props) {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rol</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecciona un rol" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={USER}>Usuario</SelectItem>
-                        <SelectItem value={ADMIN}>Administrador</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {userInfo?.role === "SUPERADMIN" && type === "create" && (
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rol</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un rol" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={USER}>Usuario</SelectItem>
+                          <SelectItem value={ADMIN}>Administrador</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter className="!mt-6 !justify-between">
               <DialogClose asChild>
