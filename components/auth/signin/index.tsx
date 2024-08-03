@@ -56,7 +56,11 @@ export function SignIn() {
 
       router.push("/onboarding");
     } catch (e) {
-      console.log("error al iniciar session", e);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Ocurrio un error.",
+        description: "Verifica tus credenciales.",
+      });
     }
   }
 

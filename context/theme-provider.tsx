@@ -7,7 +7,6 @@ import { type ThemeProviderProps } from "next-themes/dist/types";
 import { AuthProvider } from "./auth-provider";
 import { CompanyProvider } from "./company-context";
 import { UserInfoProvider } from "./user-context";
-import { SupplierProvider } from "./supplier-context";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
@@ -15,7 +14,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       <NextThemesProvider {...props}>
         <UserInfoProvider>
           <CompanyProvider>
-            <SupplierProvider>{children}</SupplierProvider>
+            {children}
           </CompanyProvider>
         </UserInfoProvider>
       </NextThemesProvider>

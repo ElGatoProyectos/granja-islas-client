@@ -25,39 +25,33 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CodeCountry } from "../auth/onboarding/code-country";
-import { supplierSchema } from "@/lib/validations/supplier";
+import {
+  CreateSupplierSchema,
+  createSupplierSchema,
+} from "@/lib/validations/supplier";
 import { Plus, Search } from "lucide-react";
 import { createSupplier } from "@/lib/actions/supplier.actions";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useSupplier } from "@/context/supplier-context";
-
-interface Supplier {
-  ruc: string;
-  corporate_name: string;
-  type: string;
-  status: string;
-  fiscal_address: string;
-  country_code: string;
-  phone: string;
-}
+import { backend_url } from "@/constants/config";
 
 interface Props {
   type: "create" | "edit";
-  supplier?: Supplier;
+  supplier?: CreateSupplierSchema;
+  getSuppliers: () => Promise<void>;
 }
 
-export function SupplierForm({ type, supplier }: Props) {
-  const form = useForm<z.infer<typeof supplierSchema>>({
-    resolver: zodResolver(supplierSchema),
+export function SupplierForm({ type, supplier, getSuppliers }: Props) {
+  const form = useForm<z.infer<typeof createSupplierSchema>>({
+    resolver: zodResolver(createSupplierSchema),
     defaultValues: {
       ruc: supplier?.ruc ?? "",
-      corporate_name: supplier?.corporate_name ?? "",
-      type: supplier?.type ?? "",
-      status: supplier?.status ?? "",
-      fiscal_address: supplier?.fiscal_address ?? "",
+      business_name: supplier?.business_name ?? "",
+      business_type: supplier?.business_type ?? "",
+      business_status: supplier?.business_status ?? "",
+      business_direction: supplier?.business_direction ?? "",
       country_code: supplier?.country_code ?? "",
       phone: supplier?.phone ?? "",
     },
@@ -67,14 +61,17 @@ export function SupplierForm({ type, supplier }: Props) {
   const { company } = useCompanySession();
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
-  const { getSuppliers } = useSupplier();
 
-  async function onSubmit(values: z.infer<typeof supplierSchema>) {
+  async function onSubmit(values: z.infer<typeof createSupplierSchema>) {
     setSubmitting(true);
 
     try {
       if (type === "create") {
-        await createSupplier({ values, tokenBack, ruc: company?.ruc });
+        await createSupplier({
+          values,
+          tokenBack,
+          ruc: company?.ruc,
+        });
       }
       if (type === "edit") {
       }
@@ -87,8 +84,14 @@ export function SupplierForm({ type, supplier }: Props) {
       getSuppliers();
       setOpen(false);
       form.reset();
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      if (e.message) {
+        toast({
+          variant: "destructive",
+          title: e.message,
+        });
+        return;
+      }
       toast({
         variant: "destructive",
         title: `Ocurrio un error al ${
@@ -101,28 +104,54 @@ export function SupplierForm({ type, supplier }: Props) {
   }
 
   const getRucData = async () => {
-    const name = form.watch("ruc");
-    if (!name) return;
+    const ruc = form.watch("ruc");
+    if (!ruc) return;
     try {
-      const res = await fetch(
-        "https://sunat-api.devgustavo.com/ruc/10727759226",
-        {
-          method: "GET",
-        }
-      );
+      const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
+        method: "GET",
+      });
 
       if (!res.ok) {
+        toast({
+          variant: "destructive",
+          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
+        });
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
 
-      console.log("name", name);
-      form.setValue("corporate_name", "razonsocial");
-      form.setValue("type", "tipo");
-      form.setValue("status", "estado");
-      form.setValue("fiscal_address", "direccion fiscal");
-      console.log("data", data);
+      if (data.error) {
+        toast({
+          variant: "destructive",
+          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
+        });
+        throw new Error(`Data error backend ${data.statusCode}`);
+      }
+
+      const {
+        business_name,
+        business_type,
+        business_status,
+        business_direction_fiscal,
+        country_code,
+        phone_number,
+      } = data.payload;
+
+      form.setValue("business_name", business_name);
+      form.setValue("business_type", business_type);
+      form.setValue("business_status", business_status);
+      form.setValue("business_direction", business_direction_fiscal);
+      form.setValue("country_code", country_code);
+      form.setValue("phone", phone_number);
+      toast({
+        variant: "success",
+        title: `Se encontraron datos con ese ruc`,
+      });
     } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
+      });
       console.error("Error fetching data:", error);
     }
   };
@@ -178,7 +207,7 @@ export function SupplierForm({ type, supplier }: Props) {
             />
             <FormField
               control={form.control}
-              name="corporate_name"
+              name="business_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Razón social</FormLabel>
@@ -191,7 +220,7 @@ export function SupplierForm({ type, supplier }: Props) {
             />
             <FormField
               control={form.control}
-              name="type"
+              name="business_type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
@@ -204,7 +233,7 @@ export function SupplierForm({ type, supplier }: Props) {
             />
             <FormField
               control={form.control}
-              name="status"
+              name="business_status"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
@@ -218,7 +247,7 @@ export function SupplierForm({ type, supplier }: Props) {
 
             <FormField
               control={form.control}
-              name="fiscal_address"
+              name="business_direction"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dirección fiscal</FormLabel>
@@ -264,7 +293,7 @@ export function SupplierForm({ type, supplier }: Props) {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit">
+              <Button type="submit" disabled={submitting}>
                 {type === "create" ? "Registrar" : "Actualizar"}
               </Button>
             </DialogFooter>

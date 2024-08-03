@@ -2,13 +2,13 @@ import { CircleCheck, CircleMinus } from "lucide-react";
 
 export const states = [
   {
-    value: "habido",
-    label: "Habido",
+    value: "ACTIVO",
+    label: "Activo",
     icon: CircleCheck,
   },
   {
-    value: "no habido",
-    label: "No Habido",
+    value: "INACTIVO",
+    label: "Inactivo",
     icon: CircleMinus,
   },
 ];

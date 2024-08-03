@@ -91,15 +91,11 @@ export async function updateLabel({
       body: JSON.stringify({ title }),
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to update label");
-    }
-
     const data = await res.json();
     if (data.error) {
       throw new Error("Failed backend to update label");
     }
   } catch (error) {
-    console.error("Error to update data label", error);
+    throw new Error("Failed to update label");
   }
 }

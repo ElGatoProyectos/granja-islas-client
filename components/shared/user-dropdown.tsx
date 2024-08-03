@@ -21,16 +21,16 @@ import { backend_url } from "@/constants/config";
 import { UserProfile } from "./user-profile";
 import { Skeleton } from "../ui/skeleton";
 import { useUserInfo } from "@/context/user-context";
-import { FormattedCompany } from "@/types";
 import { useCompanySession } from "@/context/company-context";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { getCompany } from "@/lib/actions/company.actions";
+import { UpdateCompanySchema } from "@/lib/validations/auth/company";
 
 export function UserDropdown({
   companies,
 }: {
-  companies?: FormattedCompany[];
+  companies?: UpdateCompanySchema[];
 }) {
   const { loading, userInfo } = useUserInfo();
 
@@ -89,18 +89,19 @@ export function UserDropdown({
               value={changeCompany}
               onValueChange={handleCompany}
             >
-              {companies?.map(({ id, corporate_name }) => (
+              {companies?.map(({ id, business_name }) => (
                 <DropdownMenuRadioItem
                   key={id}
                   className={cn("pl-2")}
                   value={id.toString()}
                 >
-                  <img
-                    src={`${backend_url}/api/companies/file/${id}`}
-                    alt={`${corporate_name} image`}
-                    className="mr-2 h-8 w-8 rounded-full"
-                  />
-                  <span className="text-xs">{corporate_name}</span>
+                  <Avatar className={"mr-2 h-8 w-8"}>
+                    <AvatarImage
+                      src={`${backend_url}/api/companies/file/${id}`}
+                    />
+                    <AvatarFallback>E</AvatarFallback>
+                  </Avatar>
+                  <span className="text-xs">{business_name}</span>
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>

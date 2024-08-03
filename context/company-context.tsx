@@ -1,6 +1,6 @@
 "use client";
 
-import { FormattedCompany } from "@/types";
+import { UpdateCompanySchema } from "@/lib/validations/auth/company";
 import {
   createContext,
   Dispatch,
@@ -12,8 +12,8 @@ import {
 } from "react";
 
 interface CompanyContextType {
-  company: FormattedCompany | null;
-  setCompany: Dispatch<SetStateAction<FormattedCompany | null>>;
+  company: UpdateCompanySchema | null;
+  setCompany: Dispatch<SetStateAction<UpdateCompanySchema | null>>;
 }
 
 export const CompanyContext = createContext<CompanyContextType | null>(null);
@@ -23,7 +23,7 @@ export const CompanyProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [company, setCompany] = useState<FormattedCompany | null>(null);
+  const [company, setCompany] = useState<UpdateCompanySchema | null>(null);
 
   useEffect(() => {
     const storedCompany = localStorage.getItem("selectedCompany");

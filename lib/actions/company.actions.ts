@@ -2,9 +2,9 @@
 
 import { authOptions } from "@/app/api/auth-options";
 import { backend_url } from "@/constants/config";
-import { FormattedCompany } from "@/types";
-import { formatCompanies, formatCompany } from "@/utils/format-company";
 import { getServerSession } from "next-auth";
+import { UpdateCompanySchema } from "../validations/auth/company";
+import { revalidatePath } from "next/cache";
 
 export async function getCompany({
   idCompany,
@@ -27,9 +27,8 @@ export async function getCompany({
     }
 
     const data = await res.json();
-    const formatedCompany = formatCompany(data);
 
-    return formatedCompany;
+    return data.payload;
   } catch (error) {
     console.error("Error to fetch company data", error);
     return null;
@@ -37,7 +36,7 @@ export async function getCompany({
 }
 
 export const getCompanies = async (): Promise<
-  FormattedCompany[] | undefined
+  UpdateCompanySchema[] | undefined
 > => {
   const session = await getServerSession(authOptions);
 
@@ -56,9 +55,7 @@ export const getCompanies = async (): Promise<
 
     const data = await res.json();
 
-    const formatCompaines = formatCompanies(data);
-
-    return formatCompaines;
+    return data.payload;
   } catch (error) {
     console.error("Error to fetch data", error);
   }
@@ -83,10 +80,10 @@ export async function deleteCompany({
       password,
     }),
   });
-
   if (!res.ok) {
     throw new Error("Failed to delete company");
   }
+  revalidatePath("/onboarding");
 
   return true;
 }
@@ -105,7 +102,7 @@ export async function createCompany({
     },
     body: formData,
   });
-
+  revalidatePath("/onboarding");
   if (!res.ok) {
     throw new Error("Failed to post companies");
   }
@@ -128,6 +125,9 @@ export async function updateCompany({
     },
     body: formData,
   });
+  console.log("res", res);
+
+  revalidatePath("/onboarding");
 
   if (!res.ok) {
     throw new Error("Failed to update company");

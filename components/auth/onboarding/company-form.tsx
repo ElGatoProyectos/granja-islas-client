@@ -13,7 +13,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { companySchema, CompanyType } from "@/lib/validations/auth/company";
+import {
+  CreateCompanySchema,
+  createCompanySchema,
+} from "@/lib/validations/auth/company";
 import {
   Dialog,
   DialogClose,
@@ -25,20 +28,20 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Image as AddImage, Pencil, Plus, Upload } from "lucide-react";
+import { Image as AddImage, Pencil, Plus, Search, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
 import { useSession } from "next-auth/react";
-import { unformatCompany } from "@/utils/format-company";
 import { backend_url } from "@/constants/config";
 import { CompanyFetch } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
+import { revalidatePath } from "next/cache";
 
 interface Props {
   type: "create" | "edit";
-  company?: CompanyType;
+  company?: CreateCompanySchema;
   companyId?: number;
 }
 
@@ -46,31 +49,34 @@ export function CompanyForm({ type, company, companyId }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof companySchema>>({
-    resolver: zodResolver(companySchema),
+  const form = useForm<z.infer<typeof createCompanySchema>>({
+    resolver: zodResolver(createCompanySchema),
     defaultValues: {
       ruc: company?.ruc ?? "",
-      corporate_name: company?.corporate_name ?? "",
-      type: company?.type ?? "",
-      status: company?.status ?? "",
-      fiscal_address: company?.fiscal_address ?? "",
+      business_name: company?.business_name ?? "",
+      business_type: company?.business_type ?? "",
+      business_status: company?.business_status ?? "",
+      business_direction_fiscal: company?.business_direction_fiscal ?? "",
       country_code: company?.country_code ?? "",
       phone: company?.phone ?? "",
-      user_sunnat: company?.user_sunnat ?? "",
-      password_sunnat: company?.password_sunnat ?? "",
+      user: company?.user ?? "",
+      key: company?.key ?? "",
+      client_id: company?.client_id ?? "",
+      client_secret: company?.client_secret ?? "",
     },
   });
 
   const { data: session }: { data: any } = useSession();
 
   const route = useRouter();
-  async function onSubmit(values: z.infer<typeof companySchema>) {
+  async function onSubmit(values: z.infer<typeof createCompanySchema>) {
     setSubmitting(true);
-    const { image, ...rest } = values;
-    const company = unformatCompany(rest);
+    const { image, ...company } = values;
+
     const formData = new FormData();
 
     if (image) {
+      console.log("image", image);
       formData.append("company-profile", image[0]);
     }
     type CompanyWithoutKey = Omit<CompanyFetch, "id">;
@@ -79,6 +85,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
         formData.append(key, company[key as keyof CompanyWithoutKey]);
       }
     }
+
     try {
       if (type === "create") {
         await createCompany({ formData, tokenBack: session.user.tokenBack });
@@ -98,8 +105,9 @@ export function CompanyForm({ type, company, companyId }: Props) {
           type === "create" ? "creó" : "editó"
         } correctamente la empresa`,
       });
-      route.refresh();
+
       setOpen(false);
+      form.reset();
     } catch (e) {
       console.error(e);
       toast({
@@ -114,6 +122,59 @@ export function CompanyForm({ type, company, companyId }: Props) {
   }
 
   const urlUpdate = `${backend_url}/api/companies/file/${companyId}`;
+
+  const getRucData = async () => {
+    const ruc = form.watch("ruc");
+    if (!ruc) return;
+    try {
+      const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
+        method: "GET",
+      });
+
+      if (!res.ok) {
+        toast({
+          variant: "destructive",
+          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
+        });
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      const data = await res.json();
+
+      if (data.error) {
+        toast({
+          variant: "destructive",
+          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
+        });
+        throw new Error(`Data error backend ${data.statusCode}`);
+      }
+
+      const {
+        business_name,
+        business_type,
+        business_status,
+        business_direction_fiscal,
+        country_code,
+        phone_number,
+      } = data.payload;
+
+      form.setValue("business_name", business_name);
+      form.setValue("business_type", business_type);
+      form.setValue("business_status", business_status);
+      form.setValue("business_direction_fiscal", business_direction_fiscal);
+      form.setValue("country_code", country_code);
+      form.setValue("phone", phone_number);
+      toast({
+        variant: "success",
+        title: `Se encontraron datos con ese ruc`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
+      });
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const [open, setOpen] = useState(false);
 
@@ -183,7 +244,20 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Button type="button" variant="ghost">
+                      <div
+                        className={
+                          "grid w-full max-w-sm items-center gap-1.5 p-3 rounded-lg"
+                        }
+                      >
+                        <Label
+                          htmlFor="fileInput"
+                          className={"inline-flex items-center cursor-pointer"}
+                        >
+                          <Upload className="h-4 w-4 mr-2 stroke-foreground" />
+                          <span className="whitespace-nowrap">
+                            Elija la imagen
+                          </span>
+                        </Label>
                         <Input
                           type="file"
                           className="hidden"
@@ -197,16 +271,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                           }}
                           ref={field.ref}
                         />
-                        <Label
-                          htmlFor="fileInput"
-                          className="inline-flex items-center cursor-pointer"
-                        >
-                          <Upload className="h-4 w-4 mr-2 stroke-foreground" />
-                          <span className="whitespace-nowrap">
-                            Elija la imagen
-                          </span>
-                        </Label>
-                      </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -218,18 +283,28 @@ export function CompanyForm({ type, company, companyId }: Props) {
               control={form.control}
               name="ruc"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="relative">
                   <FormLabel>RUC</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Numero de RUC" />
                   </FormControl>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-6 right-0"
+                    onClick={getRucData}
+                  >
+                    <Search className="shrink-0 stroke-primary" />
+                    <span className="sr-only">Buscar por ruc</span>
+                  </Button>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="corporate_name"
+              name="business_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Razón social</FormLabel>
@@ -242,7 +317,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
             />
             <FormField
               control={form.control}
-              name="type"
+              name="business_type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
@@ -255,7 +330,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
             />
             <FormField
               control={form.control}
-              name="status"
+              name="business_status"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
@@ -269,7 +344,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
             <FormField
               control={form.control}
-              name="fiscal_address"
+              name="business_direction_fiscal"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dirección fiscal</FormLabel>
@@ -300,7 +375,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
             <FormField
               control={form.control}
-              name="user_sunnat"
+              name="user"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
@@ -317,7 +392,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
             <FormField
               control={form.control}
-              name="password_sunnat"
+              name="key"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
@@ -332,7 +407,40 @@ export function CompanyForm({ type, company, companyId }: Props) {
               )}
             />
 
-            <DialogFooter className="!mt-3 !justify-between">
+            <FormField
+              control={form.control}
+              name="client_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Id{" "}
+                    <span className="text-gray-400 text-xs">(API SUNAT)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="client_secret"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Secret{" "}
+                    <span className="text-gray-400 text-xs">(API SUNAT)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="!mt-3 !justify-between gap-2">
               <DialogClose asChild>
                 <Button
                   type="button"

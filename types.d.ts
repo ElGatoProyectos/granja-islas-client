@@ -1,5 +1,7 @@
 import { UserType } from "./lib/validations/user";
 
+export type PerPage = 10 | 20;
+
 export type CompanyFetch = {
   id: number;
   ruc: string;

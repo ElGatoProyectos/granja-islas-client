@@ -82,7 +82,6 @@ export function UserForm({ type, userInfo }: Props) {
       if (userFormInfo.hasOwnProperty(key)) {
         const value = userFormInfo[key as keyof userFormInfoWithoutKey];
         if (value !== undefined) {
-          console.log("value", key, value);
           formData.append(key, value as string);
         }
       }

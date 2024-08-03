@@ -24,18 +24,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { DataTablePagination } from "../suppliers/data-table/table-pagination";
 import { DataTableToolbar } from "../suppliers/data-table/table-toolbar";
 
-interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pagesCount: number;
+  rowsPerPage: number;
+  currentPage: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  setRowsPerPage: Dispatch<SetStateAction<number>>;
+  getData: () => Promise<void>;
+  totalElements: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pagesCount,
+  rowsPerPage,
+  currentPage,
+  setPage,
+  setRowsPerPage,
+  getData,
+  totalElements
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -45,6 +59,10 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    pageCount: pagesCount,
+    rowCount: rowsPerPage,
+    manualPagination: true,
+    manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -58,6 +76,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: { pageIndex: currentPage - 1, pageSize: rowsPerPage },
     },
     enableRowSelection: true,
     getFacetedRowModel: getFacetedRowModel(),
@@ -66,7 +85,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} getData={getData} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -117,7 +136,13 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination
+        table={table}
+        setPage={setPage}
+        setRowsPerPage={setRowsPerPage}
+        currentPage={currentPage}
+        totalElements={totalElements}
+      />
     </div>
   );
 }

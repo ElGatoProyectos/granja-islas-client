@@ -1,7 +1,7 @@
 "use server";
 
 import { backend_url } from "@/constants/config";
-import { SupplierType } from "../validations/supplier";
+import { CreateSupplierSchema } from "../validations/supplier";
 
 export async function createSupplier({
   tokenBack,
@@ -9,19 +9,10 @@ export async function createSupplier({
   ruc,
 }: {
   tokenBack: string;
-  values: SupplierType;
+  values: CreateSupplierSchema;
   ruc?: string;
 }) {
   if (!ruc) return;
-  const formatSupplier = {
-    ruc: values.ruc,
-    business_name: values.corporate_name,
-    business_type: values.type,
-    business_status: values.status,
-    business_direction: values.fiscal_address,
-    phone: values.phone,
-    country_code: values.country_code,
-  };
 
   try {
     const res = await fetch(`${backend_url}/api/suppliers`, {
@@ -31,19 +22,19 @@ export async function createSupplier({
         ruc,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formatSupplier),
+      body: JSON.stringify(values),
     });
-
-    if (!res.ok) {
-      throw new Error("Failed to post supplier");
-    }
 
     const data = await res.json();
 
     if (data.error) {
-      throw new Error("Failed backend to post supplier");
+      throw {
+        message: "Failed backend to post supplier",
+        details: data.message,
+        code: 500,
+      };
     }
-  } catch (e) {
-    console.error("Error to create data supplier", e);
+  } catch (e: any) {
+    throw new Error(e.details);
   }
 }

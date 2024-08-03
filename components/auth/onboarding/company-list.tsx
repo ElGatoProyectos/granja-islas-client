@@ -2,20 +2,25 @@
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { backend_url } from "@/constants/config";
-import { FormattedCompany } from "@/types";
 import { CompanyForm } from "./company-form";
 import { CompanyDelete } from "./company-delete";
 import { useCompanySession } from "@/context/company-context";
 import { useRouter } from "next/navigation";
 import { useUserInfo } from "@/context/user-context";
 import { USER } from "@/constants/roles";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UpdateCompanySchema } from "@/lib/validations/auth/company";
 
-export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {
+export function CompanyList({
+  companies,
+}: {
+  companies?: UpdateCompanySchema[];
+}) {
   const { setCompany } = useCompanySession();
   const route = useRouter();
   const { userInfo } = useUserInfo();
 
-  const handleCompany = ({ company }: { company: FormattedCompany }) => {
+  const handleCompany = ({ company }: { company: UpdateCompanySchema }) => {
     setCompany(company);
     if (userInfo?.role === USER) {
       route.push("/payments");
@@ -32,14 +37,15 @@ export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {
             onClick={() => handleCompany({ company })}
           >
             <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
-              <img
-                src={`${backend_url}/api/companies/file/${company.id}`}
-                alt="photo-bussines"
-                className="rounded-full h-10 w-10 mr-3"
-              />
+              <Avatar className={"h-10 w-10 mr-3"}>
+                <AvatarImage
+                  src={`${backend_url}/api/companies/file/${company.id}`}
+                />
+                <AvatarFallback>E</AvatarFallback>
+              </Avatar>
               <div className="flex flex-col justify-center">
                 <h3 className="font-semibold text-sm">
-                  {company.corporate_name}
+                  {company.business_name}
                 </h3>
                 <p className="text-gray-500 text-sm">{company.ruc}</p>
               </div>
@@ -50,7 +56,7 @@ export function CompanyList({ companies }: { companies?: FormattedCompany[] }) {
 
             <CompanyDelete
               ruc={company.ruc}
-              corporate_name={company.corporate_name}
+              corporate_name={company.business_name}
               companyId={company.id}
             />
           </div>

@@ -11,10 +11,12 @@ import { SupplierForm } from "../supplier-form";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  getData: () => Promise<void>;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  getData,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -56,7 +58,7 @@ export function DataTableToolbar<TData>({
           Excel
         </Button>
         <DataTableViewOptions table={table} />
-        <SupplierForm type="create" />
+        <SupplierForm type="create" getSuppliers={getData} />
       </div>
     </div>
   );

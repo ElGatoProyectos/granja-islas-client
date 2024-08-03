@@ -1,3 +1,4 @@
+import { backend_url } from "@/constants/config";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signOut } from "next-auth/react";
 
@@ -24,16 +25,13 @@ export const authOptions = {
 
           const { email, password } = credentials;
 
-          const response = await fetch(
-            "http://161.132.38.235:4000/api/auth/login",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ credential: email, password }),
-            }
-          );
+          const response = await fetch(`${backend_url}/api/auth/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ credential: email, password }),
+          });
 
           const data = await response.json();
 

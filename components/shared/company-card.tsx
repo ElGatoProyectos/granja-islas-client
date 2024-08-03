@@ -15,9 +15,11 @@ import { cn } from "@/lib/utils";
 import { useCompanySession } from "@/context/company-context";
 import { Skeleton } from "../ui/skeleton";
 import { backend_url } from "@/constants/config";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
   const { company } = useCompanySession();
+
   return (
     <>
       {company ? (
@@ -38,20 +40,18 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                 <Button
                   variant="link"
                   className={cn(
-                    "text-wrap p-0 hover:no-underline text-left flex-col h-fit gap-y-2",
+                    "text-wrap p-0 hover:no-underline text-left flex-col h-fit gap-y-2 justify-center items-center",
                     isOpen === false ? "justify-end items-end" : ""
                   )}
                 >
-                  <img
-                    src={`${backend_url}/api/companies/file/${company.id}`}
-                    alt="photo-bussines"
-                    className={cn(
-                      "rounded-full h-14 w-14 aspect-square",
-                      isOpen === false ? "h-[53px]" : ""
-                    )}
-                  />
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage
+                      src={`${backend_url}/api/companies/file/${company.id}`}
+                    />
+                    <AvatarFallback>E</AvatarFallback>
+                  </Avatar>
                   <span className={cn(isOpen === false ? "hidden" : "block")}>
-                    {company.corporate_name}
+                    {company.business_name}
                   </span>
                 </Button>
               </DialogTrigger>
@@ -68,13 +68,14 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                 </DialogHeader>
 
                 <div className="w-full flex flex-col space-y-4">
-                  <img
-                    src={`${backend_url}/api/companies/file/${company.id}`}
-                    alt="photo-bussines"
-                    className="rounded-full "
-                    height={100}
-                    width={100}
-                  />
+                  <Avatar>
+                    <AvatarImage
+                      src={`${backend_url}/api/companies/file/${company.id}`}
+                      className="h-14 w-14"
+                    />
+                    <AvatarFallback>E</AvatarFallback>
+                  </Avatar>
+
                   <div className="flex flex-col text-sm">
                     <span className="font-semibold">RUC</span>
                     <p className="text-muted-foreground">{company.ruc}</p>
@@ -82,21 +83,25 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                   <div className="flex flex-col text-sm">
                     <span className="font-semibold">Razón social</span>
                     <p className="text-muted-foreground">
-                      {company.corporate_name}
+                      {company.business_name}
                     </p>
                   </div>
                   <div className="flex flex-col text-sm">
                     <span className="font-semibold">Tipo</span>
-                    <p className="text-muted-foreground">{company.type}</p>
+                    <p className="text-muted-foreground">
+                      {company.business_type}
+                    </p>
                   </div>
                   <div className="flex flex-col text-sm">
                     <span className="font-semibold">Estado</span>
-                    <p className="text-muted-foreground">{company.status}</p>
+                    <p className="text-muted-foreground">
+                      {company.business_status}
+                    </p>
                   </div>
                   <div className="flex flex-col text-sm">
                     <span className="font-semibold">Dirección Fiscal</span>
                     <p className="text-muted-foreground">
-                      {company.fiscal_address}
+                      {company.business_direction_fiscal}
                     </p>
                   </div>
                   <div className="flex flex-col text-sm">
