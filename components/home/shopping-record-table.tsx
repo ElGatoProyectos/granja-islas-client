@@ -60,18 +60,18 @@ const invoices = [
 ];
 
 const months = [
-  "Ene",
-  "Feb",
-  "Mar",
-  "Abr",
-  "May",
-  "Jun",
-  "Jul",
-  "Ago",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dic",
+  { label: "Enero", value: "1" },
+  { label: "Febrero", value: "2" },
+  { label: "Marzo", value: "3" },
+  { label: "Abril", value: "4" },
+  { label: "Mayo", value: "5" },
+  { label: "Junio", value: "6" },
+  { label: "Julio", value: "7" },
+  { label: "Agosto", value: "8" },
+  { label: "Septiembre", value: "9" },
+  { label: "Octubre", value: "10" },
+  { label: "Noviembre", value: "11" },
+  { label: "Diciembre", value: "12" },
 ];
 
 export function ShoppingRecordTable() {
@@ -100,9 +100,9 @@ export function ShoppingRecordTable() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Mes</SelectLabel>
-                {months.map((month) => (
-                  <SelectItem key={month} value={month}>
-                    {month}
+                {months.map(({ label, value }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectGroup>

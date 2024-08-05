@@ -28,6 +28,19 @@ export const createSupplierSchema = z.object({
 
 export type CreateSupplierSchema = z.infer<typeof createSupplierSchema>;
 
+export const supplierSchemaIN = z.object({
+  id: z.number(),
+  ruc: z.string(),
+  business_name: z.string(),
+  business_type: z.string(),
+  business_status: z.string(),
+  business_direction: z.string(),
+  country_code: z.string().nullable(),
+  phone: z.string().nullable(),
+});
+
+export type SupplierSchemaIN = z.infer<typeof supplierSchemaIN>;
+
 export const updateSupplierSchema = z.object({
   ruc: z.string().optional(),
   corporate_name: z.string().optional(),

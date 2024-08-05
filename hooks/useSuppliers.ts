@@ -1,11 +1,11 @@
-import { SupplierTypeIn } from "@/components/suppliers/data-table/supplier-schema-table";
 import { backend_url } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
+import { SupplierSchemaIN } from "@/lib/validations/supplier";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export function useSuppliers() {
-  const [suppliers, setSuppliers] = useState<SupplierTypeIn[]>([]);
+  const [suppliers, setSuppliers] = useState<SupplierSchemaIN[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);

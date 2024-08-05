@@ -51,15 +51,21 @@ export function CompanyList({
               </div>
             </CardHeader>
           </Card>
-          <div className="absolute top-0 -right-10 flex flex-col justify-center group-hover:opacity-100 opacity-0 transition-opacity">
-            <CompanyForm type="edit" company={company} companyId={company.id} />
+          {userInfo?.role === USER ? null : (
+            <div className="absolute top-0 -right-10 flex flex-col justify-center group-hover:opacity-100 opacity-0 transition-opacity">
+              <CompanyForm
+                type="edit"
+                company={company}
+                companyId={company.id}
+              />
 
-            <CompanyDelete
-              ruc={company.ruc}
-              corporate_name={company.business_name}
-              companyId={company.id}
-            />
-          </div>
+              <CompanyDelete
+                ruc={company.ruc}
+                corporate_name={company.business_name}
+                companyId={company.id}
+              />
+            </div>
+          )}
         </div>
       ))}
     </>

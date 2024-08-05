@@ -1,7 +1,7 @@
 "use client";
 
 import { backend_url } from "@/constants/config";
-import { UserTypeIn } from "@/types";
+import { UserSchemaIN } from "@/lib/validations/user";
 
 import { useSession } from "next-auth/react";
 import {
@@ -16,8 +16,8 @@ import {
 } from "react";
 
 interface UserContextType {
-  userInfo: UserTypeIn | null;
-  setUserInfo: Dispatch<SetStateAction<UserTypeIn | null>>;
+  userInfo: UserSchemaIN | null;
+  setUserInfo: Dispatch<SetStateAction<UserSchemaIN | null>>;
   loading: boolean;
   tokenBack: string;
 }
@@ -26,7 +26,7 @@ interface DataUser {
   error: boolean;
   statusCode: number;
   message: string;
-  payload: UserTypeIn;
+  payload: UserSchemaIN;
 }
 
 export const userInfoContext = createContext<UserContextType | null>(null);
@@ -36,7 +36,7 @@ export const UserInfoProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [userInfo, setUserInfo] = useState<UserTypeIn | null>(null);
+  const [userInfo, setUserInfo] = useState<UserSchemaIN | null>(null);
   const [loading, setLoading] = useState(false);
   const {
     data: session,

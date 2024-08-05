@@ -1,4 +1,5 @@
-import { UserForm } from "@/components/users/user-form";
+import { DataTable } from "@/components/ui/data-table";
+import { user_columns } from "@/components/users/table/columns";
 import { getUsers } from "@/lib/actions/users.actions";
 
 export default async function Page() {
@@ -6,15 +7,8 @@ export default async function Page() {
 
   return (
     <section>
-      <div className="flex justify-between">
-        <UserForm type="create" />
-      </div>
       <div className="mx-auto">
-        {users?.map((user) => (
-          <div key={user.id} className="p-3 border border-border">
-            {user.name}
-          </div>
-        ))}
+        <DataTable columns={user_columns} data={users} />
       </div>
     </section>
   );

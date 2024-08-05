@@ -1,7 +1,3 @@
-import { UserType } from "./lib/validations/user";
-
-export type PerPage = 10 | 20;
-
 export type CompanyFetch = {
   id: number;
   ruc: string;
@@ -13,33 +9,4 @@ export type CompanyFetch = {
   business_name: string;
   business_direction_fiscal: string;
   key: string;
-};
-
-export type FormattedCompany = {
-  id: number;
-  ruc: string;
-  type: string;
-  country_code: string;
-  phone: string;
-  status: string;
-  user_sunnat: string;
-  corporate_name: string;
-  fiscal_address: string;
-  password_sunnat: string;
-};
-
-export type RoleType = "SUPERADMIN" | "ADMIN" | "USER";
-
-type ModifiedUserType = Omit<
-  UserType,
-  "image" | "password" | "confirmPassword"
-> & { id: number };
-
-type UpdateUserType = Omit<UserType, "email"> & { id: string };
-
-export type UserTypeIn = Omit<
-  UserType,
-  "image" | "password" | "confirmPassword"
-> & {
-  id: number;
 };

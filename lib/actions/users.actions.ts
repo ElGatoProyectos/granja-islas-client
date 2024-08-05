@@ -2,10 +2,10 @@
 
 import { authOptions } from "@/app/api/auth-options";
 import { backend_url } from "@/constants/config";
-import { UserTypeIn } from "@/types";
 import { getServerSession } from "next-auth";
+import { UserSchemaIN } from "../validations/user";
 
-export async function getUsers(): Promise<UserTypeIn[] | undefined> {
+export async function getUsers(): Promise<UserSchemaIN[]> {
   const session = await getServerSession(authOptions);
   try {
     const res = await fetch(`${backend_url}/api/users`, {
@@ -25,6 +25,7 @@ export async function getUsers(): Promise<UserTypeIn[] | undefined> {
     return data.payload;
   } catch (error) {
     console.error("Error to fetch data", error);
+    return [];
   }
 }
 

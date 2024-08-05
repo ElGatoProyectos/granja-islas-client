@@ -42,13 +42,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
 import { useRouter } from "next/navigation";
 import { createUser, updateUser } from "@/lib/actions/users.actions";
+import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 interface Props {
   type: "create" | "edit";
   userInfo?: UserSchemaIN;
 }
 
-export function UserForm({ type, userInfo }: Props) {
+export function EditUserFromAdmin({ type, userInfo }: Props) {
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -75,6 +76,8 @@ export function UserForm({ type, userInfo }: Props) {
     if (image) {
       formData.append("user-profile", image[0]);
     }
+
+    console.log("values", values);
 
     type userFormInfoWithoutKey = Omit<UserSchemaIN, "id">;
     for (const key in userFormInfo) {
@@ -127,17 +130,9 @@ export function UserForm({ type, userInfo }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {type === "create" ? (
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Crear Usuario
-          </Button>
-        ) : (
-          <Button variant="ghost" size="icon">
-            <Pencil className="stroke-primary" />
-            <span className="sr-only">Editar perfil</span>
-          </Button>
-        )}
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          Editar usuario
+        </DropdownMenuItem>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>

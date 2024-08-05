@@ -37,7 +37,8 @@ import { CompanyFetch } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
-import { revalidatePath } from "next/cache";
+import { useUserInfo } from "@/context/user-context";
+import { USER } from "@/constants/roles";
 
 interface Props {
   type: "create" | "edit";
@@ -66,7 +67,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     },
   });
 
-  const { data: session }: { data: any } = useSession();
+  const { userInfo, tokenBack } = useUserInfo();
 
   const route = useRouter();
   async function onSubmit(values: z.infer<typeof createCompanySchema>) {
@@ -88,14 +89,14 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
     try {
       if (type === "create") {
-        await createCompany({ formData, tokenBack: session.user.tokenBack });
+        await createCompany({ formData, tokenBack: tokenBack });
       }
 
       if (type === "edit") {
         await updateCompany({
           companyId,
           formData,
-          tokenBack: session.user.tokenBack,
+          tokenBack: tokenBack,
         });
       }
 
@@ -178,7 +179,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
   const [open, setOpen] = useState(false);
 
-  return (
+  return userInfo?.role === USER ? null : (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {type === "create" ? (

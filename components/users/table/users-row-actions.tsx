@@ -17,7 +17,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
-import { supplierSchemaIN } from "@/lib/validations/supplier";
+import { userSchemaIN } from "@/lib/validations/user";
+import { UserForm } from "../user-form";
+import { EditUserFromAdmin } from "../edit-user-from-admin";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -26,7 +28,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const supplier = supplierSchemaIN.parse(row.original);
+  const user = userSchemaIN.parse(row.original);
 
   return (
     <DropdownMenu>
@@ -41,26 +43,12 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(supplier.ruc)}
+          onClick={() => navigator.clipboard.writeText(user.email)}
         >
-          Copiar RUC
+          Copiar email
         </DropdownMenuItem>
-
         <DropdownMenuSeparator />
-        {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={supplier.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub> */}
-
-        <DropdownMenuItem>Ver Proveedor</DropdownMenuItem>
+        <EditUserFromAdmin type="edit" userInfo={user} />
       </DropdownMenuContent>
     </DropdownMenu>
   );

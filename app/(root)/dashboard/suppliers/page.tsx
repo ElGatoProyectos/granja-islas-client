@@ -2,20 +2,19 @@
 
 import { LayerPage } from "@/components/layer-page";
 import { columns } from "@/components/suppliers/data-table/columns";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/ui/data-table-v2";
 import { useSuppliers } from "@/hooks/useSuppliers";
 
 export default function Page() {
   const {
     suppliers,
-    loadingSuppliers,
     page,
     perPage,
     setPage,
     setPerPage,
     totalPages,
     getSuppliers,
-    totalElements
+    totalElements,
   } = useSuppliers();
 
   return (

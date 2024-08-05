@@ -6,9 +6,9 @@ import { DataTableColumnHeader } from "./table-column-header";
 import { DataTableRowActions } from "./table-row-actions";
 
 import { states } from "./supplier-filters";
-import { SupplierTypeIn } from "./supplier-schema-table";
+import { SupplierSchemaIN } from "@/lib/validations/supplier";
 
-export const columns: ColumnDef<SupplierTypeIn>[] = [
+export const columns: ColumnDef<SupplierSchemaIN>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => (
@@ -134,7 +134,9 @@ export const columns: ColumnDef<SupplierTypeIn>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex gap-x-2 items-center">
-          <span>{row.getValue("phone")}</span>
+          <span>
+            {row.getValue("phone") === "null null" ? "" : row.getValue("phone")}
+          </span>
         </div>
       );
     },

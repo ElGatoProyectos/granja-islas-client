@@ -17,6 +17,7 @@ export default async function Page() {
           </p>
         </header>
         <CompanyList companies={companies} />
+        
         <CompanyForm type="create" />
       </section>
     </div>

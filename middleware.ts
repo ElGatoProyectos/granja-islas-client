@@ -25,7 +25,7 @@ export default withAuth(
     // Rutas protegidas por ADMIN y SUPERADMIN
     if (pathname.startsWith("/dashboard")) {
       if (token?.role !== SUPERADMIN && token?.role !== ADMIN) {
-        return NextResponse.rewrite(new URL("/signin", req.url));
+        return NextResponse.rewrite(new URL("/payments", req.url));
       }
     }
 

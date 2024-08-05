@@ -58,3 +58,15 @@ export const userSchema = z
   });
 
 export type UserType = z.infer<typeof userSchema>;
+
+export const userSchemaIN = z.object({
+  id: z.number(),
+  name: z.string(),
+  last_name: z.string(),
+  email: z.string(),
+  role: z.enum(["SUPERADMIN", "ADMIN", "USER"]),
+  country_code: z.string().nullable(),
+  phone: z.string().nullable(),
+});
+
+export type UserSchemaIN = z.infer<typeof userSchemaIN>;

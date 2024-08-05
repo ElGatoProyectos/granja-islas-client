@@ -16,3 +16,16 @@ const translationDict: TranslationDict = {
 export function translateString(key: string) {
   return translationDict[key] || key;
 }
+
+const usertranslationView: TranslationDict = {
+  // id: "ID",
+  name: "Nombres",
+  last_name: "Apellidos",
+  email: "Correo",
+  role: "Rol",
+  phone: "Teléfono",
+};
+
+export function userViewTable(key: string) {
+  return usertranslationView[key] || key;
+}
