@@ -77,8 +77,6 @@ export function EditUserFromAdmin({ type, userInfo }: Props) {
       formData.append("user-profile", image[0]);
     }
 
-    console.log("values", values);
-
     type userFormInfoWithoutKey = Omit<UserSchemaIN, "id">;
     for (const key in userFormInfo) {
       if (userFormInfo.hasOwnProperty(key)) {

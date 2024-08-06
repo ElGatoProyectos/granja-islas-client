@@ -1,11 +1,45 @@
-import { backend_url } from "@/constants/config";
-import { useCompanySession } from "@/context/company-context";
-import { useUserInfo } from "@/context/user-context";
-import { SupplierSchemaIN } from "@/lib/validations/supplier";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useDebounce } from "./use-debounce";
+"use client";
 
-export function useSuppliers() {
+import { backend_url } from "@/constants/config";
+import { useSuppliers } from "@/hooks/useSuppliers";
+import { SupplierSchemaIN } from "@/lib/validations/supplier";
+import { UserSchemaIN } from "@/lib/validations/user";
+import { useSession } from "next-auth/react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useUserInfo } from "../user-context";
+import { useCompanySession } from "../company-context";
+import { useDebounce } from "@/hooks/use-debounce";
+
+interface UserContextType {
+  suppliers: SupplierSchemaIN[];
+  loadingSuppliers: boolean;
+  getSuppliers: () => Promise<void>;
+  perPage: number;
+  page: number;
+  setPerPage: Dispatch<SetStateAction<number>>;
+  setPage: Dispatch<SetStateAction<number>>;
+  totalPages: number;
+  totalElements: number;
+  setSearch: Dispatch<SetStateAction<string>>;
+  search: string;
+}
+
+export const supplierContext = createContext<UserContextType | null>(null);
+
+export const SupplierProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [suppliers, setSuppliers] = useState<SupplierSchemaIN[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -85,6 +119,17 @@ export function useSuppliers() {
       totalPages,
     ]
   );
+  return (
+    <supplierContext.Provider value={value}>
+      {children}
+    </supplierContext.Provider>
+  );
+};
 
-  return value;
+export function useSupplier() {
+  const context = useContext(supplierContext);
+  if (!context) {
+    throw new Error("useSupplier should be used inside of provider");
+  }
+  return context;
 }

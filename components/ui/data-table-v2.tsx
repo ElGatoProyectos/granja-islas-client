@@ -36,7 +36,6 @@ export interface DataTableProps<TData, TValue> {
   currentPage: number;
   setPage: Dispatch<SetStateAction<number>>;
   setRowsPerPage: Dispatch<SetStateAction<number>>;
-  getData: () => Promise<void>;
   totalElements: number;
 }
 
@@ -48,8 +47,7 @@ export function DataTable<TData, TValue>({
   currentPage,
   setPage,
   setRowsPerPage,
-  getData,
-  totalElements
+  totalElements,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -85,7 +83,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} getData={getData} />
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

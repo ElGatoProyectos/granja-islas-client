@@ -77,7 +77,6 @@ export function CompanyForm({ type, company, companyId }: Props) {
     const formData = new FormData();
 
     if (image) {
-      console.log("image", image);
       formData.append("company-profile", image[0]);
     }
     type CompanyWithoutKey = Omit<CompanyFetch, "id">;

@@ -8,29 +8,26 @@ import { DataTableFacetedFilter } from "./table-faceted-filter";
 import { states } from "./supplier-filters";
 import { DataTableViewOptions } from "./table-view-options";
 import { SupplierForm } from "../supplier-form";
+import { useSupplier } from "@/context/sections/suppliers-context";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  getData: () => Promise<void>;
 }
 
 export function DataTableToolbar<TData>({
   table,
-  getData,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const { search, setSearch, getSuppliers } = useSupplier();
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Buscar razón social"
-          value={
-            (table.getColumn("business_name")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("business_name")?.setFilterValue(event.target.value)
-          }
+          placeholder="Buscar razón social o RUC"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
           className="w-[150px] lg:w-[250px]"
         />
         {table.getColumn("business_status") && (
@@ -58,7 +55,7 @@ export function DataTableToolbar<TData>({
           Excel
         </Button>
         <DataTableViewOptions table={table} />
-        <SupplierForm type="create" getSuppliers={getData} />
+        <SupplierForm type="create" getSuppliers={getSuppliers} />
       </div>
     </div>
   );

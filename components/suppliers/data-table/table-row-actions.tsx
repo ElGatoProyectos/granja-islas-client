@@ -6,18 +6,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
 import { supplierSchemaIN } from "@/lib/validations/supplier";
+import { SupplierForm } from "../supplier-form";
+import { useSupplier } from "@/context/sections/suppliers-context";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -27,6 +25,8 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const supplier = supplierSchemaIN.parse(row.original);
+  const { getSuppliers } = useSupplier();
+  const pathname = usePathname();
 
   return (
     <DropdownMenu>
@@ -46,21 +46,16 @@ export function DataTableRowActions<TData>({
           Copiar RUC
         </DropdownMenuItem>
 
+        <SupplierForm
+          type="edit"
+          getSuppliers={getSuppliers}
+          supplier={supplier}
+        />
         <DropdownMenuSeparator />
-        {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={supplier.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub> */}
 
-        <DropdownMenuItem>Ver Proveedor</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={`${pathname}/${supplier.ruc}`}>Ver Proveedor</Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

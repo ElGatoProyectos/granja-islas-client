@@ -30,7 +30,7 @@ export const user_columns: ColumnDef<UserSchemaIN>[] = [
       const last_name = row.getValue("last_name") as string;
 
       return (
-        <div className="flex w-[200px] items-center">
+        <div className="flex  items-center">
           <span className="capitalize">{last_name.toLowerCase()}</span>
         </div>
       );

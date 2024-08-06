@@ -28,18 +28,20 @@ import { CodeCountry } from "../auth/onboarding/code-country";
 import {
   CreateSupplierSchema,
   createSupplierSchema,
+  SupplierSchemaIN,
 } from "@/lib/validations/supplier";
 import { Plus, Search } from "lucide-react";
-import { createSupplier } from "@/lib/actions/supplier.actions";
+import { createSupplier, updateSupplier } from "@/lib/actions/supplier.actions";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { backend_url } from "@/constants/config";
+import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 interface Props {
   type: "create" | "edit";
-  supplier?: CreateSupplierSchema;
+  supplier?: SupplierSchemaIN;
   getSuppliers: () => Promise<void>;
 }
 
@@ -74,6 +76,12 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
         });
       }
       if (type === "edit") {
+        await updateSupplier({
+          tokenBack,
+          values,
+          ruc: company?.ruc,
+          supplierID: supplier?.id,
+        });
       }
       toast({
         variant: "success",
@@ -161,10 +169,16 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Agregar Proveedor
-        </Button>
+        {type === "create" ? (
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Agregar Proveedor
+          </Button>
+        ) : (
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            Editar Proveedor
+          </DropdownMenuItem>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] ">
         <DialogHeader>

@@ -19,45 +19,10 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { DownloadExcel } from "../download-excel";
-
-const invoices = [
-  {
-    document_type: "01 - Factura",
-    total_documents: "150",
-    bi_taxed_dg: "100,000.00",
-    igv_dg: "18,000.00",
-    bi_taxed_dgng: "0.00",
-    igv_dgng: "0.00",
-    total: "118,000.00",
-  },
-  {
-    document_type: "03 - Boleta de venta",
-    total_documents: "200",
-    bi_taxed_dg: "80,000.00",
-    igv_dg: "14,400.00",
-    bi_taxed_dgng: "0.00",
-    igv_dgng: "0.00",
-    total: "94,400.00",
-  },
-  {
-    document_type: "07 - Nota de crédito",
-    total_documents: "50",
-    bi_taxed_dg: "20,000.00",
-    igv_dg: "3,600.00",
-    bi_taxed_dgng: "0.00",
-    igv_dgng: "0.00",
-    total: "23,600.00",
-  },
-  {
-    document_type: "08 - Nota de débito",
-    total_documents: "30",
-    bi_taxed_dg: "10,000.00",
-    igv_dg: "1,800.00",
-    bi_taxed_dgng: "0.00",
-    igv_dgng: "0.00",
-    total: "11,800.00",
-  },
-];
+import { Dispatch, SetStateAction } from "react";
+import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
+import { formatWithCommas } from "@/utils/format-number-comas";
+import { DataTableSkeleton } from "./table-skeleton";
 
 const months = [
   { label: "Enero", value: "1" },
@@ -74,13 +39,37 @@ const months = [
   { label: "Diciembre", value: "12" },
 ];
 
-export function ShoppingRecordTable() {
+interface Props {
+  setYear: Dispatch<SetStateAction<string>>;
+  setMonth: Dispatch<SetStateAction<string>>;
+  receipts: FormatedTotalAmountReceipts[];
+  loading: boolean;
+  totalAmountofAll: number
+}
+
+export function ShoppingRecordTable({
+  setMonth,
+  setYear,
+  receipts,
+  loading,
+  totalAmountofAll,
+}: Props) {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formShopping = Object.fromEntries(new FormData(e.currentTarget));
+    const { year, month } = formShopping;
+    setMonth(month as string);
+    setYear(year as string);
+  };
   return (
     <main className="flex flex-col">
       <div className="flex justify-between">
-        <form className="flex items-center gap-x-2 mb-4">
+        <form
+          className="flex items-center gap-x-2 mb-4"
+          onSubmit={handleSubmit}
+        >
           <span className="text-sm ml-4 font-semibold">Periodo</span>
-          <Select>
+          <Select name="year">
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Seleccionar año" />
             </SelectTrigger>
@@ -93,7 +82,7 @@ export function ShoppingRecordTable() {
             </SelectContent>
           </Select>
 
-          <Select>
+          <Select name="month">
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Seleccionar mes" />
             </SelectTrigger>
@@ -109,53 +98,73 @@ export function ShoppingRecordTable() {
             </SelectContent>
           </Select>
 
-          <Button type="button">Buscar</Button>
+          <Button>Buscar</Button>
         </form>
         <DownloadExcel />
       </div>
-      <Table>
-        <TableCaption>Lista de tus comprobantes.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Tipo de documento</TableHead>
-            <TableHead>Total de documentos</TableHead>
-            <TableHead className="text-right">BI Gravado DG</TableHead>
-            <TableHead className="text-right">IGV/IPM DG</TableHead>
-            <TableHead className="text-right">BI Gravado DGNG</TableHead>
-            <TableHead className="text-right">IGV/IPM DGNG</TableHead>
-            <TableHead className="text-right">Total</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {invoices.map(
-            ({
-              document_type,
-              total_documents,
-              bi_taxed_dg,
-              igv_dg,
-              bi_taxed_dgng,
-              igv_dgng,
-              total,
-            }) => (
-              <TableRow key={document_type}>
-                <TableCell className="font-medium">{document_type}</TableCell>
-                <TableCell>{total_documents}</TableCell>
-                <TableCell className="text-right">{bi_taxed_dg}</TableCell>
-                <TableCell className="text-right">{igv_dg}</TableCell>
-                <TableCell className="text-right">{bi_taxed_dgng}</TableCell>
-                <TableCell className="text-right">{igv_dgng}</TableCell>
-                <TableCell className="text-right">{total}</TableCell>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={6}>Total</TableCell>
-            <TableCell className="text-right">S/.265,500.00</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+      {loading ? (
+        <DataTableSkeleton
+          columnCount={7}
+          rowCount={5}
+          withPagination={false}
+          shrinkZero
+          showViewOptions={false}
+        />
+      ) : (
+        <Table>
+          <TableCaption>Lista de tus comprobantes.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Tipo de documento</TableHead>
+              <TableHead>Total de documentos</TableHead>
+              <TableHead className="text-right">BI Gravado DG</TableHead>
+              <TableHead className="text-right">IGV/IPM DG</TableHead>
+              <TableHead className="text-right">BI Gravado DGNG</TableHead>
+              <TableHead className="text-right">IGV/IPM DGNG</TableHead>
+              <TableHead className="text-right">Total</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {receipts.map(
+              ({
+                document_type,
+                total_documents,
+                total_amount_base,
+                total_amount_igv,
+                total_amount_dgng_base,
+                total_amount_dgng_igv,
+                total_amount_documents,
+              }) => (
+                <TableRow key={document_type}>
+                  <TableCell className="font-medium">{document_type}</TableCell>
+                  <TableCell>{total_documents}</TableCell>
+                  <TableCell className="text-right">
+                    {formatWithCommas(total_amount_base)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatWithCommas(total_amount_igv)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatWithCommas(total_amount_dgng_base)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatWithCommas(total_amount_dgng_igv)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatWithCommas(total_amount_documents)}
+                  </TableCell>
+                </TableRow>
+              )
+            )}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={6}>Total</TableCell>
+              <TableCell className="text-right">{totalAmountofAll}</TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      )}
     </main>
   );
 }

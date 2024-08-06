@@ -125,7 +125,7 @@ export async function updateCompany({
     },
     body: formData,
   });
-  console.log("res", res);
+ 
 
   revalidatePath("/onboarding");
 
