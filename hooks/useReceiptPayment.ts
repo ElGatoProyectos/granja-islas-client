@@ -4,7 +4,6 @@ import { useUserInfo } from "@/context/user-context";
 import {
   paymentReceiptArraySchemaIN,
   PaymentReceiptSchemaIN,
-  paymentReceiptSchemaIN,
 } from "@/lib/validations/payment";
 import { responseSchema } from "@/lib/validations/response";
 import { useCallback, useEffect, useState } from "react";
@@ -48,7 +47,7 @@ export function useReceiptPayment({
       }
 
       const parsePaymentReceipt = paymentReceiptArraySchemaIN.parse(payload);
-      console.log("parsePaymentReceipt", parsePaymentReceipt);
+
       setReceipt(parsePaymentReceipt);
     } catch (error) {
       throw new Error("Failed to fetch receipt payment detail");

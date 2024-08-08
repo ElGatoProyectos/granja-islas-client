@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { bankSchemaIN } from "./bank";
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -53,6 +54,7 @@ export const paymentReceiptSchemaIN = z.object({
   ticketId: z.number().nullable(),
   type_currency: z.string(),
   user_id_created: z.number(),
+  Bank: bankSchemaIN,
 });
 export const paymentReceiptArraySchemaIN = z.array(paymentReceiptSchemaIN);
 export type PaymentReceiptSchemaIN = z.infer<typeof paymentReceiptSchemaIN>;

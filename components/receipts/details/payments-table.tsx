@@ -8,6 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { backend_url } from "@/constants/config";
 
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
@@ -20,6 +29,7 @@ interface Props {
 }
 export function PaymentsTable({ document_code, document_id }: Props) {
   const { receipt } = useReceiptPayment({ document_code, document_id });
+
   return (
     <section className="w-full">
       <Table>
@@ -27,11 +37,12 @@ export function PaymentsTable({ document_code, document_id }: Props) {
           <TableRow>
             <TableHead>Fecha</TableHead>
             <TableHead>Banco</TableHead>
-            <TableHead className="text-right">Nro. de Operacion</TableHead>
-            <TableHead className="text-right">Moneda</TableHead>
-            <TableHead className="text-right">TC</TableHead>
-            <TableHead className="text-right">Monto</TableHead>
-            <TableHead className="text-right">Foto</TableHead>
+            <TableHead>Nro. de Operacion</TableHead>
+            <TableHead>Moneda</TableHead>
+            <TableHead>Ingreso</TableHead>
+            <TableHead>TC</TableHead>
+            <TableHead>Soles</TableHead>
+            <TableHead>Foto</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -42,24 +53,42 @@ export function PaymentsTable({ document_code, document_id }: Props) {
               type_currency,
               exchange_rate,
               amount_converted,
+              amount_original,
               date,
+              Bank,
             }) => (
               <TableRow key={id}>
                 <TableCell className="font-medium">
                   {formatDate(date)}
                 </TableCell>
-                <TableCell>banco</TableCell>
-                <TableCell className="text-right">{operation_number}</TableCell>
-                <TableCell className="text-right">{type_currency}</TableCell>
-                <TableCell className="text-right">{exchange_rate}</TableCell>
-                <TableCell className="text-right">
+                <TableCell>{Bank.title}</TableCell>
+                <TableCell>{operation_number}</TableCell>
+                <TableCell>{type_currency}</TableCell>
+                <TableCell>{amount_original}</TableCell>
+                <TableCell>
+                  {exchange_rate === 1 ? "" : exchange_rate}
+                </TableCell>
+                <TableCell>
                   {formatNumberWithCommas(amount_converted)}
                 </TableCell>
-                <TableCell className="text-right">
-                  <img
-                    src={`${backend_url}/api/vouchers/${id}/image`}
-                    alt="voucher"
-                  />
+                <TableCell>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <img
+                        src={`${backend_url}/api/vouchers/${id}/image`}
+                        alt="voucher"
+                        className="w-10 h-10 rounded-full cursor-pointer  object-contain"
+                      />
+                    </DialogTrigger>
+                    <DialogContent className="max-w-3xl border-0 bg-transparent p-0">
+                      <DialogTitle></DialogTitle>
+                      <img
+                        src={`${backend_url}/api/vouchers/${id}/image`}
+                        alt="voucher"
+                        className="h-full w-full object-contain"
+                      />
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
               </TableRow>
             )
