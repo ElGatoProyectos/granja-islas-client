@@ -4,9 +4,9 @@ export function defaultDate() {
   // Obtener el año actual
   const currentYear = currentDate.getFullYear();
   // Obtener el mes anterior (JavaScript cuenta los meses de 0 a 11)
-  const previousMonth = currentDate.getMonth() - 1;
+  const previousMonth = currentDate.getMonth();
   // Ajustar el año si el mes es diciembre
-  const adjustedYear = previousMonth === 12 ? currentYear - 1 : currentYear;
+  const adjustedYear = previousMonth === 11 ? currentYear : currentYear;
 
   return {
     previousMonth: previousMonth.toString(),
