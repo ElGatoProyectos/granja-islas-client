@@ -73,3 +73,9 @@
 * {
   scrollbar-width: thin;
 }
+
+textarea {
+  line-height: 1.5;
+  field-sizing: content;
+  min-height: 3lh;
+}

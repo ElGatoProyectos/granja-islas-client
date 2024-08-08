@@ -22,18 +22,12 @@ import { useCompanySession } from "@/context/company-context";
 import { createBank, deleteBank, updateBank } from "@/lib/actions/bank.actions";
 import { useUserInfo } from "@/context/user-context";
 
-type ProductLabelType = {
-  id: string;
-  label: string;
-};
-
 export function BankForm() {
-  const [bank, setBank] = useState<ProductLabelType[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [editBankId, setEditBankId] = useState<string | null>(null);
   const [editInputValue, setEditInputValue] = useState("");
   const { company } = useCompanySession();
-  const { banks, getBanks, loadingBanks } = useBanks({ ruc: company?.ruc });
+  const { banks, getBanks, loadingBanks } = useBanks();
   const { tokenBack } = useUserInfo();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

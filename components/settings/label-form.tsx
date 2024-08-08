@@ -31,7 +31,7 @@ export function LabelForm() {
   const [editLabelId, setEditLabelId] = useState<string | null>(null);
   const [editInputValue, setEditInputValue] = useState("");
   const { company } = useCompanySession();
-  const { labels, loadingLabel, getLabels } = useLabels({ ruc: company?.ruc });
+  const { labels, loadingLabel, getLabels } = useLabels();
   const { tokenBack } = useUserInfo();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

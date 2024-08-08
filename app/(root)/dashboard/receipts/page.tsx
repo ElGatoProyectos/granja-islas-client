@@ -1,7 +1,14 @@
+"use client";
+
+import { ReceiptsDataTable } from "@/components/receipts/table";
+import { ReceiptProvider } from "@/context/sections/receipts-context";
+
 export default function Page() {
   return (
     <section>
-      <div className="mx-auto">vouchers</div>
+      <ReceiptProvider>
+        <ReceiptsDataTable />
+      </ReceiptProvider>
     </section>
   );
 }

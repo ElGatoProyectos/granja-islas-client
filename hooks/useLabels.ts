@@ -1,22 +1,24 @@
 import { backend_url } from "@/constants/config";
-import { useSession } from "next-auth/react";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
 import { useCallback, useEffect, useState } from "react";
 
-export function useLabels({ ruc }: { ruc?: string }) {
+export function useLabels() {
   const [labels, setLabels] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { data: session }: { data: any } = useSession();
+  const { tokenBack } = useUserInfo();
+  const { company } = useCompanySession();
 
   const getLabels = useCallback(async () => {
-    if (!ruc) return;
-    if (!session) return;
+    if (!company) return;
+    if (!tokenBack) return;
     setLoading(true);
     try {
       const res = await fetch(`${backend_url}/api/labels`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${session.user.tokenBack}`,
-          ruc,
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company?.ruc,
         },
       });
 
@@ -31,7 +33,7 @@ export function useLabels({ ruc }: { ruc?: string }) {
     } finally {
       setLoading(false);
     }
-  }, [ruc, session]);
+  }, [company, tokenBack]);
 
   useEffect(() => {
     getLabels();

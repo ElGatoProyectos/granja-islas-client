@@ -31,11 +31,9 @@ import { useState } from "react";
 import { Image as AddImage, Pencil, Plus, Search, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
-import { useSession } from "next-auth/react";
 import { backend_url } from "@/constants/config";
 import { CompanyFetch } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
 import { USER } from "@/constants/roles";
@@ -69,7 +67,6 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
   const { userInfo, tokenBack } = useUserInfo();
 
-  const route = useRouter();
   async function onSubmit(values: z.infer<typeof createCompanySchema>) {
     setSubmitting(true);
     const { image, ...company } = values;
@@ -231,7 +228,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                   </div>
                 ) : (
                   <div className="inline-flex items-center justify-between">
-                    <div className="p-7 bg-slate-200 justify-center items-center flex rounded-full">
+                    <div className="p-7 bg-muted justify-center items-center flex rounded-full">
                       <AddImage className="stroke-foreground" />
                     </div>
                   </div>

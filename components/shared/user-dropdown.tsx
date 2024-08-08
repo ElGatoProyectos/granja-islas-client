@@ -64,7 +64,7 @@ export function UserDropdown({
         >
           <Avatar>
             <AvatarImage src={`${backend_url}/api/users/file/${userInfo.id}`} />
-            <AvatarFallback>A</AvatarFallback>
+            <AvatarFallback>{userInfo.name.substring(0, 1)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start">
             <p className="text-sm font-bold">{userInfo.name}</p>

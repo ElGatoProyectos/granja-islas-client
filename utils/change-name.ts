@@ -29,3 +29,22 @@ const usertranslationView: TranslationDict = {
 export function userViewTable(key: string) {
   return usertranslationView[key] || key;
 }
+
+const receiptTranslationView: TranslationDict = {
+  code: "Número",
+  ruc: "Ruc",
+  business_name: "Proveedor",
+  issue_date: "Fecha",
+  currency_code: "Moneda",
+  amount_base: "Monto",
+  igv: "IGV",
+  total: "Importe Total",
+  bill_status_payment: "Tipo de comprobante",
+  bill_status: "Estado",
+  amount_paid: "Pagado",
+  amount_pending: "Pendiente",
+};
+
+export function receiptViewTable(key: string) {
+  return receiptTranslationView[key] || key;
+}

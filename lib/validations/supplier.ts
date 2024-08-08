@@ -52,3 +52,10 @@ export const updateSupplierSchema = z.object({
 });
 
 export type UpdateSupplierSchema = z.infer<typeof updateSupplierSchema>;
+
+const supplierSchemaFilter = z.object({
+  id: z.number(),
+  business_name: z.string(),
+});
+export const supplierArraySchemaFilter = z.array(supplierSchemaFilter);
+export type SupplierSchemaFilter = z.infer<typeof supplierSchemaFilter>;
