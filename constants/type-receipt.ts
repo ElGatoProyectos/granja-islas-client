@@ -4,6 +4,7 @@ export const type_receipts = [
   {
     document_code: "01",
     document_description: "Factura",
+    value: "bill",
   },
   {
     document_code: "07",

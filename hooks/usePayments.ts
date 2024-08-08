@@ -8,7 +8,7 @@ import {
 import { responseArraySchema } from "@/lib/validations/response";
 import { useCallback, useEffect, useState } from "react";
 
-export function usePayments() {
+export function usePayments({}) {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [payment, setPayment] = useState<PaymentSchemaIN[]>();

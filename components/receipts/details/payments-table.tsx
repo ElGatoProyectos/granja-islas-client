@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   Table,
@@ -25,8 +25,6 @@ const receipts = [
 ];
 
 export function PaymentsTable() {
-
-  usePayments()
   return (
     <section className="w-full">
       <Table>

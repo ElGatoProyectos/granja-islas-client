@@ -65,7 +65,7 @@ export function PaymentForm({ type, payment, paymentId }: Props) {
       formData.append("company-profile", voucher[0]);
     }
 
-    type PaymentWithoutKey = Omit<PaymentSchemaIN, "id" >;
+    type PaymentWithoutKey = Omit<PaymentSchemaIN, "id">;
     for (const key in payment) {
       if (payment.hasOwnProperty(key)) {
         formData.append(key, payment[key as keyof PaymentWithoutKey]);
