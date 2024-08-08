@@ -23,6 +23,7 @@ import { Dispatch, SetStateAction } from "react";
 import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { DataTableSkeleton } from "./table-skeleton";
+import { defaultDate } from "@/utils/default-date";
 
 const months = [
   { label: "Enero", value: "1" },
@@ -44,7 +45,7 @@ interface Props {
   setMonth: Dispatch<SetStateAction<string>>;
   receipts: FormatedTotalAmountReceipts[];
   loading: boolean;
-  totalAmountofAll: number
+  totalAmountofAll: number;
 }
 
 export function ShoppingRecordTable({
@@ -61,6 +62,9 @@ export function ShoppingRecordTable({
     setMonth(month as string);
     setYear(year as string);
   };
+
+  const { adjustedYear, previousMonth } = defaultDate();
+
   return (
     <main className="flex flex-col">
       <div className="flex justify-between">
@@ -69,7 +73,7 @@ export function ShoppingRecordTable({
           onSubmit={handleSubmit}
         >
           <span className="text-sm ml-4 font-semibold">Periodo</span>
-          <Select name="year">
+          <Select name="year" defaultValue={adjustedYear}>
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Seleccionar año" />
             </SelectTrigger>
@@ -82,7 +86,7 @@ export function ShoppingRecordTable({
             </SelectContent>
           </Select>
 
-          <Select name="month">
+          <Select name="month" defaultValue={previousMonth}>
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Seleccionar mes" />
             </SelectTrigger>
@@ -160,7 +164,9 @@ export function ShoppingRecordTable({
           <TableFooter>
             <TableRow>
               <TableCell colSpan={6}>Total</TableCell>
-              <TableCell className="text-right">{totalAmountofAll}</TableCell>
+              <TableCell className="text-right">
+                {formatWithCommas(totalAmountofAll)}
+              </TableCell>
             </TableRow>
           </TableFooter>
         </Table>

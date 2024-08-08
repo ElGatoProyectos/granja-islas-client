@@ -23,9 +23,9 @@ import {
   ReceiptSchemaIN,
 } from "@/lib/validations/receipt";
 
-interface ReceiptContextType {
-  receipts: ReceiptSchemaIN[];
-  getReceipts: () => Promise<void>;
+interface PaymentContextType {
+  payments: ReceiptSchemaIN[];
+  getPayments: () => Promise<void>;
   loading: boolean;
   totalPages: number;
   totalElements: number;
@@ -39,26 +39,25 @@ interface ReceiptContextType {
   setMonth: Dispatch<SetStateAction<string>>;
   year: string;
   setYear: Dispatch<SetStateAction<string>>;
-  idSupplier: string;
-  setIdSupplier: Dispatch<SetStateAction<string>>;
-  supplierFilter: SupplierSchemaFilter[];
 }
 
-export const receiptContext = createContext<ReceiptContextType | null>(null);
+export const PaymentContext = createContext<PaymentContextType | null>(null);
 
-export const ReceiptProvider = ({
+export const PaymentProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [receipts, setReceipts] = useState<ReceiptSchemaIN[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
+  const [payments, setPayments] = useState<ReceiptSchemaIN[]>([]);
+  const [loading, setLoading] = useState(false);
+  /* pagination */
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  /* filters */
   const [search, setSearch] = useState("");
   const input = useDebounce(search);
   const [month, setMonth] = useState("");
@@ -68,7 +67,7 @@ export const ReceiptProvider = ({
     []
   );
 
-  const getReceipts = useCallback(async () => {
+  const getPayments = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
     setLoading(true);
@@ -82,9 +81,11 @@ export const ReceiptProvider = ({
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
-      const url = `${backend_url}/api/documents?${queryParams
+      const url = `${backend_url}/api/labels/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
+
+      console.log("url", url);
 
       const res = await fetch(url, {
         method: "GET",
@@ -110,9 +111,10 @@ export const ReceiptProvider = ({
       setsupplierFilter(formatFilterSupplier);
 
       const data = await res.json();
+      console.log(data);
       const formatdata = receiptArraySchemaIN.parse(data.payload.data);
 
-      setReceipts(formatdata);
+      setPayments(formatdata);
       setTotalPages(data.payload.pageCount);
       setTotalElements(data.payload.total);
       setCurrentPage(data.payload.page);
@@ -125,14 +127,14 @@ export const ReceiptProvider = ({
   }, [company, tokenBack, currentPage, limit, input, month, year, idSupplier]);
 
   useEffect(() => {
-    getReceipts();
-  }, [getReceipts]);
+    getPayments();
+  }, [getPayments]);
 
   const value = useMemo(
     () => ({
-      receipts,
+      payments,
       loading,
-      getReceipts,
+      getPayments,
       limit,
       setLimit,
       currentPage,
@@ -150,9 +152,9 @@ export const ReceiptProvider = ({
       supplierFilter,
     }),
     [
-      receipts,
+      payments,
       loading,
-      getReceipts,
+      getPayments,
       limit,
       currentPage,
       totalPages,
@@ -165,14 +167,14 @@ export const ReceiptProvider = ({
     ]
   );
   return (
-    <receiptContext.Provider value={value}>{children}</receiptContext.Provider>
+    <PaymentContext.Provider value={value}>{children}</PaymentContext.Provider>
   );
 };
 
-export function useReceipt() {
-  const context = useContext(receiptContext);
+export function usePayment() {
+  const context = useContext(PaymentContext);
   if (!context) {
-    throw new Error("useReceipt should be used inside of provider");
+    throw new Error("useList should be used inside of provider");
   }
   return context;
 }

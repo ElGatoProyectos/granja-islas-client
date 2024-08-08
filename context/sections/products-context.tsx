@@ -22,10 +22,17 @@ import {
   receiptArraySchemaIN,
   ReceiptSchemaIN,
 } from "@/lib/validations/receipt";
+import { responseSchema } from "@/lib/validations/response";
+import {
+  productArraySchemaIN,
+  ProductSchemaIN,
+  productSchemaIN,
+} from "@/lib/validations/product";
+import { paginationSchema } from "@/lib/validations/pagination";
 
 interface ReceiptContextType {
-  receipts: ReceiptSchemaIN[];
-  getReceipts: () => Promise<void>;
+  products: ProductSchemaIN[];
+  getProducts: () => Promise<void>;
   loading: boolean;
   totalPages: number;
   totalElements: number;
@@ -42,23 +49,28 @@ interface ReceiptContextType {
   idSupplier: string;
   setIdSupplier: Dispatch<SetStateAction<string>>;
   supplierFilter: SupplierSchemaFilter[];
+  idLabel: string;
+  setIdLabel: Dispatch<SetStateAction<string>>;
+  labelFilter: any[];
 }
 
-export const receiptContext = createContext<ReceiptContextType | null>(null);
+export const productContext = createContext<ReceiptContextType | null>(null);
 
-export const ReceiptProvider = ({
+export const ProductProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [receipts, setReceipts] = useState<ReceiptSchemaIN[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
+  const [products, setProducts] = useState<ProductSchemaIN[]>([]);
+  const [loading, setLoading] = useState(false);
+  /* pagination */
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
+  /* filters */
   const [search, setSearch] = useState("");
   const input = useDebounce(search);
   const [month, setMonth] = useState("");
@@ -67,8 +79,10 @@ export const ReceiptProvider = ({
   const [supplierFilter, setsupplierFilter] = useState<SupplierSchemaFilter[]>(
     []
   );
+  const [idLabel, setIdLabel] = useState("");
+  const [labelFilter, setLabelFilter] = useState([]);
 
-  const getReceipts = useCallback(async () => {
+  const getProducts = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
     setLoading(true);
@@ -82,7 +96,7 @@ export const ReceiptProvider = ({
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
-      const url = `${backend_url}/api/documents?${queryParams
+      const url = `${backend_url}/api/products?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -94,14 +108,16 @@ export const ReceiptProvider = ({
         },
       });
 
-      const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
-      const resSuppliers = await fetch(urlSuppliers, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-          ruc: company.ruc,
-        },
-      });
+      const resSuppliers = await fetch(
+        `${backend_url}/api/suppliers/no-pagination`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenBack}`,
+            ruc: company.ruc,
+          },
+        }
+      );
 
       const dataSupp = await resSuppliers.json();
       const formatFilterSupplier = supplierArraySchemaFilter.parse(
@@ -109,30 +125,43 @@ export const ReceiptProvider = ({
       );
       setsupplierFilter(formatFilterSupplier);
 
-      const data = await res.json();
-      const formatdata = receiptArraySchemaIN.parse(data.payload.data);
+      const resJSON = await res.json();
+      const { error, message, statusCode, payload } =
+        responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("Failed to fetch companies");
+      }
+      const {
+        data,
+        limit: MaxLimit,
+        page,
+        pageCount,
+        total,
+      } = paginationSchema.parse(payload);
+      console.log("data", data);
+      const parseProduct = productArraySchemaIN.parse(data);
 
-      setReceipts(formatdata);
-      setTotalPages(data.payload.pageCount);
-      setTotalElements(data.payload.total);
-      setCurrentPage(data.payload.page);
-      setLimit(data.payload.limit);
+      setProducts(parseProduct);
+      setTotalPages(pageCount);
+      setTotalElements(total);
+      setCurrentPage(page);
+      setLimit(MaxLimit);
     } catch (error) {
-      console.error("Error to fetch data receipts", error);
+      throw new Error("Failed to fetch companies");
     } finally {
       setLoading(false);
     }
   }, [company, tokenBack, currentPage, limit, input, month, year, idSupplier]);
 
   useEffect(() => {
-    getReceipts();
-  }, [getReceipts]);
+    getProducts();
+  }, [getProducts]);
 
   const value = useMemo(
     () => ({
-      receipts,
+      products,
       loading,
-      getReceipts,
+      getProducts,
       limit,
       setLimit,
       currentPage,
@@ -148,11 +177,14 @@ export const ReceiptProvider = ({
       setIdSupplier,
       idSupplier,
       supplierFilter,
+      idLabel,
+      setIdLabel,
+      labelFilter,
     }),
     [
-      receipts,
+      products,
       loading,
-      getReceipts,
+      getProducts,
       limit,
       currentPage,
       totalPages,
@@ -162,17 +194,19 @@ export const ReceiptProvider = ({
       year,
       idSupplier,
       supplierFilter,
+      idLabel,
+      labelFilter,
     ]
   );
   return (
-    <receiptContext.Provider value={value}>{children}</receiptContext.Provider>
+    <productContext.Provider value={value}>{children}</productContext.Provider>
   );
 };
 
-export function useReceipt() {
-  const context = useContext(receiptContext);
+export function useProduct() {
+  const context = useContext(productContext);
   if (!context) {
-    throw new Error("useReceipt should be used inside of provider");
+    throw new Error("useProduct should be used inside of provider");
   }
   return context;
 }

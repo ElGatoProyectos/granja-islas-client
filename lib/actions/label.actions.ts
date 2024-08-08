@@ -24,15 +24,15 @@ export async function createLabel({
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch labels");
+      throw new Error("Failed to create labels");
     }
 
     const data = await res.json();
     if (data.error) {
-      throw new Error("Failed backend to fetch labels");
+      throw new Error("Failed backend to create labels");
     }
   } catch (error) {
-    console.error("Error to fetch data labels", error);
+    throw new Error("Failed to create label");
   }
 }
 

@@ -3,28 +3,23 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { usePayments } from "@/hooks/usePayments";
+import { backend_url } from "@/constants/config";
 
-const receipts = [
-  {
-    document_type: "",
-    total_documents: "",
-    total_amount_base: "",
-    total_amount_igv: "",
-    total_amount_dgng_base: "",
-    total_amount_dgng_igv: "",
-    total_amount_documents: "",
-  },
-];
+import { useReceiptPayment } from "@/hooks/useReceiptPayment";
+import { formatDate } from "@/utils/format-date";
+import { formatNumberWithCommas } from "@/utils/format-number-comas";
 
-export function PaymentsTable() {
+interface Props {
+  document_code: string;
+  document_id: string;
+}
+export function PaymentsTable({ document_code, document_id }: Props) {
+  const { receipt } = useReceiptPayment({ document_code, document_id });
   return (
     <section className="w-full">
       <Table>
@@ -40,31 +35,31 @@ export function PaymentsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {receipts.map(
+          {receipt.map(
             ({
-              document_type,
-              total_documents,
-              total_amount_base,
-              total_amount_igv,
-              total_amount_dgng_base,
-              total_amount_dgng_igv,
-              total_amount_documents,
+              id,
+              operation_number,
+              type_currency,
+              exchange_rate,
+              amount_converted,
+              date,
             }) => (
-              <TableRow key={document_type}>
-                <TableCell className="font-medium">{document_type}</TableCell>
-                <TableCell>{total_documents}</TableCell>
-                <TableCell className="text-right">
-                  {total_amount_base}
+              <TableRow key={id}>
+                <TableCell className="font-medium">
+                  {formatDate(date)}
                 </TableCell>
-                <TableCell className="text-right">{total_amount_igv}</TableCell>
+                <TableCell>banco</TableCell>
+                <TableCell className="text-right">{operation_number}</TableCell>
+                <TableCell className="text-right">{type_currency}</TableCell>
+                <TableCell className="text-right">{exchange_rate}</TableCell>
                 <TableCell className="text-right">
-                  {total_amount_dgng_base}
-                </TableCell>
-                <TableCell className="text-right">
-                  {total_amount_dgng_igv}
+                  {formatNumberWithCommas(amount_converted)}
                 </TableCell>
                 <TableCell className="text-right">
-                  {total_amount_documents}
+                  <img
+                    src={`${backend_url}/api/vouchers/${id}/image`}
+                    alt="voucher"
+                  />
                 </TableCell>
               </TableRow>
             )

@@ -40,10 +40,9 @@ export function useReceiptDetail({
       const parsedReceipt = receiptSchemaIN.parse(payload);
       setReceipt(parsedReceipt);
     } catch (error) {
-      console.error("Error to fetch receipt detail", error);
-      return null;
+      throw new Error("Failed to fetch receipt detail");
     }
-  }, [tokenBack, company]);
+  }, [company, tokenBack, document_code, document_id]);
 
   useEffect(() => {
     getReceiptDetail();

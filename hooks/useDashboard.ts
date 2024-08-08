@@ -44,17 +44,19 @@ export function useDashboard() {
   const [receipts, setReceipts] = useState<FormatedTotalAmountReceipts[]>([]);
   const { adjustedYear, previousMonth } = defaultDate();
   const [loading, setLoading] = useState(false);
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
+  const [month, setMonth] = useState(previousMonth);
+  const [year, setYear] = useState(adjustedYear);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoType[]>([]);
 
   const getData = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
     setLoading(true);
-    const url = `${backend_url}/api/documents/report-1?month=${
-      month !== "" ? month : previousMonth
-    }&year=${year !== "" ? year : adjustedYear}`;
+
+    const queryParams = new URLSearchParams();
+    if (year) queryParams.append("year", year.toString());
+    if (month) queryParams.append("month", month.toString());
+    const url = `${backend_url}/api/documents/report-1?${queryParams}`;
 
     try {
       const res = await fetch(url, {
@@ -124,7 +126,7 @@ export function useDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [adjustedYear, company, month, previousMonth, tokenBack, year]);
+  }, [company, month, tokenBack, year]);
 
   useEffect(() => {
     getData();

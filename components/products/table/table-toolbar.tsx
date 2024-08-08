@@ -1,16 +1,13 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import { useReceipt } from "@/context/sections/receipts-context";
-import { DataTableFacetedFilter } from "./table-faceted-filter";
 import { receiptViewTable } from "@/utils/change-name";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
+import { useProduct } from "@/context/sections/products-context";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -30,8 +27,8 @@ export function DataTableToolbar<TData>({
     setYear,
     year,
     month,
-    getReceipts
-  } = useReceipt();
+    getProducts,
+  } = useProduct();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
     value: id.toString(),
@@ -41,20 +38,20 @@ export function DataTableToolbar<TData>({
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
+        {/* <Input
           placeholder="Buscar por número"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           className="w-[150px] lg:w-[250px]"
-        />
+        /> */}
         <DatePicker
           setMonth={setMonth}
           setYear={setYear}
           year={year}
           month={month}
-          getData={getReceipts}
+          getData={getProducts}
         />
-        {table.getColumn("business_name") && (
+        {/* {table.getColumn("business_name") && (
           <DataTableFacetedFilter
             column={table.getColumn("business_name")}
             title="Proveedores"
@@ -71,16 +68,16 @@ export function DataTableToolbar<TData>({
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
-        )}
+        )} */}
       </div>
       <div className="flex space-x-2">
         <Button variant="outline">
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        <Link href={`${pathname}/create`} className={buttonVariants()}>
+        {/* <Link href={`${pathname}/create`} className={buttonVariants()}>
           Agregar comprobante
-        </Link>
+        </Link> */}
         <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
       </div>
     </div>

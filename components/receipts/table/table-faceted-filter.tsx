@@ -19,7 +19,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
@@ -41,8 +41,10 @@ export function DataTableFacetedFilter<TData, TValue>({
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
   const formatToFilter = Array.from(selectedValues).join(",");
-  setFilter(formatToFilter);
 
+  useEffect(() => {
+    setFilter(formatToFilter);
+  }, [formatToFilter, setFilter]);
 
   return (
     <Popover>

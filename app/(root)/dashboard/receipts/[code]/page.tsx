@@ -25,8 +25,6 @@ export default function Page() {
     document_id: parts[0],
   });
 
-  console.log("receipt", receipt);
-
   return (
     <LayerPage title="Comprobante">
       {receipt ? (
@@ -152,7 +150,11 @@ export default function Page() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PaymentForm type="create" />
+            <PaymentForm
+              type="create"
+              document_code={parts[1]}
+              document_id={parts[0]}
+            />
           </CardContent>
         </Card>
         <Card className="w-full">
@@ -165,7 +167,7 @@ export default function Page() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PaymentsTable />
+            <PaymentsTable document_code={parts[1]} document_id={parts[0]} />
           </CardContent>
         </Card>
       </footer>

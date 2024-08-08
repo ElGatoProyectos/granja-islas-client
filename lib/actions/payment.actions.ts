@@ -1,0 +1,34 @@
+"use server";
+
+import { backend_url } from "@/constants/config";
+
+export async function createPayment({
+  ruc,
+  tokenBack,
+  formData,
+}: {
+  ruc?: string;
+  tokenBack: string;
+  formData: FormData;
+}) {
+  if (!ruc) throw new Error("Failed needs ruc");
+
+  try {
+    const res = await fetch(`${backend_url}/api/vouchers`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokenBack}`,
+        ruc,
+      },
+      body: formData,
+    });
+
+    const data = await res.json();
+    console.log("data", data);
+    if (data.error) {
+      throw new Error("Failed backend to create payment");
+    }
+  } catch (error) {
+    throw new Error("Failed to create payment");
+  }
+}

@@ -19,3 +19,8 @@ export const type_receipts = [
     document_description: "Boleta de venta",
   },
 ];
+
+export const FACTURA = {
+  document_code: "01",
+  document_description: "Factura",
+};

@@ -32,37 +32,43 @@ import {
 import { useBanks } from "@/hooks/useBanks";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import { createPayment } from "@/lib/actions/payment.actions";
+import { useCompanySession } from "@/context/company-context";
+import { PEN } from "@/constants/currency";
 
 interface Props {
   type: "create" | "edit";
-  payment?: PaymentSchemaIN;
-  paymentId?: number;
+  document_code: string;
+  document_id: string;
 }
 
-export function PaymentForm({ type, payment, paymentId }: Props) {
+export function PaymentForm({ type, document_code, document_id }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof createPaymentSchema>>({
     resolver: zodResolver(createPaymentSchema),
     defaultValues: {
-      amount: "",
+      amount_original: "",
       bank_id: "",
       operation_number: "",
       type_currency: "PEN",
-      tc: "",
+      exchange_rate: "",
     },
   });
-  const { userInfo, tokenBack } = useUserInfo();
+  const { tokenBack } = useUserInfo();
+  const { company } = useCompanySession();
 
   async function onSubmit(values: z.infer<typeof createPaymentSchema>) {
     setSubmitting(true);
-    console.log(values);
+
+    if (form.getValues("type_currency") === PEN) {
+      values.exchange_rate = "1";
+    }
     const { voucher, ...payment } = values;
     const formData = new FormData();
-
     if (voucher) {
-      formData.append("company-profile", voucher[0]);
+      formData.append("voucher", voucher[0]);
     }
 
     type PaymentWithoutKey = Omit<PaymentSchemaIN, "id">;
@@ -71,20 +77,26 @@ export function PaymentForm({ type, payment, paymentId }: Props) {
         formData.append(key, payment[key as keyof PaymentWithoutKey]);
       }
     }
+
+    formData.append("document_code", document_code);
+    formData.append("document_id", document_id);
+
     try {
       if (type === "create") {
+        await createPayment({
+          formData,
+          tokenBack,
+          ruc: company?.ruc,
+        });
       }
-
       if (type === "edit") {
       }
-
       toast({
         variant: "success",
         title: `Se ${
           type === "create" ? "creó" : "editó"
         } correctamente el voucher`,
       });
-
       form.reset();
       setSelectedImage(null);
     } catch (e) {
@@ -112,7 +124,7 @@ export function PaymentForm({ type, payment, paymentId }: Props) {
         throw new Error("Failed to fetch TC");
       }
 
-      form.setValue("tc", data.payload.selling.toString());
+      form.setValue("exchange_rate", data.payload.selling.toString());
     } catch (error) {
       console.error("Error to fetch data TC", error);
     }
@@ -134,14 +146,6 @@ export function PaymentForm({ type, payment, paymentId }: Props) {
                 <div className="md:max-w-[100px]">
                   <img
                     src={URL.createObjectURL(selectedImage)}
-                    alt="Selected"
-                    className="rounded-full aspect-square"
-                  />
-                </div>
-              ) : paymentId ? (
-                <div className="md:max-w-[100px]">
-                  <img
-                    src={`${backend_url}/api/companies/file/${paymentId}`}
                     alt="Selected"
                     className="rounded-full aspect-square"
                   />
@@ -275,34 +279,37 @@ export function PaymentForm({ type, payment, paymentId }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="tc"
-              render={({ field }) => (
-                <FormItem className="w-full relative">
-                  <FormLabel>TC</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    className="absolute top-6 right-0"
-                    onClick={getTC}
-                  >
-                    <Search className="shrink-0 stroke-primary" />
-                    <span className="sr-only">Buscar TC</span>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            {form.getValues("type_currency") === PEN ? null : (
+              <FormField
+                control={form.control}
+                name="exchange_rate"
+                render={({ field }) => (
+                  <FormItem className="w-full relative">
+                    <FormLabel>TC</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="absolute top-6 right-0"
+                      onClick={getTC}
+                    >
+                      <Search className="shrink-0 stroke-primary" />
+                      <span className="sr-only">Buscar TC</span>
+                    </Button>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
 
           <FormField
             control={form.control}
-            name="amount"
+            name="amount_original"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Monto</FormLabel>
@@ -314,7 +321,9 @@ export function PaymentForm({ type, payment, paymentId }: Props) {
             )}
           />
 
-          <Button className="w-full">Agregar</Button>
+          <Button className="w-full" disabled={submitting}>
+            Agregar
+          </Button>
         </form>
       </Form>
     </section>
