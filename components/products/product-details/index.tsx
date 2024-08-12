@@ -12,9 +12,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CONTADO } from "@/constants/type-receipt";
 import { useProductDetails } from "@/context/sections/product-details";
 import { formatDate } from "@/utils/format-date";
+import { ProductLabels } from "./product-labels";
 
 export function ProductDetails() {
-  const { productDetails, id_product, getProductDetails } = useProductDetails();
+  const {
+    productDetails,
+    id_product,
+    getProductDetails,
+    removeLabelOfProduct,
+  } = useProductDetails();
+
   return (
     <section className="space-y-6">
       {productDetails ? (
@@ -77,13 +84,10 @@ export function ProductDetails() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="mb-4 flex gap-2">
-                  {productDetails.labels.map(({ id, title }) => (
-                    <Badge key={id} className="text-sm" variant="secondary">
-                      {title}
-                    </Badge>
-                  ))}
-                </div>
+                <ProductLabels
+                  productDetails={productDetails}
+                  removeLabelOfProduct={removeLabelOfProduct}
+                />
                 <MultipleSelect
                   id_product={id_product}
                   savedLabels={productDetails.labels}
