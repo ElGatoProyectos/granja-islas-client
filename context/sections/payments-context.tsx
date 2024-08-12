@@ -62,10 +62,6 @@ export const PaymentProvider = ({
   const input = useDebounce(search);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
-  const [idSupplier, setIdSupplier] = useState("");
-  const [supplierFilter, setsupplierFilter] = useState<SupplierSchemaFilter[]>(
-    []
-  );
 
   const getPayments = useCallback(async () => {
     if (!company) return;
@@ -79,7 +75,6 @@ export const PaymentProvider = ({
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
       if (year) queryParams.append("year", year);
-      if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
       const url = `${backend_url}/api/labels/report?${queryParams
         .toString()
@@ -95,21 +90,6 @@ export const PaymentProvider = ({
         },
       });
 
-      const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
-      const resSuppliers = await fetch(urlSuppliers, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-          ruc: company.ruc,
-        },
-      });
-
-      const dataSupp = await resSuppliers.json();
-      const formatFilterSupplier = supplierArraySchemaFilter.parse(
-        dataSupp.payload
-      );
-      setsupplierFilter(formatFilterSupplier);
-
       const data = await res.json();
       console.log(data);
       const formatdata = receiptArraySchemaIN.parse(data.payload.data);
@@ -124,7 +104,7 @@ export const PaymentProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, currentPage, limit, input, month, year, idSupplier]);
+  }, [company, tokenBack, currentPage, limit, input, month, year]);
 
   useEffect(() => {
     getPayments();
@@ -147,9 +127,6 @@ export const PaymentProvider = ({
       month,
       setYear,
       year,
-      setIdSupplier,
-      idSupplier,
-      supplierFilter,
     }),
     [
       payments,
@@ -162,8 +139,6 @@ export const PaymentProvider = ({
       search,
       month,
       year,
-      idSupplier,
-      supplierFilter,
     ]
   );
   return (
@@ -174,7 +149,7 @@ export const PaymentProvider = ({
 export function usePayment() {
   const context = useContext(PaymentContext);
   if (!context) {
-    throw new Error("useList should be used inside of provider");
+    throw new Error("usePayment should be used inside of provider");
   }
   return context;
 }

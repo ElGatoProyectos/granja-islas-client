@@ -48,3 +48,18 @@ const receiptTranslationView: TranslationDict = {
 export function receiptViewTable(key: string) {
   return receiptTranslationView[key] || key;
 }
+
+const listTranslationView: TranslationDict = {
+  label: "Etiqueta de producto",
+  lastPurchaseDate: "Ultima compra",
+  currencyCode: "Moneda",
+  lastPrice: "Ultimo precio",
+  averagePrice: "Precio promedio",
+  lowestPrice: "Precio mas bajo",
+  business_name: "Proveedor",
+  business_status: "Estado",
+};
+
+export function listViewTable(key: string) {
+  return listTranslationView[key] || key;
+}

@@ -9,18 +9,14 @@ import { useRouter } from "next/navigation";
 import { useUserInfo } from "@/context/user-context";
 import { USER } from "@/constants/roles";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UpdateCompanySchema } from "@/lib/validations/auth/company";
+import { CompanySchemaIN } from "@/lib/validations/auth/company";
 
-export function CompanyList({
-  companies,
-}: {
-  companies?: UpdateCompanySchema[];
-}) {
+export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
   const { setCompany } = useCompanySession();
   const route = useRouter();
   const { userInfo } = useUserInfo();
 
-  const handleCompany = ({ company }: { company: UpdateCompanySchema }) => {
+  const handleCompany = ({ company }: { company: CompanySchemaIN }) => {
     setCompany(company);
     if (userInfo?.role === USER) {
       route.push("/payments");

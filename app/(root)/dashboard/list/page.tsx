@@ -1,3 +1,5 @@
+"use client";
+
 import { ListsDataTable } from "@/components/lists/table";
 import { ListProvider } from "@/context/sections/lists-context";
 

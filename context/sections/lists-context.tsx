@@ -18,13 +18,12 @@ import {
 import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  receiptArraySchemaIN,
-  ReceiptSchemaIN,
-} from "@/lib/validations/receipt";
+import { responseSchema } from "@/lib/validations/response";
+import { listsArraySchemaIN, ListsSchemaIN } from "@/lib/validations/list";
+import { paginationSchema } from "@/lib/validations/pagination";
 
 interface ListContextType {
-  lists: ReceiptSchemaIN[];
+  lists: ListsSchemaIN[];
   getLists: () => Promise<void>;
   loading: boolean;
   totalPages: number;
@@ -49,7 +48,7 @@ export const ListContext = createContext<ListContextType | null>(null);
 export const ListProvider = ({ children }: { children: React.ReactNode }) => {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const [lists, setLists] = useState<ReceiptSchemaIN[]>([]);
+  const [lists, setLists] = useState<ListsSchemaIN[]>([]);
   const [loading, setLoading] = useState(false);
   /* pagination */
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,15 +108,27 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
       );
       setsupplierFilter(formatFilterSupplier);
 
-      const data = await res.json();
-      console.log(data);
-      const formatdata = receiptArraySchemaIN.parse(data.payload.data);
-
-      setLists(formatdata);
-      setTotalPages(data.payload.pageCount);
-      setTotalElements(data.payload.total);
-      setCurrentPage(data.payload.page);
-      setLimit(data.payload.limit);
+      const resJSON = await res.json();
+      const { error, message, payload, statusCode } =
+        responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("error to fetch lists");
+      }
+      const {
+        data,
+        limit: MaxLimit,
+        page,
+        pageCount,
+        total,
+      } = paginationSchema.parse(payload);
+      console.log("payload", payload);
+      const parseLists = listsArraySchemaIN.parse(data);
+      console.log("parseLists", parseLists);
+      setLists(parseLists);
+      setTotalPages(pageCount);
+      setTotalElements(total);
+      setCurrentPage(page);
+      setLimit(MaxLimit);
     } catch (error) {
       console.error("Error to fetch data receipts", error);
     } finally {

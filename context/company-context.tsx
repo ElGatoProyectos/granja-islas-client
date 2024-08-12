@@ -1,6 +1,6 @@
 "use client";
 
-import { UpdateCompanySchema } from "@/lib/validations/auth/company";
+import { CompanySchemaIN } from "@/lib/validations/auth/company";
 import {
   createContext,
   Dispatch,
@@ -12,8 +12,8 @@ import {
 } from "react";
 
 interface CompanyContextType {
-  company: UpdateCompanySchema | null;
-  setCompany: Dispatch<SetStateAction<UpdateCompanySchema | null>>;
+  company: CompanySchemaIN | null;
+  setCompany: Dispatch<SetStateAction<CompanySchemaIN | null>>;
 }
 
 export const CompanyContext = createContext<CompanyContextType | null>(null);
@@ -23,7 +23,32 @@ export const CompanyProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [company, setCompany] = useState<UpdateCompanySchema | null>(null);
+  const [company, setCompany] = useState<CompanySchemaIN | null>(null);
+
+  // const getCompanies = useCallback(async () => {
+  //   try {
+  //     const res = await fetch(`${backend_url}/api/companies`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${tokenBack}`,
+  //       },
+  //     });
+
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch companies");
+  //     }
+
+  //     const data = await res.json();
+  //     const parseData = responseArraySchema.parse(data);
+  //     const parseCompany = companyArraySchemaIN.parse(parseData.payload);
+  //     console.log(parseCompany);
+  //   } catch (error) {
+  //     console.error("Error to fetch data", error);
+  //   }
+  // }, [tokenBack]);
+  // useEffect(() => {
+  //   getCompanies();
+  // }, [getCompanies]);
 
   useEffect(() => {
     const storedCompany = localStorage.getItem("selectedCompany");

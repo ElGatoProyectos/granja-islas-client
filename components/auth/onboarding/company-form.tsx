@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
+  CompanySchemaIN,
   CreateCompanySchema,
   createCompanySchema,
 } from "@/lib/validations/auth/company";
@@ -32,7 +33,6 @@ import { Image as AddImage, Pencil, Plus, Search, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
 import { backend_url } from "@/constants/config";
-import { CompanyFetch } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
@@ -40,7 +40,7 @@ import { USER } from "@/constants/roles";
 
 interface Props {
   type: "create" | "edit";
-  company?: CreateCompanySchema;
+  company?: CompanySchemaIN;
   companyId?: number;
 }
 
@@ -76,7 +76,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     if (image) {
       formData.append("company-profile", image[0]);
     }
-    type CompanyWithoutKey = Omit<CompanyFetch, "id">;
+    type CompanyWithoutKey = Omit<CreateCompanySchema, "image">;
     for (const key in company) {
       if (company.hasOwnProperty(key)) {
         formData.append(key, company[key as keyof CompanyWithoutKey]);

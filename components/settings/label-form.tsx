@@ -31,8 +31,8 @@ export function LabelForm() {
   const [editLabelId, setEditLabelId] = useState<string | null>(null);
   const [editInputValue, setEditInputValue] = useState("");
   const { company } = useCompanySession();
-  const { labels, loadingLabel, getLabels } = useLabels();
   const { tokenBack } = useUserInfo();
+  const { labels, loadingLabel, getLabels } = useLabels();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,10 +95,10 @@ export function LabelForm() {
                 key={id}
                 className={cn(
                   "flex justify-between items-center text-sm relative group rounded-lg",
-                  editLabelId === id ? "" : "pl-3 hover:bg-muted/40"
+                  editLabelId === id.toString() ? "" : "pl-3 hover:bg-muted/40"
                 )}
               >
-                {editLabelId === id ? (
+                {editLabelId === id.toString() ? (
                   <form
                     onSubmit={handleEditSubmit}
                     className="flex w-full items-center space-x-2"
@@ -119,7 +119,7 @@ export function LabelForm() {
                         variant="ghost"
                         onClick={() => setEditLabelId(null)}
                       >
-                        <X className="stroke-destructive" />
+                        <X className="stroke-red-500" />
                         <span className="sr-only">Cancelar</span>
                       </Button>
                     </div>
@@ -131,7 +131,7 @@ export function LabelForm() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEditClick(id, title)}
+                        onClick={() => handleEditClick(id.toString(), title)}
                       >
                         <Pencil className="stroke-primary h-6 w-6" />
                         <span className="sr-only">Editar empresa</span>
@@ -159,7 +159,7 @@ export function LabelForm() {
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
-                              onClick={() => handleDelete(id)}
+                              onClick={() => handleDelete(id.toString())}
                               className={buttonVariants({
                                 variant: "destructive",
                               })}

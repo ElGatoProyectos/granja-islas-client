@@ -23,16 +23,11 @@ import { Skeleton } from "../ui/skeleton";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { cn } from "@/lib/utils";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { getCompany } from "@/lib/actions/company.actions";
-import { UpdateCompanySchema } from "@/lib/validations/auth/company";
-import { Badge } from "../ui/badge";
+import { CompanySchemaIN } from "@/lib/validations/auth/company";
 
-export function UserDropdown({
-  companies,
-}: {
-  companies?: UpdateCompanySchema[];
-}) {
+export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
   const { loading, userInfo } = useUserInfo();
   const { company, setCompany } = useCompanySession();
   const [changeCompany, setChangeCompany] = useState("");

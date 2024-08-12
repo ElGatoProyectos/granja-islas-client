@@ -18,20 +18,16 @@ import {
 import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  receiptArraySchemaIN,
-  ReceiptSchemaIN,
-} from "@/lib/validations/receipt";
 import { responseSchema } from "@/lib/validations/response";
 import {
-  productArraySchemaIN,
-  ProductSchemaIN,
-  productSchemaIN,
+  formatProductTable,
+  ProductSchemaINFormated,
+  productTableArrayReportIN,
 } from "@/lib/validations/product";
 import { paginationSchema } from "@/lib/validations/pagination";
 
 interface ReceiptContextType {
-  products: ProductSchemaIN[];
+  products: ProductSchemaINFormated[];
   getProducts: () => Promise<void>;
   loading: boolean;
   totalPages: number;
@@ -63,7 +59,7 @@ export const ProductProvider = ({
 }) => {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const [products, setProducts] = useState<ProductSchemaIN[]>([]);
+  const [products, setProducts] = useState<ProductSchemaINFormated[]>([]);
   const [loading, setLoading] = useState(false);
   /* pagination */
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,7 +92,7 @@ export const ProductProvider = ({
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
-      const url = `${backend_url}/api/products?${queryParams
+      const url = `${backend_url}/api/products/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -139,9 +135,10 @@ export const ProductProvider = ({
         total,
       } = paginationSchema.parse(payload);
       console.log("data", data);
-      const parseProduct = productArraySchemaIN.parse(data);
+      const parseproductTable = productTableArrayReportIN.parse(data);
+      const formatProduct = formatProductTable(parseproductTable);
 
-      setProducts(parseProduct);
+      setProducts(formatProduct);
       setTotalPages(pageCount);
       setTotalElements(total);
       setCurrentPage(page);

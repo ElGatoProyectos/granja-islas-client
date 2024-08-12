@@ -22,7 +22,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const receipt = productSchemaIN.parse(row.original);
+  const product = productSchemaIN.parse(row.original);
   const pathname = usePathname();
 
   return (
@@ -38,14 +38,14 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(receipt.id.toString())}
+          onClick={() => navigator.clipboard.writeText(product.id.toString())}
         >
           Copiar id
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {/* <Link href={`${pathname}/${receipt.id}-${receipt.document_code}`}>
+        <Link href={`${pathname}/${product.id}`}>
           <DropdownMenuItem>Ver detalles</DropdownMenuItem>
-        </Link> */}
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );

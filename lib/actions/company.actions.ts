@@ -3,7 +3,7 @@
 import { authOptions } from "@/app/api/auth-options";
 import { backend_url } from "@/constants/config";
 import { getServerSession } from "next-auth";
-import { UpdateCompanySchema } from "../validations/auth/company";
+import { CompanySchemaIN } from "../validations/auth/company";
 import { revalidatePath } from "next/cache";
 
 export async function getCompany({
@@ -36,7 +36,7 @@ export async function getCompany({
 }
 
 export const getCompanies = async (): Promise<
-  UpdateCompanySchema[] | undefined
+  CompanySchemaIN[] | undefined
 > => {
   const session = await getServerSession(authOptions);
 
@@ -125,7 +125,6 @@ export async function updateCompany({
     },
     body: formData,
   });
- 
 
   revalidatePath("/onboarding");
 
