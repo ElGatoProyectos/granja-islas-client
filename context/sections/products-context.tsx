@@ -25,6 +25,10 @@ import {
   productTableArrayReportIN,
 } from "@/lib/validations/product";
 import { paginationSchema } from "@/lib/validations/pagination";
+import {
+  labelArraySchemaFilter,
+  LabelSchemaFilter,
+} from "@/lib/validations/label";
 
 interface ReceiptContextType {
   products: ProductSchemaINFormated[];
@@ -76,7 +80,7 @@ export const ProductProvider = ({
     []
   );
   const [idLabel, setIdLabel] = useState("");
-  const [labelFilter, setLabelFilter] = useState([]);
+  const [labelFilter, setLabelFilter] = useState<LabelSchemaFilter[]>([]);
 
   const getProducts = useCallback(async () => {
     if (!company) return;
@@ -91,6 +95,7 @@ export const ProductProvider = ({
       if (month) queryParams.append("month", month);
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
+      if (idLabel) queryParams.append("label_group_id", idLabel);
 
       const url = `${backend_url}/api/products/report?${queryParams
         .toString()
@@ -103,7 +108,7 @@ export const ProductProvider = ({
           ruc: company.ruc,
         },
       });
-
+      /* suppliers filter */
       const resSuppliers = await fetch(
         `${backend_url}/api/suppliers/no-pagination`,
         {
@@ -121,6 +126,21 @@ export const ProductProvider = ({
       );
       setsupplierFilter(formatFilterSupplier);
 
+      /* labels filter */
+      const resLabel = await fetch(`${backend_url}/api/labels`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company?.ruc,
+        },
+      });
+
+      const resLabelJSON = await resLabel.json();
+      const parseLabel = labelArraySchemaFilter.parse(resLabelJSON.payload);
+      setLabelFilter(parseLabel);
+
+      /* res table */
+
       const resJSON = await res.json();
       const { error, message, statusCode, payload } =
         responseSchema.parse(resJSON);
@@ -134,7 +154,6 @@ export const ProductProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
-      console.log("data", data);
       const parseproductTable = productTableArrayReportIN.parse(data);
       const formatProduct = formatProductTable(parseproductTable);
 
@@ -148,7 +167,17 @@ export const ProductProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, currentPage, limit, input, month, year, idSupplier]);
+  }, [
+    company,
+    tokenBack,
+    currentPage,
+    limit,
+    input,
+    month,
+    year,
+    idSupplier,
+    idLabel,
+  ]);
 
   useEffect(() => {
     getProducts();

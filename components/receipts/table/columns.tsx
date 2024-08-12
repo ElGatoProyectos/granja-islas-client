@@ -14,11 +14,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Número" />
     ),
     cell: ({ row }) => {
-      return (
-        <span className="w-fit truncate font-medium">
-          {row.getValue("code")}
-        </span>
-      );
+      return <span className="w-fit truncate">{row.getValue("code")}</span>;
     },
     enableSorting: false,
   },
@@ -29,11 +25,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="RUC" />
     ),
     cell: ({ row }) => {
-      return (
-        <span className="w-fit truncate font-medium">
-          {row.getValue("ruc")}
-        </span>
-      );
+      return <span className="w-fit truncate">{row.getValue("ruc")}</span>;
     },
     enableSorting: false,
   },
@@ -46,7 +38,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     cell: ({ row }) => {
       const business_name = row.getValue("business_name") as string;
       return (
-        <p className="w-[200px] text-balance font-medium capitalize">
+        <p className="w-[200px] text-balance capitalize">
           {business_name.toLowerCase()}
         </p>
       );

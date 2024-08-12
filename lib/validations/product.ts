@@ -24,6 +24,7 @@ export const productSchemaIN = z.object({
   amount: z.number(),
   price: z.number(),
   igv: z.number().nullable(),
+  total: z.number().nullable(),
   slug: z.string(),
   unit_measure: z.string(),
   supplier_id: z.number(),

@@ -41,7 +41,6 @@ export const CompanyProvider = ({
   //     const data = await res.json();
   //     const parseData = responseArraySchema.parse(data);
   //     const parseCompany = companyArraySchemaIN.parse(parseData.payload);
-  //     console.log(parseCompany);
   //   } catch (error) {
   //     console.error("Error to fetch data", error);
   //   }

@@ -15,9 +15,9 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
       return (
-        <span className="w-fit truncate font-medium capitalize">
+        <p className="w-[200px] text-balance truncate capitalize">
           {title.toLowerCase()}
-        </span>
+        </p>
       );
     },
   },
@@ -27,11 +27,7 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="Número" />
     ),
     cell: ({ row }) => {
-      return (
-        <span className="w-fit truncate font-medium">
-          {row.getValue("code")}
-        </span>
-      );
+      return <span className="w-fit truncate">{row.getValue("code")}</span>;
     },
     enableSorting: false,
   },
@@ -43,11 +39,7 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     ),
     cell: ({ row }) => {
       const issue_date = row.getValue("issue_date") as string;
-      return (
-        <span className="w-fit truncate font-medium">
-          {formatDate(issue_date)}
-        </span>
-      );
+      return <span className="w-fit truncate">{formatDate(issue_date)}</span>;
     },
     enableSorting: false,
   },
@@ -58,26 +50,22 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="RUC" />
     ),
     cell: ({ row }) => {
-      return (
-        <span className="w-fit truncate font-medium">
-          {row.getValue("ruc")}
-        </span>
-      );
+      return <span className="w-fit truncate">{row.getValue("ruc")}</span>;
     },
     enableSorting: false,
   },
   {
-    accessorKey: "bussines_name",
+    accessorKey: "business_name",
     accessorFn: (row) => `${row.Supplier.business_name}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Proveedor" />
     ),
     cell: ({ row }) => {
-      const bussines_name = row.getValue("bussines_name") as string;
+      const business_name = row.getValue("business_name") as string;
       return (
-        <span className="w-fit truncate font-medium capitalize">
-          {bussines_name.toLowerCase()}
-        </span>
+        <p className="w-[200px] text-balance capitalize">
+          {business_name.toLowerCase()}
+        </p>
       );
     },
   },
@@ -87,11 +75,7 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="Cantidad" />
     ),
     cell: ({ row }) => {
-      return (
-        <span className="w-fit truncate font-medium">
-          {row.getValue("amount")}
-        </span>
-      );
+      return <span className="w-fit truncate">{row.getValue("amount")}</span>;
     },
     enableSorting: false,
   },
@@ -103,9 +87,7 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     cell: ({ row }) => {
       const unit_measure = row.getValue("unit_measure") as string;
       return (
-        <p className="text-balance font-medium capitalize">
-          {unit_measure.toLowerCase()}
-        </p>
+        <p className="text-balance capitalize">{unit_measure.toLowerCase()}</p>
       );
     },
     enableSorting: false,
@@ -119,6 +101,34 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       return (
         <div className="flex items-center">
           <span>{row.getValue("price")}</span>
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "igv",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="IGV" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("igv")}</span>
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "total",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Importe Total" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("total")}</span>
         </div>
       );
     },

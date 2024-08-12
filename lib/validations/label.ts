@@ -13,3 +13,10 @@ export const labelSchemaIN = z.object({
 export const labelArraySchemaIN = z.array(labelSchemaIN);
 
 export type LabelSchemaIN = z.infer<typeof labelSchemaIN>;
+
+export const labelSchemaFilter = z.object({
+  id: z.number(),
+  title: z.string(),
+});
+export const labelArraySchemaFilter = z.array(labelSchemaFilter);
+export type LabelSchemaFilter = z.infer<typeof labelSchemaFilter>;

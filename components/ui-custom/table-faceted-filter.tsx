@@ -1,3 +1,5 @@
+import { Column } from "@tanstack/react-table";
+
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -17,9 +19,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
-interface MultiSelectType {
-  title: string;
+interface DataTableFacetedFilterProps<TData, TValue> {
+  column?: Column<TData, TValue>;
+  title?: string;
+  setFilter: Dispatch<SetStateAction<string>>;
   options: {
     label: string;
     value: string;
@@ -27,9 +32,20 @@ interface MultiSelectType {
   }[];
 }
 
-export function MultiSelectLilNait({ title, options }: MultiSelectType) {
-  // array de strings
-  const selectedValues = new Set(["1", "2"] as string[]);
+export function DataTableFacetedFilter<TData, TValue>({
+  column,
+  title,
+  options,
+  setFilter,
+}: DataTableFacetedFilterProps<TData, TValue>) {
+  const facets = column?.getFacetedUniqueValues();
+  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const formatToFilter = Array.from(selectedValues).join(",");
+
+  useEffect(() => {
+    setFilter(formatToFilter);
+  }, [formatToFilter, setFilter]);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -88,12 +104,10 @@ export function MultiSelectLilNait({ title, options }: MultiSelectType) {
                       } else {
                         selectedValues.add(option.value);
                       }
-                      console.log("wtf");
                       const filterValues = Array.from(selectedValues);
-                      // filtrar
-                      //   column?.setFilterValue(
-                      //     filterValues.length ? filterValues : undefined
-                      //   );
+                      column?.setFilterValue(
+                        filterValues.length ? filterValues : undefined
+                      );
                     }}
                   >
                     <div
@@ -110,15 +124,28 @@ export function MultiSelectLilNait({ title, options }: MultiSelectType) {
                       <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                     )}
                     <span className="capitalize">{option.label}</span>
-                    {/* {facets?.get(option.value) && (
+                    {facets?.get(option.value) && (
                       <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                         {facets.get(option.value)}
                       </span>
-                    )} */}
+                    )}
                   </CommandItem>
                 );
               })}
             </CommandGroup>
+            {selectedValues.size > 0 && (
+              <>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem
+                    onSelect={() => column?.setFilterValue(undefined)}
+                    className="justify-center text-center"
+                  >
+                    Limpiar filtros
+                  </CommandItem>
+                </CommandGroup>
+              </>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

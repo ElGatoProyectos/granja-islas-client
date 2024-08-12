@@ -19,7 +19,6 @@ export function MultipleSelect({
   const [value, setValue] = useState<Option[]>([]);
   const { labels, assignLabelToProduct, setAssignLabel } = useLabels();
   const { toast } = useToast();
-  console.log("value", value);
   const handleChange = (value: Option[]) => {
     const formated = value.map(({ value }) => Number(value));
     setAssignLabel(formated);

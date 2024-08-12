@@ -8,6 +8,8 @@ import { receiptViewTable } from "@/utils/change-name";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
 import { useProduct } from "@/context/sections/products-context";
+import { Input } from "@/components/ui/input";
+import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -17,7 +19,6 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const pathname = usePathname();
   const {
     setSearch,
     search,
@@ -28,6 +29,8 @@ export function DataTableToolbar<TData>({
     year,
     month,
     getProducts,
+    setIdLabel,
+    labelFilter,
   } = useProduct();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -35,15 +38,20 @@ export function DataTableToolbar<TData>({
     label: business_name.toLowerCase(),
   }));
 
+  const options2 = labelFilter.map(({ id, title }) => ({
+    value: id.toString(),
+    label: title.toLowerCase(),
+  }));
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        {/* <Input
-          placeholder="Buscar por número"
+        <Input
+          placeholder="Buscar producto"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           className="w-[150px] lg:w-[250px]"
-        /> */}
+        />
         <DatePicker
           setMonth={setMonth}
           setYear={setYear}
@@ -51,7 +59,7 @@ export function DataTableToolbar<TData>({
           month={month}
           getData={getProducts}
         />
-        {/* {table.getColumn("business_name") && (
+        {table.getColumn("business_name") && (
           <DataTableFacetedFilter
             column={table.getColumn("business_name")}
             title="Proveedores"
@@ -59,6 +67,15 @@ export function DataTableToolbar<TData>({
             setFilter={setIdSupplier}
           />
         )}
+        {table.getColumn("title") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("title")}
+            title="Etiquetas"
+            options={options2}
+            setFilter={setIdLabel}
+          />
+        )}
+
         {isFiltered && (
           <Button
             variant="ghost"
@@ -68,16 +85,13 @@ export function DataTableToolbar<TData>({
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
-        )} */}
+        )}
       </div>
       <div className="flex space-x-2">
         <Button variant="outline">
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        {/* <Link href={`${pathname}/create`} className={buttonVariants()}>
-          Agregar comprobante
-        </Link> */}
         <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
       </div>
     </div>

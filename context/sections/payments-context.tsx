@@ -80,8 +80,6 @@ export const PaymentProvider = ({
         .toString()
         .replace(/%2C/g, ",")}`;
 
-      console.log("url", url);
-
       const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -91,7 +89,6 @@ export const PaymentProvider = ({
       });
 
       const data = await res.json();
-      console.log(data);
       const formatdata = receiptArraySchemaIN.parse(data.payload.data);
 
       setPayments(formatdata);

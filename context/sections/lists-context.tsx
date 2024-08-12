@@ -83,8 +83,6 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
         .toString()
         .replace(/%2C/g, ",")}`;
 
-      console.log("url", url);
-
       const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -121,9 +119,7 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
         pageCount,
         total,
       } = paginationSchema.parse(payload);
-      console.log("payload", payload);
       const parseLists = listsArraySchemaIN.parse(data);
-      console.log("parseLists", parseLists);
       setLists(parseLists);
       setTotalPages(pageCount);
       setTotalElements(total);
