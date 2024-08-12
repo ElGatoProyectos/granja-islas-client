@@ -36,6 +36,7 @@ export function LabelForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!inputValue) return;
     await createLabel({ ruc: company?.ruc, tokenBack, title: inputValue });
     setInputValue("");
     getLabels();

@@ -8,6 +8,7 @@ export const listsSchemaIN = z.object({
   lastPrice: z.number(),
   averagePrice: z.number(),
   lowestPrice: z.number(),
+  higher_price: z.number(),
   supplier: supplierSchemaIN,
 });
 

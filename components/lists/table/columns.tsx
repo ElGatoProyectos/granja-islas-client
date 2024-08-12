@@ -70,9 +70,10 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Precio promedio" />
     ),
     cell: ({ row }) => {
+      const averagePrice = row.getValue("averagePrice") as number;
       return (
         <span className="w-fit truncate font-medium">
-          {row.getValue("averagePrice")}
+          {averagePrice.toFixed(2)}
         </span>
       );
     },
@@ -84,9 +85,25 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Precio mas bajo" />
     ),
     cell: ({ row }) => {
+      const lowestPrice = row.getValue("lowestPrice") as number;
       return (
         <span className="w-fit truncate font-medium">
-          {row.getValue("lowestPrice")}
+          {lowestPrice.toFixed(2)}
+        </span>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "higher_price",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Precio mas Alto" />
+    ),
+    cell: ({ row }) => {
+      const higher_price = row.getValue("higher_price") as number;
+      return (
+        <span className="w-fit truncate font-medium">
+          {higher_price.toFixed(2)}
         </span>
       );
     },
@@ -102,9 +119,10 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
       />
     ),
     cell: ({ row }) => {
+      const business_name = row.getValue("business_name") as string;
       return (
-        <p className="w-[200px] text-balance font-medium">
-          {row.getValue("business_name")}
+        <p className="w-[200px] capitalize text-balance font-medium">
+          {business_name.toLowerCase()}
         </p>
       );
     },
@@ -117,9 +135,10 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => {
+      const business_status = row.getValue("business_status") as string;
       return (
-        <div className="flex items-center">
-          <span>{row.getValue("business_status")}</span>
+        <div className="flex items-center capitalize">
+          <span>{business_status.toLowerCase()}</span>
         </div>
       );
     },

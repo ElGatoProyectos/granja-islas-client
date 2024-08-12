@@ -8,6 +8,8 @@ import { listViewTable } from "@/utils/change-name";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
 import { useList } from "@/context/sections/lists-context";
+import { Input } from "@/components/ui/input";
+import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -38,12 +40,12 @@ export function DataTableToolbar<TData>({
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        {/* <Input
-          placeholder="Buscar por número"
+        <Input
+          placeholder="Buscar por etiqueta"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           className="w-[150px] lg:w-[250px]"
-        /> */}
+        />
         <DatePicker
           setMonth={setMonth}
           setYear={setYear}
@@ -51,7 +53,7 @@ export function DataTableToolbar<TData>({
           month={month}
           getData={getLists}
         />
-        {/* {table.getColumn("business_name") && (
+        {table.getColumn("business_name") && (
           <DataTableFacetedFilter
             column={table.getColumn("business_name")}
             title="Proveedores"
@@ -68,16 +70,13 @@ export function DataTableToolbar<TData>({
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
-        )} */}
+        )}
       </div>
       <div className="flex space-x-2">
         <Button variant="outline">
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        {/* <Link href={`${pathname}/create`} className={buttonVariants()}>
-          Agregar comprobante
-        </Link> */}
         <DataTableViewOptions table={table} changeTitle={listViewTable} />
       </div>
     </div>

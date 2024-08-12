@@ -91,6 +91,7 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
         },
       });
 
+      /* filter suppliers */
       const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
       const resSuppliers = await fetch(urlSuppliers, {
         method: "GET",
@@ -119,7 +120,9 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
         pageCount,
         total,
       } = paginationSchema.parse(payload);
+      console.log("payload", payload);
       const parseLists = listsArraySchemaIN.parse(data);
+      console.log("parseLists", parseLists);
       setLists(parseLists);
       setTotalPages(pageCount);
       setTotalElements(total);

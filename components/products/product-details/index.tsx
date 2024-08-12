@@ -106,7 +106,7 @@ export function ProductDetails() {
                 <div className="flex justify-between">
                   <span>Tipo de comprobante</span>
                   <p className="text-muted-foreground capitalize">
-                    bill_status_payment
+                    {productDetails.document.bill_status_payment.toLowerCase()}
                   </p>
                 </div>
                 <div className="flex justify-between">

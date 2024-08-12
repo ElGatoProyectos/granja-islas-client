@@ -55,16 +55,13 @@ export async function deleteBank({
       },
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to delete bank");
-    }
-
     const data = await res.json();
+    console.log("data", data);
     if (data.error) {
       throw new Error("Failed backend to delete bank");
     }
   } catch (error) {
-    console.error("Error to delete data bank", error);
+    throw new Error("Failed to delete bank");
   }
 }
 

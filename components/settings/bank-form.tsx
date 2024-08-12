@@ -21,6 +21,7 @@ import { useBanks } from "@/hooks/useBanks";
 import { useCompanySession } from "@/context/company-context";
 import { createBank, deleteBank, updateBank } from "@/lib/actions/bank.actions";
 import { useUserInfo } from "@/context/user-context";
+import { useToast } from "../ui/use-toast";
 
 export function BankForm() {
   const [inputValue, setInputValue] = useState("");
@@ -29,6 +30,7 @@ export function BankForm() {
   const { company } = useCompanySession();
   const { banks, getBanks, loadingBanks } = useBanks();
   const { tokenBack } = useUserInfo();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,8 +60,19 @@ export function BankForm() {
   };
 
   const handleDelete = async (id: string) => {
-    await deleteBank({ idBank: id, tokenBack, ruc: company?.ruc });
-    getBanks();
+    try {
+      await deleteBank({ idBank: id, tokenBack, ruc: company?.ruc });
+      getBanks();
+      toast({
+        variant: "success",
+        title: "Se elimino el banco correctamente",
+      });
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Ocurrio un error al eliminar el banco",
+      });
+    }
   };
 
   return (
@@ -90,10 +103,10 @@ export function BankForm() {
                 key={id}
                 className={cn(
                   "flex justify-between items-center text-sm relative group hover:bg-muted/40 rounded-lg",
-                  editBankId === id ? "" : "pl-3 "
+                  editBankId === id.toString() ? "" : "pl-3 "
                 )}
               >
-                {editBankId === id ? (
+                {editBankId === id.toString() ? (
                   <form
                     onSubmit={handleEditSubmit}
                     className="flex w-full items-center space-x-2"
@@ -126,7 +139,7 @@ export function BankForm() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleEditClick(id, title)}
+                        onClick={() => handleEditClick(id.toString(), title)}
                       >
                         <Pencil className="stroke-primary h-6 w-6" />
                         <span className="sr-only">Editar banco</span>
@@ -153,7 +166,7 @@ export function BankForm() {
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
-                              onClick={() => handleDelete(id)}
+                              onClick={() => handleDelete(id.toString())}
                               className={buttonVariants({
                                 variant: "destructive",
                               })}

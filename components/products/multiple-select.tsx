@@ -44,6 +44,8 @@ export function MultipleSelect({
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!value.length) return;
+
     try {
       await assignLabelToProduct({ id_product, getProductDetails });
       toast({
