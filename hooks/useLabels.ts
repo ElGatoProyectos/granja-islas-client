@@ -24,15 +24,14 @@ export function useLabels() {
         },
       });
 
-      if (!res.ok) {
+      const data = await res.json();
+      if (data.error) {
         throw new Error("Failed to fetch labels");
       }
-
-      const data = await res.json();
       const parseLabel = labelArraySchemaIN.parse(data.payload);
       setLabels(parseLabel.reverse());
     } catch (error) {
-      console.error("Error to fetch data labels", error);
+      throw new Error("Failed to fetch labels");
     } finally {
       setLoading(false);
     }

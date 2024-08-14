@@ -63,3 +63,16 @@ const listTranslationView: TranslationDict = {
 export function listViewTable(key: string) {
   return listTranslationView[key] || key;
 }
+
+const documentsLabelTranslationView: TranslationDict = {
+  issue_date: "Fecha de emisión",
+  code: "Número",
+  ruc: "RUC",
+  business_name: "Proveedor",
+  currency_code: "Moneda",
+  price: "Precio unitario",
+};
+
+export function documentsLabelViewTable(key: string) {
+  return documentsLabelTranslationView[key] || key;
+}

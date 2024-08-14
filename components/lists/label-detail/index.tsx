@@ -1,22 +1,22 @@
-import { usePayment } from "@/context/sections/payments-context";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { useLabelDocuments } from "@/context/sections/document-label-context";
 
-export function PaymentsDataTable() {
+export function ReceiptsOfLabel() {
   const {
-    currentPage,
     limit,
     setLimit,
+    currentPage,
     setCurrentPage,
-    totalElements,
     totalPages,
-    payments,
-  } = usePayment();
+    totalElements,
+    documents,
+  } = useLabelDocuments();
   return (
-    <div className="mx-auto">
+    <div className="mx-auto mt-4">
       <DataTable
         columns={columns}
-        data={payments}
+        data={documents}
         limit={limit}
         setLimit={setLimit}
         currentPage={currentPage}

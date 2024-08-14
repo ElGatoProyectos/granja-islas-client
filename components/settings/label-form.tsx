@@ -25,6 +25,7 @@ import {
   deleteLabel,
   updateLabel,
 } from "@/lib/actions/label.actions";
+import { useToast } from "../ui/use-toast";
 
 export function LabelForm() {
   const [inputValue, setInputValue] = useState("");
@@ -33,6 +34,7 @@ export function LabelForm() {
   const { company } = useCompanySession();
   const { tokenBack } = useUserInfo();
   const { labels, loadingLabel, getLabels } = useLabels();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,8 +65,26 @@ export function LabelForm() {
   };
 
   const handleDelete = async (id: string) => {
-    await deleteLabel({ idLabel: id, tokenBack, ruc: company?.ruc });
-    getLabels();
+    try {
+      await deleteLabel({ idLabel: id, tokenBack, ruc: company?.ruc });
+      getLabels();
+      toast({
+        variant: "success",
+        title: "Se elimino la etiqueta correctamente",
+      });
+    } catch (e: any) {
+      if (e.message) {
+        toast({
+          variant: "destructive",
+          title: e.message,
+        });
+        return;
+      }
+      toast({
+        variant: "destructive",
+        title: "Ocurrio un error al eliminar la etiqueta",
+      });
+    }
   };
 
   return (

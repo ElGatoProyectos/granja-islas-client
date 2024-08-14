@@ -23,14 +23,10 @@ export function useBanks() {
         },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch banks");
-      }
-
       const data = await res.json();
       setBanks(data.payload.reverse());
     } catch (error) {
-      console.error("Error to fetch data banks", error);
+      throw new Error("Failed to fetch banks");
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,5 @@
+"use client";
+
 import { PaymentsDataTable } from "@/components/payments/table";
 import { PaymentProvider } from "@/context/sections/payments-context";
 

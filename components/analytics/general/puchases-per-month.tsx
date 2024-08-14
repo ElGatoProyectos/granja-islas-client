@@ -1,7 +1,6 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-
 import {
   ChartConfig,
   ChartContainer,
@@ -11,34 +10,23 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { formatNumberWithCommas } from "@/utils/format-number-comas";
+import { BuyForMonthSchema } from "@/lib/validations/analytics";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
-function getRandomValue(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const purchases = [
-  { month: "Ene", purchase: getRandomValue(0, 80000) },
-  { month: "Feb", purchase: getRandomValue(0, 80000) },
-  { month: "Mar", purchase: getRandomValue(0, 80000) },
-  { month: "Abr", purchase: getRandomValue(0, 80000) },
-  { month: "May", purchase: getRandomValue(0, 80000) },
-  { month: "Jun", purchase: getRandomValue(0, 80000) },
-  //   { month: "Jul", value: getRandomValue(0, 80000) },
-  //   { month: "Ago", value: getRandomValue(0, 80000) },
-  //   { month: "Sep", value: getRandomValue(0, 80000) },
-  //   { month: "Oct", value: getRandomValue(0, 80000) },
-  //   { month: "Nov", value: getRandomValue(0, 80000) },
-  //   { month: "Dic", value: getRandomValue(0, 80000) },
-];
+const monthMapping: Record<keyof BuyForMonthSchema, string> = {
+  enero: "Ene",
+  febrero: "Feb",
+  marzo: "Mar",
+  abril: "Abr",
+  mayo: "May",
+  junio: "Jun",
+  julio: "Jul",
+  agosto: "Ago",
+  septiembre: "Sep",
+  octubre: "Oct",
+  noviembre: "Nov",
+  diciembre: "Dic",
+};
 
 const chartConfig = {
   purchase: {
@@ -47,9 +35,25 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+export function PurchasesPerMoth({
+  buyforMonth,
+}: {
+  buyforMonth?: BuyForMonthSchema;
+}) {
+  if (!buyforMonth)
+    return (
+      <div>
+        <Skeleton className="h-[450px] w-full" />
+      </div>
+    );
 
+  const purchases = (
+    Object.entries(buyforMonth) as [keyof BuyForMonthSchema, number][]
+  ).map(([month, purchase]) => ({
+    month: monthMapping[month],
+    purchase,
+  }));
 
-export function PurchasesPerMoth() {
   return (
     <ChartContainer config={chartConfig} className="h-[450px] w-full">
       <BarChart accessibilityLayer data={purchases}>

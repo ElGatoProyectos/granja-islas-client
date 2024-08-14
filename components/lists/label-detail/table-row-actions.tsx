@@ -14,7 +14,7 @@ import { Ellipsis } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import { paymentGeneralSchemaIN } from "@/lib/validations/payment";
+import { listsSchemaIN } from "@/lib/validations/list";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,7 +23,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const payment = paymentGeneralSchemaIN.parse(row.original);
+  const list = listsSchemaIN.parse(row.original);
   const pathname = usePathname();
 
   return (
@@ -39,12 +39,14 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(payment.id.toString())}
+          onClick={() =>
+            navigator.clipboard.writeText(list.label_id.toString())
+          }
         >
           Copiar id
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <Link href={`${pathname}/${payment.id}`}>
+        <Link href={`${pathname}/${list.label_id}`}>
           <DropdownMenuItem>Ver detalles</DropdownMenuItem>
         </Link>
       </DropdownMenuContent>

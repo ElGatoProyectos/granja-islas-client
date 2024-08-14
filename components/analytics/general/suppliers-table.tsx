@@ -7,6 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PrincipalSuppliersSchema } from "@/lib/validations/analytics";
+import { formatNumberWithCommas } from "@/utils/format-number-comas";
 import { Search } from "lucide-react";
 
 const invoices = [
@@ -54,34 +56,29 @@ const invoices = [
   },
 ];
 
-interface Props {
-  suppliers: {
-    ruc: string;
-    corporate_name: string;
-    country_code: string;
-    phone: string;
-  }[];
-}
-
-export function SuppliersTable({ suppliers }: Props) {
+export function SuppliersTable({
+  suppliers,
+}: {
+  suppliers?: PrincipalSuppliersSchema;
+}) {
   return (
     <>
-      {suppliers.length ? (
+      {suppliers?.length ? (
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Ruc</TableHead>
               <TableHead>Proveedor</TableHead>
-              <TableHead className="text-right">Celular</TableHead>
+              <TableHead className="text-right">Total de compras</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {suppliers.map(({ ruc, corporate_name, country_code, phone }) => (
+            {suppliers.map(({ ruc, business_name, total }) => (
               <TableRow key={ruc}>
                 <TableCell className="font-medium">{ruc}</TableCell>
-                <TableCell>{corporate_name}</TableCell>
+                <TableCell>{business_name}</TableCell>
                 <TableCell className="text-right">
-                  {country_code + " " + phone}
+                  {formatNumberWithCommas(total)}
                 </TableCell>
               </TableRow>
             ))}

@@ -55,16 +55,16 @@ export async function deleteLabel({
       },
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to delete label");
-    }
-
     const data = await res.json();
     if (data.error) {
-      throw new Error("Failed backend to delete label");
+      throw {
+        message: "Failed backend to delete label",
+        details: data.message,
+        code: 500,
+      };
     }
-  } catch (error) {
-    console.error("Error to delete data label", error);
+  } catch (e: any) {
+    throw new Error(e.details);
   }
 }
 

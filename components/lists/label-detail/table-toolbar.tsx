@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import { receiptViewTable } from "@/utils/change-name";
+import { documentsLabelViewTable } from "@/utils/change-name";
 import { DatePicker } from "@/components/date-picker";
-import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
-import { usePayment } from "@/context/sections/payments-context";
+import { useLabelDocuments } from "@/context/sections/document-label-context";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -19,47 +18,38 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const {
-    setSearch,
-    search,
-    getPayments,
+    supplierFilter,
+    setIdSupplier,
     setMonth,
     setYear,
     year,
     month,
-    usersFilters,
-    setUserId,
-  } = usePayment();
+    getDocumentsOfLabel,
+  } = useLabelDocuments();
 
-  const options = usersFilters.map(({ id, name }) => ({
+  const options = supplierFilter.map(({ id, business_name }) => ({
     value: id.toString(),
-    label: name.toLowerCase(),
+    label: business_name.toLowerCase(),
   }));
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
-          placeholder="Buscar número de operacion"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          className="w-[150px] lg:w-[250px]"
-        />
         <DatePicker
           setMonth={setMonth}
           setYear={setYear}
           year={year}
           month={month}
-          getData={getPayments}
+          getData={getDocumentsOfLabel}
         />
-        {table.getColumn("user_name") && (
+        {table.getColumn("business_name") && (
           <DataTableFacetedFilter
-            column={table.getColumn("user_name")}
-            title="Usuarios"
+            column={table.getColumn("business_name")}
+            title="Proveedores"
             options={options}
-            setFilter={setUserId}
+            setFilter={setIdSupplier}
           />
         )}
-
         {isFiltered && (
           <Button
             variant="ghost"
@@ -76,7 +66,10 @@ export function DataTableToolbar<TData>({
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
+        <DataTableViewOptions
+          table={table}
+          changeTitle={documentsLabelViewTable}
+        />
       </div>
     </div>
   );

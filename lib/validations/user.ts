@@ -68,5 +68,5 @@ export const userSchemaIN = z.object({
   country_code: z.string().nullable(),
   phone: z.string().nullable(),
 });
-
+export const userArraySchemaIN = z.array(userSchemaIN);
 export type UserSchemaIN = z.infer<typeof userSchemaIN>;

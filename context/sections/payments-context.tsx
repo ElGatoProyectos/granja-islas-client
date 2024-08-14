@@ -2,10 +2,6 @@
 
 import { backend_url } from "@/constants/config";
 import {
-  supplierArraySchemaFilter,
-  SupplierSchemaFilter,
-} from "@/lib/validations/supplier";
-import {
   createContext,
   Dispatch,
   SetStateAction,
@@ -19,12 +15,18 @@ import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
-  receiptArraySchemaIN,
-  ReceiptSchemaIN,
-} from "@/lib/validations/receipt";
+  responseArraySchema,
+  responseSchema,
+} from "@/lib/validations/response";
+import { paginationSchema } from "@/lib/validations/pagination";
+import {
+  paymentGeneralArraySchemaIN,
+  PaymentGeneralSchemaIN,
+} from "@/lib/validations/payment";
+import { userArraySchemaIN, UserSchemaIN } from "@/lib/validations/user";
 
 interface PaymentContextType {
-  payments: ReceiptSchemaIN[];
+  payments: PaymentGeneralSchemaIN[];
   getPayments: () => Promise<void>;
   loading: boolean;
   totalPages: number;
@@ -39,6 +41,8 @@ interface PaymentContextType {
   setMonth: Dispatch<SetStateAction<string>>;
   year: string;
   setYear: Dispatch<SetStateAction<string>>;
+  usersFilters: UserSchemaIN[];
+  setUserId: Dispatch<SetStateAction<string>>;
 }
 
 export const PaymentContext = createContext<PaymentContextType | null>(null);
@@ -50,7 +54,7 @@ export const PaymentProvider = ({
 }) => {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const [payments, setPayments] = useState<ReceiptSchemaIN[]>([]);
+  const [payments, setPayments] = useState<PaymentGeneralSchemaIN[]>([]);
   const [loading, setLoading] = useState(false);
   /* pagination */
   const [currentPage, setCurrentPage] = useState(1);
@@ -62,6 +66,8 @@ export const PaymentProvider = ({
   const input = useDebounce(search);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+  const [usersFilters, setUsersFilters] = useState<UserSchemaIN[]>([]);
+  const [userId, setUserId] = useState("");
 
   const getPayments = useCallback(async () => {
     if (!company) return;
@@ -75,10 +81,13 @@ export const PaymentProvider = ({
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
       if (year) queryParams.append("year", year);
+      if (userId) queryParams.append("user_group_id", userId);
 
-      const url = `${backend_url}/api/labels/report?${queryParams
+      const url = `${backend_url}/api/vouchers?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
+
+      console.log("url", url);
 
       const res = await fetch(url, {
         method: "GET",
@@ -88,20 +97,53 @@ export const PaymentProvider = ({
         },
       });
 
-      const data = await res.json();
-      const formatdata = receiptArraySchemaIN.parse(data.payload.data);
+      /* filterUsers */
+      const resUsers = await fetch(`${backend_url}/api/users`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+        },
+      });
+      const resUsersJSON = await resUsers.json();
+      const { payload: dataUsers, error: ErrorUsers } =
+        responseArraySchema.parse(resUsersJSON);
+      if (ErrorUsers) {
+        throw new Error("error to fetch users");
+      }
+      const parseusers = userArraySchemaIN.parse(dataUsers);
+      setUsersFilters(parseusers);
+      /* filterUsers */
+
+      const resJSON = await res.json();
+      const { error, message, statusCode, payload } =
+        responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("error to fetch payments");
+      }
+
+      const {
+        data,
+        limit: maxLimit,
+        page,
+        pageCount,
+        total,
+      } = paginationSchema.parse(payload);
+      console.log("data", data);
+
+      const formatdata = paymentGeneralArraySchemaIN.parse(payload.data);
+      console.log("formatdata", formatdata);
 
       setPayments(formatdata);
-      setTotalPages(data.payload.pageCount);
-      setTotalElements(data.payload.total);
-      setCurrentPage(data.payload.page);
-      setLimit(data.payload.limit);
+      setTotalPages(pageCount);
+      setTotalElements(total);
+      setCurrentPage(page);
+      setLimit(maxLimit);
     } catch (error) {
-      console.error("Error to fetch data receipts", error);
+      throw new Error("error to fetch payments");
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, currentPage, limit, input, month, year]);
+  }, [company, tokenBack, currentPage, limit, input, month, year, userId]);
 
   useEffect(() => {
     getPayments();
@@ -124,6 +166,8 @@ export const PaymentProvider = ({
       month,
       setYear,
       year,
+      usersFilters,
+      setUserId,
     }),
     [
       payments,
@@ -136,6 +180,8 @@ export const PaymentProvider = ({
       search,
       month,
       year,
+      usersFilters,
+      setUserId,
     ]
   );
   return (
