@@ -72,7 +72,6 @@ export function useDashboard() {
       }
 
       const data: Props = await res.json();
-      console.log(data);
 
       const formatedBills = calculateTotals({
         receipts: data.payload.bills,

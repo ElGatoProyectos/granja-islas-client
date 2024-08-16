@@ -121,7 +121,7 @@ export const PaymentProvider = ({
       setUsersFilters(parseusers);
       /* filterUsers */
       const resJSON = await res.json();
-      console.log("resJSON", resJSON);
+
       const { error, message, statusCode, payload } =
         responseSchema.parse(resJSON);
       if (error) {

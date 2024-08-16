@@ -24,7 +24,7 @@ export function useSyncSunat() {
       start: `${yearStart}-${monthStart}`,
       end: `${yearEnd}-${monthEnd}`,
     });
-    console.log(JSONdata);
+
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -36,7 +36,7 @@ export function useSyncSunat() {
         body: JSONdata,
       });
       const data = await res.json();
-      console.log(data);
+
       if (data.error) {
         toast({
           variant: "destructive",

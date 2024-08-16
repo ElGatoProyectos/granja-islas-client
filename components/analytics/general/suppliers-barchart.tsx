@@ -14,6 +14,9 @@ import { TopSuppliersSchemaIN } from "@/lib/validations/analytics";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { Tag } from "lucide-react";
 
 interface Props {
   radio: string;
@@ -74,9 +77,6 @@ export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
     },
   } satisfies ChartConfig;
 
-  console.log(radio);
-
-  console.log(dates_radio);
   return (
     <Card>
       <CardHeader className="flex-row justify-between items-center space-y-0">
@@ -102,35 +102,49 @@ export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
         </RadioGroup>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="aspect-video">
-          <BarChart
-            accessibilityLayer
-            data={dataWithColors}
-            layout="vertical"
-            margin={{
-              left: 0,
-            }}
-          >
-            <YAxis
-              dataKey="business_name"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              width={150}
-              tickFormatter={(value) =>
-                chartConfig[value as keyof typeof chartConfig]?.label
-              }
-            />
-            <XAxis dataKey="total" type="number" hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+        {topSuppliers.length ? (
+          <ChartContainer config={chartConfig} className="aspect-video">
+            <BarChart
+              accessibilityLayer
+              data={dataWithColors}
+              layout="vertical"
+              margin={{
+                left: 0,
+              }}
+            >
+              <YAxis
+                dataKey="business_name"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                width={150}
+                tickFormatter={(value) =>
+                  chartConfig[value as keyof typeof chartConfig]?.label
+                }
+              />
+              <XAxis dataKey="total" type="number" hide />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
 
-            <Bar dataKey="total" layout="vertical" radius={5} />
-          </BarChart>
-        </ChartContainer>
+              <Bar dataKey="total" layout="vertical" radius={5} />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <div className="my-10 flex justify-center items-center">
+            <Link
+              href="/dashboard/products"
+              className={`${buttonVariants({
+                variant: "link",
+              })}, !p-0 text-balance`}
+            >
+              <Tag className="w-6 h-6 mr-3" />
+              Debes etiquetar un producto para poder visualizar las estadisticas
+            </Link>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -10,7 +10,6 @@ import { formatWithCommas } from "@/utils/format-number-comas";
 
 export default function Home() {
   const { receipts, setMonth, setYear, loading, cardsInfo } = useDashboard();
-  console.log(receipts);
   return (
     <LayerPage title="Registro de compras">
       <ScrollArea className="w-[calc(100vw-3.75rem)] lg:w-full whitespace-nowrap rounded-md">

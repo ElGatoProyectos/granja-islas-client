@@ -15,6 +15,9 @@ import { ExpCompositonSchemaIN } from "@/lib/validations/analytics";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { Tag } from "lucide-react";
 
 interface Props {
   monthRadio: string;
@@ -83,13 +86,10 @@ export function ExpenseCompositionPiechart({
     },
   } satisfies ChartConfig;
 
-  console.log(monthRadio);
-
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex-row justify-between items-center space-y-0">
         <CardTitle className="font-bold">Composición de gasto</CardTitle>
-
         <RadioGroup
           className="grid-cols-3 gap-1"
           value={monthRadio}
@@ -111,55 +111,69 @@ export function ExpenseCompositionPiechart({
         </RadioGroup>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[320px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={dataWithColors}
-              dataKey="total"
-              nameKey="label"
-              innerRadius={80}
-              strokeWidth={5}
-            >
-              <LabelRechart
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
+        {expComposition.length ? (
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto aspect-square max-h-[320px]"
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Pie
+                data={dataWithColors}
+                dataKey="total"
+                nameKey="label"
+                innerRadius={80}
+                strokeWidth={5}
+              >
+                <LabelRechart
+                  content={({ viewBox }) => {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      return (
+                        <text
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-2xl font-bold"
+                          textAnchor="middle"
+                          dominantBaseline="middle"
                         >
-                          {totalExpense.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Gastos Totales
-                        </tspan>
-                      </text>
-                    );
-                  }
-                }}
-              />
-            </Pie>
-            <ChartLegend content={<ChartLegendContent />} />
-          </PieChart>
-        </ChartContainer>
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-2xl font-bold"
+                          >
+                            {totalExpense.toLocaleString()}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground"
+                          >
+                            Gastos Totales
+                          </tspan>
+                        </text>
+                      );
+                    }
+                  }}
+                />
+              </Pie>
+              <ChartLegend content={<ChartLegendContent />} />
+            </PieChart>
+          </ChartContainer>
+        ) : (
+          <div className="my-10 flex justify-center items-center">
+            <Link
+              href="/dashboard/products"
+              className={`${buttonVariants({
+                variant: "link",
+              })}, !p-0 text-balance`}
+            >
+              <Tag className="w-6 h-6 mr-3" />
+              Debes etiquetar un producto para poder visualizar las estadisticas
+            </Link>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

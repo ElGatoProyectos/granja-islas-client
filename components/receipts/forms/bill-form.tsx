@@ -77,8 +77,6 @@ export function BillForm() {
   const { tokenBack } = useUserInfo();
 
   async function onSubmit(values: z.infer<typeof billSchemaCreate>) {
-    console.log(values);
-
     try {
       toast({
         variant: "success",

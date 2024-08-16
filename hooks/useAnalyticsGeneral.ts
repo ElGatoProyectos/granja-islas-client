@@ -31,8 +31,6 @@ export function useAnalyticsGeneral() {
     []
   );
 
-  console.log(monthRadio);
-
   const getGeneralAnalitycs = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
