@@ -6,7 +6,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -15,6 +21,10 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import { paymentGeneralSchemaIN } from "@/lib/validations/payment";
+import { status_payment } from "@/constants/status-payment";
+import { translateStatus } from "@/utils/translate-states-payment";
+import { useState } from "react";
+import { usePayment } from "@/context/sections/payments-context";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -25,6 +35,12 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const payment = paymentGeneralSchemaIN.parse(row.original);
   const pathname = usePathname();
+  const [currentState, setCurrentState] = useState<string>(payment.status);
+  const { updateState } = usePayment();
+  const handleStatus = async (value: string) => {
+    setCurrentState(value);
+    await updateState({ idVoucher: payment.id.toString(), statusNew: value });
+  };
 
   return (
     <DropdownMenu>
@@ -38,12 +54,27 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(payment.id.toString())}
-        >
-          Copiar id
-        </DropdownMenuItem>
+        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Estados</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup
+              value={currentState}
+              onValueChange={handleStatus}
+            >
+              {status_payment.map((status) => (
+                <DropdownMenuRadioItem
+                  key={status}
+                  value={status}
+                  className={"pl-2"}
+                >
+                  {translateStatus(status)}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <Link href={`${pathname}/${payment.id}`}>
           <DropdownMenuItem>Ver detalles</DropdownMenuItem>
         </Link>

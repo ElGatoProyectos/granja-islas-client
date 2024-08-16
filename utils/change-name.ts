@@ -56,6 +56,7 @@ const listTranslationView: TranslationDict = {
   lastPrice: "Ultimo precio",
   averagePrice: "Precio promedio",
   lowestPrice: "Precio mas bajo",
+  higher_price: "Precio mas alto",
   business_name: "Proveedor",
   business_status: "Estado",
 };

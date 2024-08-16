@@ -43,6 +43,13 @@ interface PaymentContextType {
   setYear: Dispatch<SetStateAction<string>>;
   usersFilters: UserSchemaIN[];
   setUserId: Dispatch<SetStateAction<string>>;
+  updateState: ({
+    idVoucher,
+    statusNew,
+  }: {
+    idVoucher: string;
+    statusNew: string;
+  }) => Promise<void>;
 }
 
 export const PaymentContext = createContext<PaymentContextType | null>(null);
@@ -69,6 +76,8 @@ export const PaymentProvider = ({
   const [usersFilters, setUsersFilters] = useState<UserSchemaIN[]>([]);
   const [userId, setUserId] = useState("");
 
+  /* change status */
+
   const getPayments = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
@@ -83,11 +92,9 @@ export const PaymentProvider = ({
       if (year) queryParams.append("year", year);
       if (userId) queryParams.append("user_group_id", userId);
 
-      const url = `${backend_url}/api/vouchers?${queryParams
+      const url = `${backend_url}/api/vouchers/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
-
-      console.log("url", url);
 
       const res = await fetch(url, {
         method: "GET",
@@ -113,8 +120,8 @@ export const PaymentProvider = ({
       const parseusers = userArraySchemaIN.parse(dataUsers);
       setUsersFilters(parseusers);
       /* filterUsers */
-
       const resJSON = await res.json();
+      console.log("resJSON", resJSON);
       const { error, message, statusCode, payload } =
         responseSchema.parse(resJSON);
       if (error) {
@@ -128,10 +135,7 @@ export const PaymentProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
-      console.log("data", data);
-
       const formatdata = paymentGeneralArraySchemaIN.parse(payload.data);
-      console.log("formatdata", formatdata);
 
       setPayments(formatdata);
       setTotalPages(pageCount);
@@ -148,6 +152,35 @@ export const PaymentProvider = ({
   useEffect(() => {
     getPayments();
   }, [getPayments]);
+
+  const updateState = useCallback(
+    async ({
+      idVoucher,
+      statusNew,
+    }: {
+      idVoucher: string;
+      statusNew: string;
+    }) => {
+      if (!company) return;
+      if (!tokenBack) return;
+
+      const url = `${backend_url}/api/vouchers/${idVoucher}?status=${statusNew}`;
+      const res = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        throw new Error("error to update status");
+      }
+      await getPayments();
+    },
+    [company, getPayments, tokenBack]
+  );
 
   const value = useMemo(
     () => ({
@@ -168,6 +201,7 @@ export const PaymentProvider = ({
       year,
       usersFilters,
       setUserId,
+      updateState,
     }),
     [
       payments,
@@ -182,6 +216,7 @@ export const PaymentProvider = ({
       year,
       usersFilters,
       setUserId,
+      updateState,
     ]
   );
   return (

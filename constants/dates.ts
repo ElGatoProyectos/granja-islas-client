@@ -12,3 +12,21 @@ export const months = [
   { value: "11", label: "Noviembre" },
   { value: "12", label: "Diciembre" },
 ];
+
+export const dates_radio = [
+  {
+    id: crypto.randomUUID(),
+    value: "1",
+    label: "1M",
+  },
+  {
+    id: crypto.randomUUID(),
+    value: "6",
+    label: "6M",
+  },
+  {
+    id: crypto.randomUUID(),
+    value: "12",
+    label: "1A",
+  },
+];

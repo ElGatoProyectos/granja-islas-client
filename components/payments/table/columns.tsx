@@ -5,6 +5,9 @@ import { DataTableColumnHeader } from "@/components/ui-custom/table-column-heade
 import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
 import { PaymentGeneralSchemaIN } from "@/lib/validations/payment";
+import { translateStatus } from "@/utils/translate-states-payment";
+import { cn } from "@/lib/utils";
+import { APPROVED, PENDING, REFUSED } from "@/constants/status-payment";
 
 export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
   {
@@ -15,21 +18,37 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
-        <span className="text-balance truncate capitalize">
-          {status.toLowerCase()}
+        <span
+          className={cn(
+            "text-balance truncate capitalize",
+            status === APPROVED
+              ? "text-green-500"
+              : status === REFUSED
+              ? "text-red-500"
+              : status === PENDING
+              ? "text-slate-500"
+              : ""
+          )}
+        >
+          {translateStatus(status)}
         </span>
       );
     },
   },
   {
     accessorKey: "operation_number",
+    accessorFn: (row) => `${row.operation_number}_/${row.color}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nro. de operación" />
     ),
     cell: ({ row }) => {
+      const opandcolor = row.getValue("operation_number") as string;
+      const parts = opandcolor.toString().split("_/");
       return (
-        <span className="w-fit truncate">
-          {row.getValue("operation_number")}
+        <span
+          className={cn(`w-fit truncate `, parts[1] ? "text-orange-400" : "")}
+        >
+          {parts[0]}
         </span>
       );
     },
@@ -75,16 +94,13 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "unit_measure",
+    accessorKey: "code",
+    accessorFn: (row) => `${row.document.code}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nro. de Comprobante" />
     ),
     cell: ({ row }) => {
-      return (
-        <p className="text-balance capitalize">
-          {row.getValue("unit_measure")}
-        </p>
-      );
+      return <p className="text-balance capitalize">{row.getValue("code")}</p>;
     },
     enableSorting: false,
   },
@@ -103,22 +119,6 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     },
     enableSorting: false,
   },
-  //   {
-  //     accessorKey: "igv",
-  //     accessorFn: (row) => `${row.User}`,
-  //     header: ({ column }) => (
-  //       <DataTableColumnHeader column={column} title="IGV" />
-  //     ),
-  //     cell: ({ row }) => {
-  //       return (
-  //         <div className="flex items-center">
-  //           <span>{row.getValue("igv")}</span>
-  //         </div>
-  //       );
-  //     },
-  //     enableSorting: false,
-  //   },
-
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

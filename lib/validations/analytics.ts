@@ -30,3 +30,22 @@ export const analyticsSchemaIN = z.object({
   buyForMonth: buyForMonthSchema,
 });
 export type AnalyticsSchemaIN = z.infer<typeof analyticsSchemaIN>;
+
+/* general analitycs */
+
+export const topSuppliersSchemaIN = z.object({
+  ruc: z.string(),
+  business_name: z.string(),
+  total: z.number(),
+});
+export const topSuppliersArraySchemaIN = z.array(topSuppliersSchemaIN);
+export type TopSuppliersSchemaIN = z.infer<typeof topSuppliersSchemaIN>;
+
+/* expenditure compositon */
+
+export const expCompositonSchemaIN = z.object({
+  label: z.string(),
+  total: z.number(),
+});
+export const expCompositonArraySchemaIN = z.array(expCompositonSchemaIN);
+export type ExpCompositonSchemaIN = z.infer<typeof expCompositonSchemaIN>;

@@ -1,3 +1,5 @@
+"use client";
+
 import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fiscal-consumption-linechart";
 import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
 import { LastShoppingLinechart } from "@/components/analytics/specific/last-shopping-linechart";
@@ -11,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dates_radio } from "@/constants/dates";
+import { useState } from "react";
 
 const labels = [
   {
@@ -32,6 +36,7 @@ const labels = [
 ];
 
 export default function Page() {
+  const [value, setValue] = useState("");
   return (
     <section>
       <header className="flex justify-between mb-4">
@@ -53,7 +58,7 @@ export default function Page() {
             </SelectContent>
           </Select>
         </div>
-        <RadioDates />
+        <RadioDates setRadio={setValue} radio={value} dates={dates_radio} />
       </header>
       <main className="grid grid-cols-1 gap-4">
         <FiscalConsumptionLinechart

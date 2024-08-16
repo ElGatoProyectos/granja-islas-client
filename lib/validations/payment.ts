@@ -2,6 +2,7 @@ import { z } from "zod";
 import { bankSchemaIN } from "./bank";
 import { supplierSchemaIN } from "./supplier";
 import { userSchemaIN } from "./user";
+import { receiptSchemaIN } from "./receipt";
 const MAX_FILE_SIZE = 1024 * 1024 * 5;
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
@@ -75,6 +76,7 @@ export const paymentGeneralSchemaIN = z.object({
   type_currency: z.string(),
   exchange_rate: z.number(),
   date: z.string(),
+  color: z.string(),
   status: z.enum(["PENDING", "APPROVED", "REFUSED"]),
   status_deleted: z.boolean(),
   creditNoteId: z.number().nullable(),
@@ -82,6 +84,7 @@ export const paymentGeneralSchemaIN = z.object({
   ticketId: z.number().nullable(),
   Bank: bankSchemaIN.omit({ user_created_id: true }),
   User: userSchemaIN,
+  document: receiptSchemaIN.omit({ Supplier: true }),
 });
 export const paymentGeneralArraySchemaIN = z.array(paymentGeneralSchemaIN);
 export type PaymentGeneralSchemaIN = z.infer<typeof paymentGeneralSchemaIN>;

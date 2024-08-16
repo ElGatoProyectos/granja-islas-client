@@ -14,7 +14,17 @@ import { useEffect } from "react";
 
 export default function Page() {
   const { labels } = useLabels();
-  const { setLabelId, generalAnalytics, labelId } = useAnalyticsGeneral();
+  const {
+    setLabelId,
+    generalAnalytics,
+    labelId,
+    setRadio,
+    radio,
+    topSuppliers,
+    monthRadio,
+    setMonthRadio,
+    expComposition,
+  } = useAnalyticsGeneral();
 
   useEffect(() => {
     if (labels.length) {
@@ -59,7 +69,7 @@ export default function Page() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="font-bold">Compras del mes</CardTitle>
+                <CardTitle className="font-bold">Compras por mes</CardTitle>
               </CardHeader>
               <CardContent className="flex justify-center">
                 <PurchasesPerMoth buyforMonth={generalAnalytics?.buyForMonth} />
@@ -74,8 +84,16 @@ export default function Page() {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-          <SuppliersBarchart />
-          <ExpenseCompositionPiechart />
+          <SuppliersBarchart
+            setRadio={setRadio}
+            radio={radio}
+            topSuppliers={topSuppliers}
+          />
+          <ExpenseCompositionPiechart
+            monthRadio={monthRadio}
+            setMonthRadio={setMonthRadio}
+            expComposition={expComposition}
+          />
         </div>
       </div>
     </LayerPage>

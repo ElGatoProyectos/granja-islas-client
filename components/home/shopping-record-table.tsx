@@ -17,28 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { DownloadExcel } from "../download-excel";
 import { Dispatch, SetStateAction } from "react";
 import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { DataTableSkeleton } from "./table-skeleton";
 import { defaultDate } from "@/utils/default-date";
-
-const months = [
-  { label: "Enero", value: "1" },
-  { label: "Febrero", value: "2" },
-  { label: "Marzo", value: "3" },
-  { label: "Abril", value: "4" },
-  { label: "Mayo", value: "5" },
-  { label: "Junio", value: "6" },
-  { label: "Julio", value: "7" },
-  { label: "Agosto", value: "8" },
-  { label: "Septiembre", value: "9" },
-  { label: "Octubre", value: "10" },
-  { label: "Noviembre", value: "11" },
-  { label: "Diciembre", value: "12" },
-];
+import { months } from "@/constants/dates";
+import Link from "next/link";
 
 interface Props {
   setYear: Dispatch<SetStateAction<string>>;
@@ -116,7 +103,16 @@ export function ShoppingRecordTable({
         />
       ) : (
         <Table>
-          <TableCaption>Lista de tus comprobantes.</TableCaption>
+          <TableCaption>
+            Si los datos no se muestran, puede sincronizarlos con SUNAT
+            utilizando el siguiente
+            <Link
+              href="/dashboard/settings"
+              className={`${buttonVariants({ variant: "link" })} !p-0 ml-1`}
+            >
+              enlace.
+            </Link>
+          </TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Tipo de documento</TableHead>
