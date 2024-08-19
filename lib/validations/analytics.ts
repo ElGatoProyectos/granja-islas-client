@@ -49,3 +49,12 @@ export const expCompositonSchemaIN = z.object({
 });
 export const expCompositonArraySchemaIN = z.array(expCompositonSchemaIN);
 export type ExpCompositonSchemaIN = z.infer<typeof expCompositonSchemaIN>;
+
+/* spesfiic */
+export const specificSchemaIN = z.object({
+  month: z.string(),
+  amount: z.number(),
+  average: z.number(),
+});
+export const specificArraySchemaIN = z.array(specificSchemaIN);
+export type SpecificSchemaIN = z.infer<typeof specificSchemaIN>;

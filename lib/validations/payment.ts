@@ -12,11 +12,11 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 
 export const createPaymentSchema = z.object({
-  bank_id: z.string(),
-  operation_number: z.string(),
+  bank_id: z.string().min(1, "El banco es requerido"),
+  operation_number: z.string().min(1, "El número de operacion es requerido"),
   type_currency: z.enum(["PEN", "USD"]),
-  amount_original: z.string(),
-  exchange_rate: z.string(),
+  amount_original: z.string().min(1, "El monto es requerido"),
+  exchange_rate: z.string().min(1, "El tipo de cambio es requerido"),
   voucher: z
     .any()
     .refine((files) => {

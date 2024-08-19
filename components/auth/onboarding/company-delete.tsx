@@ -52,7 +52,6 @@ export function CompanyDelete({
       route.refresh();
       setOpen(false);
     } catch (e) {
-      console.error(e);
       toast({
         variant: "destructive",
         title: `Ocurrio un error al eliminar la empresa, intenta otra vez.`,

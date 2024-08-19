@@ -58,5 +58,5 @@ export function useReceiptPayment({
     getReceiptPayments();
   }, [getReceiptPayments]);
 
-  return { receipt };
+  return { receipt, getReceiptPayments };
 }

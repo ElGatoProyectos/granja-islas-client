@@ -1,7 +1,6 @@
 "use client";
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -15,7 +14,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { formatNumberWithCommas } from "@/utils/format-number-comas";
 
 const shoppingExpense = [
   {
@@ -51,21 +49,6 @@ const shoppingExpense = [
 const chartConfig = {
   shopping: {
     label: "Gasto",
-  },
-} satisfies ChartConfig;
-
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-const chartConfigg = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
 

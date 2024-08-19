@@ -8,6 +8,13 @@ import { PaymentGeneralSchemaIN } from "@/lib/validations/payment";
 import { translateStatus } from "@/utils/translate-states-payment";
 import { cn } from "@/lib/utils";
 import { APPROVED, PENDING, REFUSED } from "@/constants/status-payment";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { backend_url } from "@/constants/config";
 
 export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
   {
@@ -93,6 +100,36 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     },
     enableSorting: false,
   },
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Foto" />
+    ),
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <img
+              src={`${backend_url}/api/vouchers/${id}/image`}
+              alt="voucher"
+              className="w-10 h-10 rounded-full cursor-pointer  object-contain"
+            />
+          </DialogTrigger>
+          <DialogContent className="max-w-5xl border-0 bg-transparent p-0">
+            <DialogTitle></DialogTitle>
+            <img
+              src={`${backend_url}/api/vouchers/${id}/image`}
+              alt="voucher"
+              className="h-full w-full object-contain"
+            />
+          </DialogContent>
+        </Dialog>
+      );
+    },
+    enableSorting: false,
+  },
+
   {
     accessorKey: "code",
     accessorFn: (row) => `${row.document.code}`,

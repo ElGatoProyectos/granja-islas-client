@@ -33,7 +33,7 @@ export default function Page() {
       setLabelId(labels[0].id.toString());
     }
   }, [labels, setLabelId]);
-  console.log(topSuppliers);
+
   return (
     <LayerPage title="Análisis por etiqueta">
       <Tabs className="w-full mt-6 h-full" value={labelId}>

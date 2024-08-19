@@ -14,7 +14,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { formatNumberWithCommas } from "@/utils/format-number-comas";
 
 const monthlyExpense = [
   {
@@ -67,10 +66,6 @@ interface Props {
   label: string;
   date: string;
 }
-
-// labelFormatter={(value) =>
-//             new Date(value).toLocaleDateString()
-//         }
 
 export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
   return (

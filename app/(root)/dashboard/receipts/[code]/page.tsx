@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CONTADO } from "@/constants/type-receipt";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
+import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";
 import { useParams } from "next/navigation";
 
@@ -21,6 +22,11 @@ export default function Page() {
   const { code } = useParams();
   const parts = code.toString().split("-");
   const { receipt } = useReceiptDetail({
+    document_code: parts[1],
+    document_id: parts[0],
+  });
+
+  const { receipt: receiptPayments, getReceiptPayments } = useReceiptPayment({
     document_code: parts[1],
     document_id: parts[0],
   });
@@ -154,6 +160,7 @@ export default function Page() {
               type="create"
               document_code={parts[1]}
               document_id={parts[0]}
+              getReceiptPayments={getReceiptPayments}
             />
           </CardContent>
         </Card>
@@ -167,7 +174,7 @@ export default function Page() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <PaymentsTable document_code={parts[1]} document_id={parts[0]} />
+            <PaymentsTable receiptPayments={receiptPayments} />
           </CardContent>
         </Card>
       </footer>

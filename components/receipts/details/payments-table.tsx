@@ -15,18 +15,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { backend_url } from "@/constants/config";
-
-import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";
 import { formatNumberWithCommas } from "@/utils/format-number-comas";
+import { PaymentReceiptSchemaIN } from "@/lib/validations/payment";
 
 interface Props {
-  document_code: string;
-  document_id: string;
+  receiptPayments: PaymentReceiptSchemaIN[];
 }
-export function PaymentsTable({ document_code, document_id }: Props) {
-  const { receipt } = useReceiptPayment({ document_code, document_id });
-
+export function PaymentsTable({ receiptPayments }: Props) {
   return (
     <section className="w-full">
       <Table>
@@ -43,7 +39,7 @@ export function PaymentsTable({ document_code, document_id }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {receipt.map(
+          {receiptPayments.map(
             ({
               id,
               operation_number,

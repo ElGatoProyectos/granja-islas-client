@@ -4,6 +4,7 @@ import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fisc
 import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
 import { LastShoppingLinechart } from "@/components/analytics/specific/last-shopping-linechart";
 import { RadioDates } from "@/components/radio-dates";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,64 +14,85 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dates_radio } from "@/constants/dates";
+import { useAnalyticsSpecific } from "@/hooks/useAnalyticsSpecific";
+
+import { useLabels } from "@/hooks/useLabels";
+import Link from "next/link";
 import { useState } from "react";
 
-const labels = [
+const dates_radio = [
   {
-    label: "Maiz",
-    value: "corn",
+    id: crypto.randomUUID(),
+    value: "1",
+    label: "1M",
   },
   {
-    label: "Soya",
-    value: "soya",
+    id: crypto.randomUUID(),
+    value: "6",
+    label: "6M",
   },
   {
-    label: "Gallinas",
-    value: "chickens",
-  },
-  {
-    label: "Diesel",
-    value: "diesel",
+    id: crypto.randomUUID(),
+    value: "12",
+    label: "1A",
   },
 ];
 
 export default function Page() {
-  const [value, setValue] = useState("");
+  const { labels } = useLabels();
+  const { filterMonth, setFilterMonth, labelId, setLabelId } =
+    useAnalyticsSpecific();
+  const [labelSelected] = labels.filter(
+    (selected) => selected.id.toString() === labelId
+  );
+
+  console.log(labelSelected);
   return (
     <section>
       <header className="flex justify-between mb-4">
-        <div className="flex justify-center items-center gap-2 ml-8">
-          <h2 className="text-sm">Principales Etiquetas</h2>
-          <Select>
-            <SelectTrigger className="w-[230px]">
-              <SelectValue placeholder="Selecciona una etiqueta" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Etiquetas</SelectLabel>
-                {labels.map(({ label, value }) => (
-                  <SelectItem key={label} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+        <div className="flex justify-center items-center gap-2">
+          {labels.length ? (
+            <Select value={labelId} onValueChange={setLabelId}>
+              <SelectTrigger className="w-[230px]">
+                <SelectValue placeholder="Selecciona una etiqueta" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Etiquetas</SelectLabel>
+                  {labels.map(({ id, title }) => (
+                    <SelectItem key={id} value={id.toString()}>
+                      {title}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          ) : (
+            <Link
+              href="/dashboard/settings"
+              className={buttonVariants({ variant: "link" })}
+            >
+              Crea una etiqueta para comenzar
+            </Link>
+          )}
         </div>
-        <RadioDates setRadio={setValue} radio={value} dates={dates_radio} />
+        <RadioDates
+          setRadio={setFilterMonth}
+          radio={filterMonth}
+          dates={dates_radio}
+        />
       </header>
       <main className="grid grid-cols-1 gap-4">
         <FiscalConsumptionLinechart
-          label={"Maiz"}
+          label={labelSelected?.title}
           date={"25 de Enero,2024 - 25 de Julio,2024"}
         />
         <FiscalConsumptionMeasureLinechart
-          label={"Maiz (medida)"}
+          label={labelSelected?.title}
           date={"25 de Enero,2024 - 25 de Julio,2024"}
         />
         <LastShoppingLinechart
-          label={"Maiz"}
+          label={labelSelected?.title}
           date={"25 de Enero,2024 - 25 de Julio,2024"}
         />
       </main>

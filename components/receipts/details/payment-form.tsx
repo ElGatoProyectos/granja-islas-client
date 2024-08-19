@@ -40,9 +40,15 @@ interface Props {
   type: "create" | "edit";
   document_code: string;
   document_id: string;
+  getReceiptPayments: () => void;
 }
 
-export function PaymentForm({ type, document_code, document_id }: Props) {
+export function PaymentForm({
+  type,
+  document_code,
+  document_id,
+  getReceiptPayments,
+}: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
@@ -98,9 +104,9 @@ export function PaymentForm({ type, document_code, document_id }: Props) {
         } correctamente el voucher`,
       });
       form.reset();
+      getReceiptPayments();
       setSelectedImage(null);
     } catch (e) {
-      console.error(e);
       toast({
         variant: "destructive",
         title: `Ocurrio un error al ${
