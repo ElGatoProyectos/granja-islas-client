@@ -18,27 +18,25 @@ import { useAnalyticsSpecific } from "@/hooks/useAnalyticsSpecific";
 
 import { useLabels } from "@/hooks/useLabels";
 import Link from "next/link";
-import { useState } from "react";
-
-const dates_radio = [
-  {
-    id: crypto.randomUUID(),
-    value: "1",
-    label: "1M",
-  },
-  {
-    id: crypto.randomUUID(),
-    value: "6",
-    label: "6M",
-  },
-  {
-    id: crypto.randomUUID(),
-    value: "12",
-    label: "1A",
-  },
-];
 
 export default function Page() {
+  const dates_radio = [
+    {
+      id: crypto.randomUUID(),
+      value: "1",
+      label: "1M",
+    },
+    {
+      id: crypto.randomUUID(),
+      value: "6",
+      label: "6M",
+    },
+    {
+      id: crypto.randomUUID(),
+      value: "12",
+      label: "1A",
+    },
+  ];
   const { labels } = useLabels();
   const { filterMonth, setFilterMonth, labelId, setLabelId } =
     useAnalyticsSpecific();
