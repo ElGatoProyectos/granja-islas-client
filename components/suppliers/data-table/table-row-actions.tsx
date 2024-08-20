@@ -54,7 +54,7 @@ export function DataTableRowActions<TData>({
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>
-          <Link href={`${pathname}/${supplier.ruc}`}>Ver Proveedor</Link>
+          <Link href={`${pathname}/${supplier.id}`}>Ver Proveedor</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

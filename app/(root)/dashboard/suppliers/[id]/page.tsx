@@ -1,0 +1,88 @@
+"use client";
+
+import { SupplierProductsDataTable } from "@/components/suppliers/table-product";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SupplierProductsProvider } from "@/context/sections/supplier-product-context";
+import { useInfoSupplier } from "@/hooks/useInfoSupplier";
+import { useParams } from "next/navigation";
+
+export default function Page() {
+  const { supplier } = useInfoSupplier();
+  return (
+    <section>
+      <Card>
+        <CardHeader className="flex-row gap-8">
+          <CardTitle className="max-w-32 font-bold flex justify-center items-center">
+            Detalles de proveedor
+          </CardTitle>
+          {supplier ? (
+            <CardDescription className="flex gap-6 w-full flex-1">
+              <div className="flex flex-col font-medium w-full">
+                <span>Razón social</span>
+                <p className="text-foreground capitalize">
+                  {supplier.business_name.toLowerCase()}
+                </p>
+              </div>
+              <div className="flex flex-col font-medium w-full">
+                <span>RUC</span>
+                <p className="text-foreground">{supplier.ruc}</p>
+              </div>
+              <div className="flex flex-col font-medium w-full">
+                <span>Tipo</span>
+                <p className="text-foreground">{supplier.business_type}</p>
+              </div>
+              <div className="flex flex-col font-medium w-full">
+                <span>Estado</span>
+                <p className="text-foreground">{supplier.business_status}</p>
+              </div>
+              <div className="flex flex-col font-medium w-full">
+                <span>Dirección Fiscal</span>
+                <p className="text-foreground">{supplier.business_direction}</p>
+              </div>
+              <div className="flex flex-col font-medium w-full">
+                <span>Celular</span>
+                <p className="text-foreground">{supplier.phone}</p>
+              </div>
+            </CardDescription>
+          ) : (
+            <div className="flex gap-6 w-full flex-1">
+              <div className="flex flex-col font-medium w-full gap-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-32 h-6" />
+              </div>
+              <div className="flex flex-col font-medium w-full gap-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-32 h-6" />
+              </div>
+              <div className="flex flex-col font-medium w-full gap-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-32 h-6" />
+              </div>
+              <div className="flex flex-col font-medium w-full gap-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-32 h-6" />
+              </div>
+              <div className="flex flex-col font-medium w-full gap-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-32 h-6" />
+              </div>
+              <div className="flex flex-col font-medium w-full gap-2">
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-32 h-6" />
+              </div>
+            </div>
+          )}
+        </CardHeader>
+      </Card>
+      <SupplierProductsProvider>
+        <SupplierProductsDataTable />
+      </SupplierProductsProvider>
+    </section>
+  );
+}

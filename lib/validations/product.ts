@@ -2,20 +2,6 @@ import { z } from "zod";
 import { receiptSchemaIN } from "./receipt";
 import { supplierSchemaIN } from "./supplier";
 import { labelArraySchemaIN } from "./label";
-/* id: 163,
-      title: 'CORTAR Y ENDEREZAR DOS PUNTAS DE FUNDA.',
-      description: '',
-      amount: 1,
-      price: 200,
-      igv: null,
-      slug: 'cortar-y-enderezar-dos-puntas-de-funda.',
-      unit_measure: 'UNIDAD',
-      supplier_id: 39,
-      document_type: 'BILL',
-      document_id: 103,
-      status_deleted: false,
-      created_at: '2024-08-08T00:00:00.000Z',
-      updated_at: '2024-08-08T21:32:21.849Z' */
 
 export const productSchemaIN = z.object({
   id: z.number(),

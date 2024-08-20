@@ -1,5 +1,6 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGrid, List } from "lucide-react";
+
 export function ViewToggle() {
   return (
     <div>

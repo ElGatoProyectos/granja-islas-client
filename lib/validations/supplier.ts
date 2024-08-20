@@ -59,3 +59,25 @@ const supplierSchemaFilter = z.object({
 });
 export const supplierArraySchemaFilter = z.array(supplierSchemaFilter);
 export type SupplierSchemaFilter = z.infer<typeof supplierSchemaFilter>;
+
+/* products of supplier */
+
+const supplierProductsSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  description: z.string().nullable(),
+  amount: z.number(),
+  price: z.number(),
+  igv: z.number().nullable(),
+  total: z.number().nullable(),
+  slug: z.string(),
+  unit_measure: z.string(),
+  supplier_id: z.number(),
+  document_type: z.string(),
+  document_id: z.number(),
+  status_deleted: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+export const supplierProductsArraySchema = z.array(supplierProductsSchema);
+export type SupplierProductsSchema = z.infer<typeof supplierProductsSchema>;
