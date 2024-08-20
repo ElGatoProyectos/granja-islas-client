@@ -10,6 +10,7 @@ import { SupplierForm } from "../supplier-form";
 import { useSupplier } from "@/context/sections/suppliers-context";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
 import { translateString } from "@/utils/change-name";
+import { ViewToggle } from "../viewtoggle";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -31,6 +32,7 @@ export function DataTableToolbar<TData>({
           onChange={(event) => setSearch(event.target.value)}
           className="w-[150px] lg:w-[250px]"
         />
+        <ViewToggle />
         {table.getColumn("business_status") && (
           <DataTableFacetedFilter
             column={table.getColumn("business_status")}

@@ -27,10 +27,17 @@ import {
 import { Dispatch, SetStateAction, useState } from "react";
 import { DataTableToolbar } from "../suppliers/data-table/table-toolbar";
 import { DataTablePagination } from "../ui-custom/table-pagination";
+import { TabsContent } from "./tabs";
+import { Card, CardHeader, CardTitle } from "./card";
+import { SupplierSchemaIN } from "@/lib/validations/supplier";
+import { BriefcaseBusiness, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  suppliers: SupplierSchemaIN[];
   pagesCount: number;
   rowsPerPage: number;
   currentPage: number;
@@ -42,6 +49,7 @@ export interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  suppliers,
   pagesCount,
   rowsPerPage,
   currentPage,
@@ -81,59 +89,98 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  const pathname = usePathname();
+
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+      <TabsContent value="table">
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Sin resultados.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    Sin resultados.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </TabsContent>
+      <TabsContent value="card">
+        <div className="grid grid-cols-3 gap-5 place-content-center">
+          {suppliers.length ? (
+            suppliers.map(({ id, business_name, ruc }) => (
+              <Card key={id} className="flex items-center ">
+                <CardHeader className="space-y-0 flex-row gap-4 justify-between items-center w-full">
+                  <CardTitle className="text-base font-normal capitalize flex gap-6 w-full items-center">
+                    <BriefcaseBusiness className="h-10 min-w-10 stroke-primary" />
+                    <div className="flex flex-col gap-2">
+                      {business_name.length > 27 ? (
+                        <p>{`${business_name
+                          .toLowerCase()
+                          .substring(0, 27)}...`}</p>
+                      ) : (
+                        <p>{business_name.toLowerCase()}</p>
+                      )}
+
+                      <p className="text-muted-foreground">
+                        {ruc.toLowerCase()}
+                      </p>
+                    </div>
+                  </CardTitle>
+                  <Link href={`${pathname}/${id}`}>
+                    <ChevronRight className="h-12 min-w-12 stroke-primary" />
+                  </Link>
+                </CardHeader>
+              </Card>
+            ))
+          ) : (
+            <div className="h-[600px] col-span-3 flex justify-center items-center">
+              <p className="h-24 text-center">Sin resultados.</p>
+            </div>
+          )}
+        </div>
+      </TabsContent>
       <DataTablePagination
         table={table}
         setCurrentPage={setPage}

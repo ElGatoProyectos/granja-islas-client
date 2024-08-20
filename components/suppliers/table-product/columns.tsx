@@ -15,7 +15,7 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
     ),
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
-      return <span className="capitalize">{title.toLowerCase()}</span>;
+      return <p className="capitalize max-w-[250px]">{title.toLowerCase()}</p>;
     },
     enableSorting: false,
   },
