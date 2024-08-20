@@ -68,9 +68,9 @@ export function getMenuList(pathname: string): Group[] {
           ],
         },
         {
-          href: "/receipts",
+          href: "/dashboard/receipts",
           label: "Comprobantes",
-          active: pathname.includes("/receipts"),
+          active: pathname.includes("/dashboard/receipts"),
           icon: Receipt,
           submenus: [],
         },
@@ -94,9 +94,9 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Finanzas",
       menus: [
         {
-          href: "/dashboard/payments",
+          href: "/payments",
           label: "Pagos",
-          active: pathname.includes("/dashboard/payments"),
+          active: pathname.includes("/payments"),
           icon: DollarSign,
           submenus: [],
         },

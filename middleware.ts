@@ -18,19 +18,19 @@ export default withAuth(
         return NextResponse.rewrite(new URL("/dashboard", req.url));
       }
       if (token.role === USER) {
-        return NextResponse.rewrite(new URL("/payments", req.url));
+        return NextResponse.rewrite(new URL("/receipts", req.url));
       }
     }
 
     // Rutas protegidas por ADMIN y SUPERADMIN
     if (pathname.startsWith("/dashboard")) {
       if (token?.role !== SUPERADMIN && token?.role !== ADMIN) {
-        return NextResponse.rewrite(new URL("/payments", req.url));
+        return NextResponse.rewrite(new URL("/receipts", req.url));
       }
     }
 
     // Ruta específica para usuarios con rol USER y también accesible para ADMIN y SUPERADMIN
-    if (pathname === "/payments") {
+    if (pathname === "/receipts") {
       if (
         token?.role !== USER &&
         token?.role !== ADMIN &&
@@ -48,5 +48,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/payments", "/onboarding"],
+  matcher: ["/", "/dashboard/:path*", "/receipts", "/onboarding"],
 };

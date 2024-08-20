@@ -10,7 +10,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { SupplierProductsProvider } from "@/context/sections/supplier-product-context";
 import { useInfoSupplier } from "@/hooks/useInfoSupplier";
-import { useParams } from "next/navigation";
 
 export default function Page() {
   const { supplier } = useInfoSupplier();
