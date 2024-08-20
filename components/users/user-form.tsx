@@ -77,15 +77,15 @@ export function UserForm({ type, userInfo }: Props) {
   const { toast } = useToast();
   const { tokenBack } = useUserInfo();
   const route = useRouter();
-  console.log(userInfo?.role);
+
   async function onSubmit(values: z.infer<typeof userSchema>) {
     setSubmitting(true);
     const { image, confirmPassword, ...userFormInfo } = values;
-    console.log(userInfo?.role);
+
     if (type === "edit" && userInfo) {
       values.role = userInfo.role;
     }
-    console.log(values.role);
+
     const formData = new FormData();
     if (image) {
       formData.append("user-profile", image[0]);

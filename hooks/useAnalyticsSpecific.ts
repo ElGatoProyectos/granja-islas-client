@@ -69,7 +69,6 @@ export function useAnalyticsSpecific() {
         measureSelect ? `&filter_unit=${measureSelect}` : ""
       }`;
       const url3 = `${backend_url}/api/reports/specific-analysis-3?${queryParams}`;
-      console.log(url2);
 
       const fetchReport = async (url: string) => {
         const res = await fetch(url, {
@@ -91,15 +90,9 @@ export function useAnalyticsSpecific() {
       const parse1 = responseArraySchema.parse(resJSON1);
       const parse2 = responseArraySchema.parse(resJSON2);
       const parse3 = responseArraySchema.parse(resJSON3);
-
-      console.log(parse2.payload);
-
       const chartSpic = specificArraySchemaIN.parse(parse1.payload);
       const chartSpic2 = specificArraySchemaIN.parse(parse2.payload);
       const chartSpic3 = specific3ArraySchemaIN.parse(parse3.payload);
-      console.log(chartSpic);
-      console.log(chartSpic2);
-      console.log(chartSpic3);
 
       setSpecificChart(chartSpic);
       setSpecificChart2(chartSpic2);
@@ -107,8 +100,6 @@ export function useAnalyticsSpecific() {
         filterMonth,
         purchases: chartSpic3,
       });
-      console.log(datafiltered);
-
       setspecificChart3(datafiltered);
     } catch (error) {
       throw new Error("Failed to fetch spesific analytics");
