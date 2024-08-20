@@ -34,7 +34,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EyeIcon, EyeOffIcon, Pencil, Plus } from "lucide-react";
+import {
+  Image as AddImage,
+  EyeIcon,
+  EyeOffIcon,
+  Pencil,
+  Plus,
+  Upload,
+} from "lucide-react";
 import { useToggle } from "@/hooks/use-toggle";
 import { ADMIN, USER } from "@/constants/roles";
 import { useState } from "react";
@@ -42,6 +49,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
 import { useRouter } from "next/navigation";
 import { createUser, updateUser } from "@/lib/actions/users.actions";
+import { backend_url } from "@/constants/config";
+import { Label } from "../ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface Props {
   type: "create" | "edit";
@@ -67,10 +77,15 @@ export function UserForm({ type, userInfo }: Props) {
   const { toast } = useToast();
   const { tokenBack } = useUserInfo();
   const route = useRouter();
-
+  console.log(userInfo?.role);
   async function onSubmit(values: z.infer<typeof userSchema>) {
     setSubmitting(true);
     const { image, confirmPassword, ...userFormInfo } = values;
+    console.log(userInfo?.role);
+    if (type === "edit" && userInfo) {
+      values.role = userInfo.role;
+    }
+    console.log(values.role);
     const formData = new FormData();
     if (image) {
       formData.append("user-profile", image[0]);
@@ -156,6 +171,87 @@ export function UserForm({ type, userInfo }: Props) {
             className="space-y-2"
             autoComplete="off"
           >
+            <div className="flex items-center justify-center">
+              <div
+                className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row`}
+              >
+                {selectedImage ? (
+                  <div className="md:max-w-[100px]">
+                    {/* <img
+                      src={URL.createObjectURL(selectedImage)}
+                      alt="Selected"
+                      className="rounded-full aspect-square"
+                    /> */}
+                    <Avatar className={"h-[100px] w-[100px]"}>
+                      <AvatarImage src={URL.createObjectURL(selectedImage)} />
+                      <AvatarFallback className="text-3xl">I</AvatarFallback>
+                    </Avatar>
+                  </div>
+                ) : userInfo?.id ? (
+                  <div className="md:max-w-[100px]">
+                    <Avatar className={"h-[100px] w-[100px]"}>
+                      <AvatarImage
+                        src={`${backend_url}/api/users/file/${userInfo?.id}`}
+                      />
+                      <AvatarFallback className="text-3xl">
+                        {userInfo.name.substring(0, 1)}
+                      </AvatarFallback>
+                    </Avatar>
+                    {/* <img
+                      src={`${backend_url}/api/users/file/${userInfo?.id}`}
+                      alt="Selected"
+                      className="rounded-full aspect-square"
+                    /> */}
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center justify-between">
+                    <div className="p-7 bg-muted justify-center items-center flex rounded-full">
+                      <AddImage className="stroke-foreground" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div
+                        className={
+                          "grid w-full max-w-sm items-center gap-1.5 p-3 rounded-lg"
+                        }
+                      >
+                        <Label
+                          htmlFor="fileInput"
+                          className={"inline-flex items-center cursor-pointer"}
+                        >
+                          <Upload className="h-4 w-4 mr-2 stroke-foreground" />
+                          <span className="whitespace-nowrap">
+                            Elija la imagen
+                          </span>
+                        </Label>
+                        <Input
+                          type="file"
+                          className="hidden"
+                          id="fileInput"
+                          accept="image/*"
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          onChange={(e) => {
+                            field.onChange(e.target.files);
+                            setSelectedImage(e.target.files?.[0] || null);
+                          }}
+                          ref={field.ref}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="name"
@@ -276,7 +372,7 @@ export function UserForm({ type, userInfo }: Props) {
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value.toString()}
                       >
                         <FormControl>
                           <SelectTrigger>

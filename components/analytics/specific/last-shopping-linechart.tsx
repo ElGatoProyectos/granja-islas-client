@@ -14,37 +14,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const shoppingExpense = [
-  {
-    month: "Ene",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Feb",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Mar",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Abr",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "May",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Jun",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Jul",
-    shopping: Math.floor(Math.random() * 100000),
-  },
-];
+import { Specific3Formated } from "@/hooks/useAnalyticsSpecific";
+import { formatWithCommas } from "@/utils/format-number-comas";
 
 const chartConfig = {
   shopping: {
@@ -55,9 +26,10 @@ const chartConfig = {
 interface Props {
   label: string;
   date: string;
+  specificChart3: Specific3Formated[];
 }
 
-export function LastShoppingLinechart({ label, date }: Props) {
+export function LastShoppingLinechart({ label, date, specificChart3 }: Props) {
   return (
     <Card>
       <CardHeader>
@@ -68,7 +40,7 @@ export function LastShoppingLinechart({ label, date }: Props) {
         <ChartContainer config={chartConfig} className="h-[300px]">
           <LineChart
             accessibilityLayer
-            data={shoppingExpense}
+            data={specificChart3}
             margin={{
               left: 12,
               right: 12,
@@ -81,6 +53,13 @@ export function LastShoppingLinechart({ label, date }: Props) {
               axisLine={false}
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              width={85}
+              tickFormatter={formatWithCommas}
             />
             <ChartTooltip
               cursor={false}

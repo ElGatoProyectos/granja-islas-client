@@ -17,47 +17,10 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { formatNumberWithCommas } from "@/utils/format-number-comas";
-
-const monthlyExpense = [
-  {
-    month: "Ene",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Feb",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Mar",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Abr",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "May",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Jun",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Jul",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-];
+import { SpecificSchemaIN } from "@/lib/validations/analytics";
 
 const chartConfig = {
-  expense: {
+  amount: {
     label: "Gasto",
   },
   average: {
@@ -68,9 +31,11 @@ const chartConfig = {
 export function FiscalConsumptionLinechart({
   label,
   date,
+  specificChart,
 }: {
   label: string;
   date: string;
+  specificChart: SpecificSchemaIN[];
 }) {
   return (
     <Card>
@@ -82,7 +47,7 @@ export function FiscalConsumptionLinechart({
         <ChartContainer config={chartConfig} className="h-[300px]">
           <LineChart
             accessibilityLayer
-            data={monthlyExpense}
+            data={specificChart}
             margin={{
               left: 12,
               right: 12,
@@ -105,16 +70,16 @@ export function FiscalConsumptionLinechart({
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="expense"
+              dataKey="average"
               type="monotone"
-              stroke="hsl(var(--chart-1))"
+              stroke="hsl(var(--chart-2))"
               strokeWidth={2}
               dot={false}
             />
             <Line
-              dataKey="average"
+              dataKey="amount"
               type="monotone"
-              stroke="hsl(var(--chart-5))"
+              stroke="hsl(var(--chart-1))"
               strokeWidth={2}
               dot={false}
             />

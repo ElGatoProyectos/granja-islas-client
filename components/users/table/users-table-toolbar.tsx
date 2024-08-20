@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
-import { Download, X } from "lucide-react";
+import { X } from "lucide-react";
 import { DataTableFacetedFilter } from "./users-faceted-filter";
 import { user_states } from "./user-filters";
-import { DataTableViewOptions } from "./users-table-view-options";
 import { UserForm } from "../user-form";
+import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
+import { userViewTable } from "@/utils/change-name";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -49,8 +50,8 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex space-x-2">
-        <DataTableViewOptions table={table} />
         <UserForm type="create" />
+        <DataTableViewOptions table={table} changeTitle={userViewTable} />
       </div>
     </div>
   );

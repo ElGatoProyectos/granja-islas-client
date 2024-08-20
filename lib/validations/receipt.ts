@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { supplierSchemaIN } from "./supplier";
 
+
 export const receiptSchemaIN = z.object({
   amount_base: z.number(),
   amount_paid: z.number(),

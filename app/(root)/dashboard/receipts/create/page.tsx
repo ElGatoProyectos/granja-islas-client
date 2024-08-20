@@ -15,13 +15,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Page() {
   return (
-    <Tabs defaultValue="account" className="w-full">
-      <TabsList className="flex">
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
+    <Tabs defaultValue="bill" className="w-full">
+      <TabsList className="flex w-[600px]">
+        <TabsTrigger value="bill">Factura</TabsTrigger>
+        <TabsTrigger value="credit_note">Nota de credio</TabsTrigger>
+        <TabsTrigger value="debit_note">Nota de debito</TabsTrigger>
       </TabsList>
       <TabsContent
-        value="account"
+        value="bill"
         className="flex gap-3 justify-start items-start"
       >
         <Card className="w-full">
@@ -36,7 +37,7 @@ export default function Page() {
           <BillView />
         </Card>
       </TabsContent>
-      <TabsContent value="password">
+      <TabsContent value="credit_note">
         <Card>
           <CardHeader>
             <CardTitle>Password</CardTitle>

@@ -9,7 +9,7 @@ export function useBanks() {
   const [loading, setLoading] = useState(false);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-
+  console.log(tokenBack);
   const getBanks = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;

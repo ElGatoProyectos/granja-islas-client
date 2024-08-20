@@ -26,7 +26,7 @@ export default function Home() {
               <Card key={title}>
                 <CardHeader className="flex flex-row justify-between space-y-0 pb-0">
                   <span className="font-bold text-4xl">
-                    {formatWithCommas(value)}
+                    {formatWithCommas(value.toFixed(2))}
                   </span>
                   <span className="text-primary font-bold">{date}</span>
                 </CardHeader>

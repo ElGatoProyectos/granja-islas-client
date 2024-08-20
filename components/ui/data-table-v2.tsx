@@ -25,8 +25,8 @@ import {
 } from "@/components/ui/table";
 
 import { Dispatch, SetStateAction, useState } from "react";
-import { DataTablePagination } from "../suppliers/data-table/table-pagination";
 import { DataTableToolbar } from "../suppliers/data-table/table-toolbar";
+import { DataTablePagination } from "../ui-custom/table-pagination";
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -136,8 +136,8 @@ export function DataTable<TData, TValue>({
       </div>
       <DataTablePagination
         table={table}
-        setPage={setPage}
-        setRowsPerPage={setRowsPerPage}
+        setCurrentPage={setPage}
+        setLimit={setRowsPerPage}
         currentPage={currentPage}
         totalElements={totalElements}
       />

@@ -37,7 +37,9 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
                 <AvatarImage
                   src={`${backend_url}/api/companies/file/${company.id}`}
                 />
-                <AvatarFallback>E</AvatarFallback>
+                <AvatarFallback>
+                  {company.business_name.substring(0, 1)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col justify-center">
                 <h3 className="font-semibold text-sm">

@@ -6,9 +6,10 @@ import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableFacetedFilter } from "./table-faceted-filter";
 import { states } from "./supplier-filters";
-import { DataTableViewOptions } from "./table-view-options";
 import { SupplierForm } from "../supplier-form";
 import { useSupplier } from "@/context/sections/suppliers-context";
+import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
+import { translateString } from "@/utils/change-name";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -54,8 +55,8 @@ export function DataTableToolbar<TData>({
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        <DataTableViewOptions table={table} />
         <SupplierForm type="create" getSuppliers={getSuppliers} />
+        <DataTableViewOptions changeTitle={translateString} table={table} />
       </div>
     </div>
   );

@@ -58,3 +58,30 @@ export const specificSchemaIN = z.object({
 });
 export const specificArraySchemaIN = z.array(specificSchemaIN);
 export type SpecificSchemaIN = z.infer<typeof specificSchemaIN>;
+
+export const specific3SchemaIN = z.object({
+  id: z.number(),
+  company_id: z.number(),
+  user_id_created: z.number(),
+  num_serie: z.string(),
+  document_code: z.string(),
+  document_description: z.string(),
+  num_cpe: z.number(),
+  code: z.string(),
+  issue_date: z.string().datetime(),
+  expiration_date: z.string().nullable(),
+  period: z.string(),
+  amount_base: z.number(),
+  igv: z.number(),
+  total: z.number(),
+  amount_paid: z.number(),
+  amount_pending: z.number(),
+  created_status: z.string(),
+  bill_status: z.string(),
+  bill_status_payment: z.string(),
+  supplier_id: z.number(),
+  currency_code: z.string(),
+  exchange_rate: z.number(),
+});
+export const specific3ArraySchemaIN = z.array(specific3SchemaIN);
+export type Specific3SchemaIN = z.infer<typeof specific3SchemaIN>;

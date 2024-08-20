@@ -17,6 +17,7 @@ import {
 import { useAnalyticsSpecific } from "@/hooks/useAnalyticsSpecific";
 
 import { useLabels } from "@/hooks/useLabels";
+import { formatTextDate } from "@/utils/format-text-date";
 import Link from "next/link";
 
 export default function Page() {
@@ -38,13 +39,22 @@ export default function Page() {
     },
   ];
   const { labels } = useLabels();
-  const { filterMonth, setFilterMonth, labelId, setLabelId } =
-    useAnalyticsSpecific();
+  const {
+    filterMonth,
+    setFilterMonth,
+    labelId,
+    setLabelId,
+    measure,
+    measureSelect,
+    setMeasureSelect,
+    specificChart,
+    specificChart2,
+    specificChart3,
+  } = useAnalyticsSpecific();
   const [labelSelected] = labels.filter(
     (selected) => selected.id.toString() === labelId
   );
 
-  console.log(labelSelected);
   return (
     <section>
       <header className="flex justify-between mb-4">
@@ -83,15 +93,27 @@ export default function Page() {
       <main className="grid grid-cols-1 gap-4">
         <FiscalConsumptionLinechart
           label={labelSelected?.title}
-          date={"25 de Enero,2024 - 25 de Julio,2024"}
+          specificChart={specificChart}
+          date={formatTextDate({
+            filterMonth,
+          })}
         />
         <FiscalConsumptionMeasureLinechart
           label={labelSelected?.title}
-          date={"25 de Enero,2024 - 25 de Julio,2024"}
+          specificChart={specificChart2}
+          measure={measure}
+          measureSelect={measureSelect}
+          setMeasureSelect={setMeasureSelect}
+          date={formatTextDate({
+            filterMonth,
+          })}
         />
         <LastShoppingLinechart
+          specificChart3={specificChart3}
           label={labelSelected?.title}
-          date={"25 de Enero,2024 - 25 de Julio,2024"}
+          date={formatTextDate({
+            filterMonth,
+          })}
         />
       </main>
     </section>

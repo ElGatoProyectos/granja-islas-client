@@ -27,6 +27,19 @@ import { defaultDate } from "@/utils/default-date";
 import { months } from "@/constants/dates";
 import Link from "next/link";
 
+const currentDate = new Date();
+const currentYear = currentDate.getFullYear();
+const years = [
+  {
+    label: `${currentYear}`,
+    value: `${currentYear}`,
+  },
+  {
+    label: `${currentYear - 1}`,
+    value: `${currentYear - 1}`,
+  },
+];
+
 interface Props {
   setYear: Dispatch<SetStateAction<string>>;
   setMonth: Dispatch<SetStateAction<string>>;
@@ -67,8 +80,11 @@ export function ShoppingRecordTable({
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Año</SelectLabel>
-                <SelectItem value="2023">2023</SelectItem>
-                <SelectItem value="2024">2024</SelectItem>
+                {years.map(({ label, value }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -136,22 +152,29 @@ export function ShoppingRecordTable({
                 total_amount_documents,
               }) => (
                 <TableRow key={document_type}>
-                  <TableCell className="font-medium">{document_type}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link
+                      href="/dashboard/receipts"
+                      className={`${buttonVariants({ variant: "link" })} !p-0`}
+                    >
+                      {document_type}
+                    </Link>
+                  </TableCell>
                   <TableCell>{total_documents}</TableCell>
                   <TableCell className="text-right">
-                    {formatWithCommas(total_amount_base)}
+                    {formatWithCommas(total_amount_base.toFixed(2))}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatWithCommas(total_amount_igv)}
+                    {formatWithCommas(total_amount_igv.toFixed(2))}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatWithCommas(total_amount_dgng_base)}
+                    {formatWithCommas(total_amount_dgng_base.toFixed(2))}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatWithCommas(total_amount_dgng_igv)}
+                    {formatWithCommas(total_amount_dgng_igv.toFixed(2))}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatWithCommas(total_amount_documents)}
+                    {formatWithCommas(total_amount_documents.toFixed(2))}
                   </TableCell>
                 </TableRow>
               )
@@ -161,7 +184,7 @@ export function ShoppingRecordTable({
             <TableRow>
               <TableCell colSpan={6}>Total</TableCell>
               <TableCell className="text-right">
-                {formatWithCommas(totalAmountofAll)}
+                {formatWithCommas(totalAmountofAll.toFixed(2))}
               </TableCell>
             </TableRow>
           </TableFooter>

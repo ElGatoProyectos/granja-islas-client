@@ -8,7 +8,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,6 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PEN, USD } from "@/constants/currency";
+import { useAllSuppliers } from "@/hooks/useAllSuppliers";
 
 const proveedor = [
   {
@@ -93,21 +93,204 @@ export function BillForm() {
     }
   }
 
-  form.register;
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
       control: form.control,
       name: "productos",
     }
   );
+
+  const { totalSuppliers } = useAllSuppliers();
   return (
     <section>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 grid grid-cols-2 gap-3"
+          className="grid grid-cols-2 gap-3"
           autoComplete="off"
         >
+          <FormField
+            control={form.control}
+            name="comprobante"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nro. de comprobante</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="proveedor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Proveedor</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {totalSuppliers.map(({ id, business_name }) => (
+                      <SelectItem key={id} value={id.toString()}>
+                        {business_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="fecha_emision"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de emisión</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Escoje una fecha</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value as unknown as Date}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="impuestos"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Impuesto</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tipo_pago"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de pago</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="vencimiento"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de vencimiento</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <span className="col-span-2">Detalles de factura</span>
+          <div className="col-span-2 grid grid-cols-3 gap-3">
+            <FormField
+              control={form.control}
+              name="notas"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notas</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="moneda"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Moneda</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {[PEN, USD].map((currency) => (
+                        <SelectItem key={currency} value={currency}>
+                          {currency}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tipo_cambio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de cambio</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <div className="grid grid-cols-5 col-span-2 gap-3">
             <p className="col-span-2">Descripción</p>
             <p>Cantidad</p>
@@ -175,204 +358,17 @@ export function BillForm() {
                 />
               </div>
             ))}
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() =>
+                append({ cantidad: "", medida: "", name: "", precio: "" })
+              }
+            >
+              <Plus className="w-4 h-4 stroke-primary" />
+              Agregar producto
+            </Button>
           </div>
-
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() =>
-              append({ cantidad: "", medida: "", name: "", precio: "" })
-            }
-          >
-            <Plus className="w-4 h-4 stroke-primary" />
-            Agregar producto
-          </Button>
-
-          <FormField
-            control={form.control}
-            name="comprobante"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nro. de comprobante</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="proveedor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Proveedor</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {proveedor.map(({ id, label }) => (
-                      <SelectItem key={id} value={id.toString()}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="fecha_emision"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Fecha de emisión</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Escoje una fecha</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value as unknown as Date}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>
-                  Your date of birth is used to calculate your age.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="impuestos"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Impuesto</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="tipo_pago"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo de pago</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="vencimiento"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de vencimiento</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <span className="col-span-2">Detalles de factura</span>
-          <div className="col-span-2 grid grid-cols-3">
-            <FormField
-              control={form.control}
-              name="notas"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notas</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="moneda"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Moneda</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {[PEN, USD].map((currency) => (
-                        <SelectItem key={currency} value={currency}>
-                          {currency}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="tipo_cambio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo de cambio</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div>array de productos</div>
           <div className="flex mt-6 justify-between">
             <Button
               type="button"

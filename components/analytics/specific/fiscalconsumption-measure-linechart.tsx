@@ -14,6 +14,17 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Dispatch, SetStateAction } from "react";
+import { SpecificSchemaIN } from "@/lib/validations/analytics";
 
 const monthlyExpense = [
   {
@@ -54,7 +65,7 @@ const monthlyExpense = [
 ];
 
 const chartConfig = {
-  expense: {
+  amount: {
     label: "Gasto",
   },
   average: {
@@ -65,14 +76,42 @@ const chartConfig = {
 interface Props {
   label: string;
   date: string;
+  measure: string[];
+  measureSelect: string;
+  setMeasureSelect: Dispatch<SetStateAction<string>>;
+  specificChart: SpecificSchemaIN[];
 }
 
-export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
+export function FiscalConsumptionMeasureLinechart({
+  label,
+  date,
+  measure,
+  measureSelect,
+  setMeasureSelect,
+  specificChart,
+}: Props) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="font-bold">Consumo fiscal de {label}</CardTitle>
-        <CardDescription>{date}</CardDescription>
+        <div className="flex gap-3 items-center">
+          <CardDescription>{date}</CardDescription>
+          <Select value={measureSelect} onValueChange={setMeasureSelect}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Selecciona una medida" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Medida</SelectLabel>
+                {measure.map((measure) => (
+                  <SelectItem key={measure} value={measure}>
+                    {measure}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer
@@ -81,7 +120,7 @@ export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
         >
           <LineChart
             accessibilityLayer
-            data={monthlyExpense}
+            data={specificChart}
             margin={{
               left: 12,
               right: 12,
@@ -100,16 +139,13 @@ export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
               axisLine={false}
               tickMargin={8}
               width={85}
-              tickFormatter={(v) =>
-                `${v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} kg`
-              }
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" />}
             />
             <Line
-              dataKey="expense"
+              dataKey="amount"
               type="monotone"
               stroke="hsl(var(--chart-1))"
               strokeWidth={2}
@@ -118,7 +154,7 @@ export function FiscalConsumptionMeasureLinechart({ label, date }: Props) {
             <Line
               dataKey="average"
               type="monotone"
-              stroke="hsl(var(--chart-5))"
+              stroke="hsl(var(--chart-2))"
               strokeWidth={2}
               dot={false}
             />
