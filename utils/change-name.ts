@@ -77,3 +77,21 @@ const documentsLabelTranslationView: TranslationDict = {
 export function documentsLabelViewTable(key: string) {
   return documentsLabelTranslationView[key] || key;
 }
+
+/* products of supplier */
+
+const productsOfSupplierView: TranslationDict = {
+  title: "Producto",
+  labels: "Etiquetas",
+  code: "Número",
+  issue_date: "Emisión",
+  amount: "Cantidad",
+  unit_measure: "Medida",
+  price: "Precio unitario",
+  igv: "IGV",
+  total: "Importe Total",
+};
+
+export function productsOfSupplierViewTable(key: string) {
+  return productsOfSupplierView[key] || key;
+}

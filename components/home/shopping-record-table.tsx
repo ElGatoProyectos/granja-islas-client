@@ -154,7 +154,7 @@ export function ShoppingRecordTable({
                 <TableRow key={document_type}>
                   <TableCell className="font-medium">
                     <Link
-                      href="/dashboard/receipts"
+                      href="/receipts"
                       className={`${buttonVariants({ variant: "link" })} !p-0`}
                     >
                       {document_type}

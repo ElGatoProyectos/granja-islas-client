@@ -22,12 +22,15 @@ import { paginationSchema } from "@/lib/validations/pagination";
 import { userArraySchemaIN, UserSchemaIN } from "@/lib/validations/user";
 import { useParams } from "next/navigation";
 import {
+  formatSupplierProducts,
+  supplierProductsArrayFormatSchema,
   supplierProductsArraySchema,
-  SupplierProductsSchema,
+  SupplierProductsFormatSchema,
 } from "@/lib/validations/supplier";
+import { labelArraySchemaIN, LabelSchemaIN } from "@/lib/validations/label";
 
 interface PaymentContextType {
-  productsOfSupplier: SupplierProductsSchema[];
+  productsOfSupplier: SupplierProductsFormatSchema[];
   getProductsOfSupplier: () => Promise<void>;
 
   loading: boolean;
@@ -43,8 +46,8 @@ interface PaymentContextType {
   setMonth: Dispatch<SetStateAction<string>>;
   year: string;
   setYear: Dispatch<SetStateAction<string>>;
-  usersFilters: UserSchemaIN[];
-  setUserId: Dispatch<SetStateAction<string>>;
+  labelsFilters: LabelSchemaIN[];
+  setLabelId: Dispatch<SetStateAction<string>>;
 }
 
 export const SupplierProductsContext = createContext<PaymentContextType | null>(
@@ -59,7 +62,7 @@ export const SupplierProductsProvider = ({
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [productsOfSupplier, setProductsOfSupplier] = useState<
-    SupplierProductsSchema[]
+    SupplierProductsFormatSchema[]
   >([]);
   const [loading, setLoading] = useState(false);
   /* pagination */
@@ -72,9 +75,8 @@ export const SupplierProductsProvider = ({
   const input = useDebounce(search);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
-  const [usersFilters, setUsersFilters] = useState<UserSchemaIN[]>([]);
-  const [userId, setUserId] = useState("");
-
+  const [labelsFilters, setLabelsFilters] = useState<LabelSchemaIN[]>([]);
+  const [labelId, setLabelId] = useState("");
   const { id } = useParams();
 
   const getProductsOfSupplier = useCallback(async () => {
@@ -90,7 +92,7 @@ export const SupplierProductsProvider = ({
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
       if (year) queryParams.append("year", year);
-      if (userId) queryParams.append("user_group_id", userId);
+      if (labelId) queryParams.append("label_group_id", labelId);
 
       const url = `${backend_url}/api/suppliers/${id}/products?${queryParams
         .toString()
@@ -105,20 +107,22 @@ export const SupplierProductsProvider = ({
       });
 
       /* filterUsers */
-      const resUsers = await fetch(`${backend_url}/api/users`, {
+      const resUsers = await fetch(`${backend_url}/api/labels`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,
+          ruc: company?.ruc,
         },
       });
       const resUsersJSON = await resUsers.json();
-      const { payload: dataUsers, error: ErrorUsers } =
+      const { payload: dataLabels, error: ErrorUsers } =
         responseArraySchema.parse(resUsersJSON);
       if (ErrorUsers) {
         throw new Error("error to fetch users");
       }
-      const parseusers = userArraySchemaIN.parse(dataUsers);
-      setUsersFilters(parseusers);
+
+      const parseLabels = labelArraySchemaIN.parse(dataLabels);
+      setLabelsFilters(parseLabels);
       /* filterUsers */
       const resJSON = await res.json();
 
@@ -135,21 +139,24 @@ export const SupplierProductsProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
-      const formatdata = supplierProductsArraySchema.parse(data);
 
-      console.log(data);
+      const parseData = supplierProductsArraySchema.parse(data);
+      const formatProductsOfSupplier = formatSupplierProducts(parseData);
+      const formData = supplierProductsArrayFormatSchema.parse(
+        formatProductsOfSupplier
+      );
 
-      setProductsOfSupplier(formatdata);
+      setProductsOfSupplier(formData);
       setTotalPages(pageCount);
       setTotalElements(total);
       setCurrentPage(page);
       setLimit(maxLimit);
     } catch (error) {
-      throw new Error("error to fetch payments");
+      throw new Error("error to fetch products of supplier");
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, id, currentPage, limit, input, month, year, userId]);
+  }, [company, tokenBack, id, currentPage, limit, input, month, year, labelId]);
 
   useEffect(() => {
     getProductsOfSupplier();
@@ -172,8 +179,8 @@ export const SupplierProductsProvider = ({
       month,
       setYear,
       year,
-      usersFilters,
-      setUserId,
+      labelsFilters,
+      setLabelId,
     }),
     [
       productsOfSupplier,
@@ -186,8 +193,8 @@ export const SupplierProductsProvider = ({
       search,
       month,
       year,
-      usersFilters,
-      setUserId,
+      labelsFilters,
+      setLabelId,
     ]
   );
   return (

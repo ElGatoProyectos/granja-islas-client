@@ -5,6 +5,7 @@ import { DataTableColumnHeader } from "@/components/ui-custom/table-column-heade
 import { ProductSchemaINFormated } from "@/lib/validations/product";
 import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
+import { formatWithCommas } from "@/utils/format-number-comas";
 
 export const columns: ColumnDef<ProductSchemaINFormated>[] = [
   {
@@ -98,9 +99,10 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="Precio unitario" />
     ),
     cell: ({ row }) => {
+      const unit_price = row.getValue("price") as string;
       return (
         <div className="flex items-center">
-          <span>{row.getValue("price")}</span>
+          <span>{formatWithCommas(unit_price)}</span>
         </div>
       );
     },
@@ -112,9 +114,10 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="IGV" />
     ),
     cell: ({ row }) => {
+      const igv = row.getValue("igv") as string;
       return (
         <div className="flex items-center">
-          <span>{row.getValue("igv")}</span>
+          <span>{formatWithCommas(igv)}</span>
         </div>
       );
     },
@@ -126,9 +129,10 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="Importe Total" />
     ),
     cell: ({ row }) => {
+      const total = row.getValue("total") as string;
       return (
         <div className="flex items-center">
-          <span>{row.getValue("total")}</span>
+          <span>{formatWithCommas(total)}</span>
         </div>
       );
     },

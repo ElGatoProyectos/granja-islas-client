@@ -32,7 +32,7 @@ export function useInfoSupplier() {
     if (error) {
       throw new Error("error to fetch supplier details");
     }
-
+    console.log(payload);
     const parseData = supplierSchemaIN.parse(payload);
     setSupplier(parseData);
   }, [company, id, tokenBack]);

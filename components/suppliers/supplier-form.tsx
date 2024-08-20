@@ -114,10 +114,15 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
   const getRucData = async () => {
     const ruc = form.watch("ruc");
     if (!ruc) return;
+    console.log("wtf", tokenBack);
     try {
       const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+        },
       });
+      console.log(res);
 
       if (!res.ok) {
         toast({
@@ -127,6 +132,7 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
+      console.log(data);
 
       if (data.error) {
         toast({

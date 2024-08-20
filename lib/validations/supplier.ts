@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { labelArraySchemaIN, labelSchemaIN } from "./label";
+import { receiptArraySchemaIN } from "./receipt";
 
 export const searchParamsSchema = z.object({
   page: z.coerce.number().default(1), // current page
@@ -78,6 +80,89 @@ const supplierProductsSchema = z.object({
   status_deleted: z.boolean(),
   created_at: z.string(),
   updated_at: z.string(),
+  DetailProductLabel: z.array(
+    z.object({
+      id: z.number(),
+      product_id: z.number(),
+      product_label_id: z.number(),
+      created_at: z.string(),
+      updated_at: z.string(),
+      Label: z.object({
+        id: z.number(),
+        company_id: z.number(),
+        user_created_id: z.number(),
+        title: z.string(),
+        slug: z.string(),
+        description: z.string().nullable(),
+        status_deleted: z.boolean(),
+      }),
+    })
+  ),
+  document: z.object({
+    amount_base: z.number(),
+    amount_paid: z.number(),
+    amount_pending: z.number(),
+    bill_status: z.string(),
+    bill_status_payment: z.string(),
+    code: z.string(),
+    company_id: z.number(),
+    currency_code: z.string(),
+    exchange_rate: z.number(),
+    expiration_date: z.string().nullable(),
+    id: z.number(),
+    igv: z.number(),
+    issue_date: z.string().datetime(),
+    num_cpe: z.number(),
+    num_serie: z.string(),
+    period: z.string(),
+    supplier_id: z.number(),
+    total: z.number(),
+    user_id_created: z.number(),
+    document_code: z.string(),
+    document_description: z.string(),
+  }),
 });
 export const supplierProductsArraySchema = z.array(supplierProductsSchema);
 export type SupplierProductsSchema = z.infer<typeof supplierProductsSchema>;
+
+export const formatSupplierProducts = (data: SupplierProductsSchema[]) => {
+  return data.map((supplierProduct) => {
+    return {
+      ...supplierProduct,
+      DetailProductLabel: supplierProduct.DetailProductLabel.map((label) => ({
+        label: label.Label.title,
+      })),
+      code: supplierProduct.document.code,
+      issue_date: supplierProduct.document.issue_date,
+    };
+  });
+};
+
+export const supplierProductsFormatSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  description: z.string().nullable(),
+  amount: z.number(),
+  price: z.number(),
+  igv: z.number().nullable(),
+  total: z.number().nullable(),
+  slug: z.string(),
+  unit_measure: z.string(),
+  supplier_id: z.number(),
+  document_type: z.string(),
+  document_id: z.number(),
+  status_deleted: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  DetailProductLabel: z.array(z.object({ label: z.string() })),
+  code: z.string(),
+  issue_date: z.string().datetime(),
+});
+
+export const supplierProductsArrayFormatSchema = z.array(
+  supplierProductsFormatSchema
+);
+
+export type SupplierProductsFormatSchema = z.infer<
+  typeof supplierProductsFormatSchema
+>;

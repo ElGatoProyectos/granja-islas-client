@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import { receiptViewTable } from "@/utils/change-name";
+import {
+  productsOfSupplierViewTable,
+  receiptViewTable,
+} from "@/utils/change-name";
 import { DatePicker } from "@/components/date-picker";
 import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
-import { usePayment } from "@/context/sections/payments-context";
+import { useSupplierProducts } from "@/context/sections/supplier-product-context";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -21,25 +24,25 @@ export function DataTableToolbar<TData>({
   const {
     setSearch,
     search,
-    getPayments,
+    getProductsOfSupplier,
     setMonth,
     setYear,
     year,
     month,
-    usersFilters,
-    setUserId,
-  } = usePayment();
+    labelsFilters,
+    setLabelId,
+  } = useSupplierProducts();
 
-  const options = usersFilters.map(({ id, name }) => ({
+  const options = labelsFilters.map(({ id, title }) => ({
     value: id.toString(),
-    label: name.toLowerCase(),
+    label: title.toLowerCase(),
   }));
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Buscar número de operacion"
+          placeholder="Buscar producto"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           className="w-[150px] lg:w-[250px]"
@@ -49,14 +52,14 @@ export function DataTableToolbar<TData>({
           setYear={setYear}
           year={year}
           month={month}
-          getData={getPayments}
+          getData={getProductsOfSupplier}
         />
-        {table.getColumn("user_name") && (
+        {table.getColumn("labels") && (
           <DataTableFacetedFilter
-            column={table.getColumn("user_name")}
-            title="Usuarios"
+            column={table.getColumn("labels")}
+            title="Etiquetas"
             options={options}
-            setFilter={setUserId}
+            setFilter={setLabelId}
           />
         )}
 
@@ -76,7 +79,10 @@ export function DataTableToolbar<TData>({
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
+        <DataTableViewOptions
+          table={table}
+          changeTitle={productsOfSupplierViewTable}
+        />
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ export default function Page() {
   const { supplier } = useInfoSupplier();
   return (
     <section>
-      <Card>
+      <Card className="mb-4">
         <CardHeader className="flex-row gap-8">
           <CardTitle className="max-w-32 font-bold flex justify-center items-center">
             Detalles de proveedor

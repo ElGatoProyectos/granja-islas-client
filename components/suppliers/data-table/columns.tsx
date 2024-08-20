@@ -86,8 +86,8 @@ export const columns: ColumnDef<SupplierSchemaIN>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex items-center">
-          <span>{row.getValue("business_direction")}</span>
+        <div className="max-w-[400px] flex items-center">
+          <p>{row.getValue("business_direction")}</p>
         </div>
       );
     },

@@ -14,16 +14,16 @@ export function SupplierProductsDataTable() {
   } = useSupplierProducts();
   return (
     <div className="mx-auto">
-      {/* <DataTable
+      <DataTable
         columns={columns}
-        data={}
+        data={productsOfSupplier}
         limit={limit}
         setLimit={setLimit}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         totalPages={totalPages}
         totalElements={totalElements}
-      /> */}
+      />
     </div>
   );
 }
