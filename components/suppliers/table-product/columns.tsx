@@ -6,6 +6,8 @@ import { SupplierProductsFormatSchema } from "@/lib/validations/supplier";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { formatDate } from "@/utils/format-date";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
   {
@@ -23,18 +25,30 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
     accessorKey: "labels",
     accessorFn: (row) => `${row.DetailProductLabel}`,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Etiquetas" />
+      <DataTableColumnHeader
+        column={column}
+        title="Etiquetas"
+        href="/dashboard/settings"
+      />
     ),
     cell: ({ row }) => {
       const labels = row.original.DetailProductLabel;
-
       return (
         <div className="w-[180px] flex flex-wrap gap-2">
-          {labels.map(({ label }) => (
-            <Badge key={label} variant="secondary">
-              {label}
-            </Badge>
-          ))}
+          {labels.length ? (
+            labels.map(({ label }) => (
+              <Badge key={label} variant="secondary">
+                {label}
+              </Badge>
+            ))
+          ) : (
+            <Link
+              href={`/dashboard/products/${row.original.id}`}
+              className={`${buttonVariants({ variant: "link" })} !p-0`}
+            >
+              Etiquetar
+            </Link>
+          )}
         </div>
       );
     },

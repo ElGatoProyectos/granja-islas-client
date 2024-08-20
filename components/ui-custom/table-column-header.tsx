@@ -7,22 +7,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowDown, ArrowUp, ChevronsUpDownIcon, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
   title: string;
+  href?: string;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
   className,
+  href,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>;
+    return href ? (
+      <Link
+        href={href}
+        className={`${buttonVariants({ variant: "link" })} !p-0`}
+      >
+        {title}
+      </Link>
+    ) : (
+      <div className={cn(className)}>{title}</div>
+    );
   }
 
   return (
