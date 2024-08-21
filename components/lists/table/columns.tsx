@@ -5,6 +5,8 @@ import { DataTableColumnHeader } from "@/components/ui-custom/table-column-heade
 import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
 import { ListsSchemaIN } from "@/lib/validations/list";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const columns: ColumnDef<ListsSchemaIN>[] = [
   {
@@ -119,11 +121,17 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
       />
     ),
     cell: ({ row }) => {
+      const id = row.original.supplier.id;
       const business_name = row.getValue("business_name") as string;
       return (
-        <p className="w-[200px] capitalize text-balance font-medium">
+        <Link
+          href={`/dashboard/suppliers/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
           {business_name.toLowerCase()}
-        </p>
+        </Link>
       );
     },
     enableSorting: false,
