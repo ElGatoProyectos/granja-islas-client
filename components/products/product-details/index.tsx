@@ -163,7 +163,6 @@ export function ProductDetails() {
                   >
                     {productDetails.supplier.business_name.toLowerCase()}
                   </Link>
-                  {/* <p className="text-muted-foreground capitalize"></p> */}
                 </div>
                 <div className="flex justify-between">
                   <span>Domicilio fiscal</span>

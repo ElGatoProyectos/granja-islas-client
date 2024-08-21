@@ -4,6 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui-custom/table-column-header";
 import { formatDate } from "@/utils/format-date";
 import { FormatDocumentsOfLabelType } from "@/lib/validations/label";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
   {
@@ -52,14 +54,24 @@ export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
   {
     accessorKey: "business_name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Proveedor" />
+      <DataTableColumnHeader
+        column={column}
+        title="Proveedor"
+        href="/dashboard/suppliers"
+      />
     ),
     cell: ({ row }) => {
+      const id = row.original.id_supplier;
       const business_name = row.getValue("business_name") as string;
       return (
-        <p className="w-[200px] capitalize text-balance font-medium">
+        <Link
+          href={`/dashboard/suppliers/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0  !h-auto"`}
+        >
           {business_name.toLowerCase()}
-        </p>
+        </Link>
       );
     },
     enableSorting: false,

@@ -55,6 +55,7 @@ export function formatDocumentsOfLabel(data: DocumentsOfLabel[]) {
       code: Document.code,
       ruc: Supplier.ruc,
       business_name: Supplier.business_name,
+      id_supplier: Supplier.id,
       currency_code: Document.currency_code,
       price,
     };
@@ -66,6 +67,7 @@ export const documentsOfLabelType = z.object({
   code: z.string(),
   ruc: z.string(),
   business_name: z.string(),
+  id_supplier: z.number(),
   currency_code: z.string(),
   price: z.number(),
 });

@@ -1,11 +1,10 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
 import { listViewTable, transformData } from "@/utils/change-name";
-import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
 import { useList } from "@/context/sections/lists-context";
 import { Input } from "@/components/ui/input";
