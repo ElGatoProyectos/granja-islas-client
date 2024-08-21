@@ -31,6 +31,8 @@ import {
 } from "@/lib/validations/label";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
+import { getSuppliers } from "@/service/suppliers";
+import { getLabels } from "@/service/labels";
 
 interface ReceiptContextType {
   products: ProductSchemaINFormated[];
@@ -89,34 +91,15 @@ export const ProductProvider = ({
     if (!company) return;
     if (!tokenBack) return;
     /* suppliers filter */
-    const resSuppliers = await fetch(
-      `${backend_url}/api/suppliers/no-pagination`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-          ruc: company.ruc,
-        },
-      }
-    );
-
-    const dataSupp = await resSuppliers.json();
+    const suppliers = await getSuppliers({ ruc: company.ruc, tokenBack });
     const formatFilterSupplier = supplierArraySchemaFilter.parse(
-      dataSupp.payload
+      suppliers.payload
     );
     setsupplierFilter(formatFilterSupplier);
 
     /* labels filter */
-    const resLabel = await fetch(`${backend_url}/api/labels`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${tokenBack}`,
-        ruc: company?.ruc,
-      },
-    });
-
-    const resLabelJSON = await resLabel.json();
-    const parseLabel = labelArraySchemaFilter.parse(resLabelJSON.payload);
+    const labels = await getLabels({ ruc: company.ruc, tokenBack });
+    const parseLabel = labelArraySchemaFilter.parse(labels.payload);
     setLabelFilter(parseLabel);
   }, [company, tokenBack]);
 
@@ -220,8 +203,7 @@ export const ProductProvider = ({
       });
 
       const resJSON = await res.json();
-      const { error, message, statusCode, payload } =
-        responseSchema.parse(resJSON);
+      const { error, payload } = responseSchema.parse(resJSON);
       if (error) {
         throw new Error("Failed to fetch companies");
       }

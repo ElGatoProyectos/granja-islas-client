@@ -25,6 +25,7 @@ import {
 import { responseSchema } from "@/lib/validations/response";
 import { paginationSchema } from "@/lib/validations/pagination";
 import { typesSpanishFormat } from "@/constants/type-document";
+import { getSuppliers } from "@/service/suppliers";
 
 interface ReceiptContextType {
   receipts: ReceiptSchemaIN[];
@@ -75,6 +76,20 @@ export const ReceiptProvider = ({
   );
   const [idsTypeDocument, setIdsTypeDocument] = useState("");
 
+  const getFilters = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    const suppliers = await getSuppliers({ ruc: company.ruc, tokenBack });
+    const formatFilterSupplier = supplierArraySchemaFilter.parse(
+      suppliers.payload
+    );
+    setsupplierFilter(formatFilterSupplier);
+  }, [company, tokenBack]);
+
+  useEffect(() => {
+    getFilters();
+  }, [getFilters]);
+
   const getReceipts = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
@@ -101,22 +116,6 @@ export const ReceiptProvider = ({
           ruc: company.ruc,
         },
       });
-      /* filters suppliers */
-      const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
-      const resSuppliers = await fetch(urlSuppliers, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-          ruc: company.ruc,
-        },
-      });
-
-      const dataSupp = await resSuppliers.json();
-      const formatFilterSupplier = supplierArraySchemaFilter.parse(
-        dataSupp.payload
-      );
-      setsupplierFilter(formatFilterSupplier);
-      /* filters suppliers */
 
       const resJSON = await res.json();
       const { error, payload } = responseSchema.parse(resJSON);
@@ -176,7 +175,7 @@ export const ReceiptProvider = ({
     try {
       const queryParams = new URLSearchParams();
       if (currentPage) queryParams.append("page", currentPage.toString());
-      if (limit) queryParams.append("limit", limit.toString());
+      queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
       if (year) queryParams.append("year", year);
@@ -194,35 +193,21 @@ export const ReceiptProvider = ({
         },
       });
 
-      const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
-      const resSuppliers = await fetch(urlSuppliers, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-          ruc: company.ruc,
-        },
-      });
+      const resJSOn = await res.json();
+      const { error, payload } = responseSchema.parse(resJSOn);
+      if (error) {
+        throw new Error("Failed to fetch receipts");
+      }
+      const { data } = paginationSchema.parse(payload);
+      const formatdata = receiptArraySchemaIN.parse(data);
 
-      const dataSupp = await resSuppliers.json();
-      const formatFilterSupplier = supplierArraySchemaFilter.parse(
-        dataSupp.payload
-      );
-      setsupplierFilter(formatFilterSupplier);
-
-      const data = await res.json();
-      const formatdata = receiptArraySchemaIN.parse(data.payload.data);
-
-      setReceipts(formatdata);
-      setTotalPages(data.payload.pageCount);
-      setTotalElements(data.payload.total);
-      setCurrentPage(data.payload.page);
-      setLimit(data.payload.limit);
+      return formatdata;
     } catch (error) {
-      console.error("Error to fetch data receipts", error);
+      throw new Error("Failed to fetch receipts");
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, currentPage, limit, input, month, year, idSupplier]);
+  }, [company, tokenBack, currentPage, input, month, year, idSupplier]);
 
   const value = useMemo(
     () => ({
