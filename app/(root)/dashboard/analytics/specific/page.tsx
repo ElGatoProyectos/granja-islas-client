@@ -20,24 +20,25 @@ import { useLabels } from "@/hooks/useLabels";
 import { formatTextDate } from "@/utils/format-text-date";
 import Link from "next/link";
 
+const dates_radio = [
+  {
+    id: crypto.randomUUID(),
+    value: "1",
+    label: "1M",
+  },
+  {
+    id: crypto.randomUUID(),
+    value: "6",
+    label: "6M",
+  },
+  {
+    id: crypto.randomUUID(),
+    value: "12",
+    label: "1A",
+  },
+];
+
 export default function Page() {
-  const dates_radio = [
-    {
-      id: crypto.randomUUID(),
-      value: "1",
-      label: "1M",
-    },
-    {
-      id: crypto.randomUUID(),
-      value: "6",
-      label: "6M",
-    },
-    {
-      id: crypto.randomUUID(),
-      value: "12",
-      label: "1A",
-    },
-  ];
   const { labels } = useLabels();
   const {
     filterMonth,
@@ -50,7 +51,7 @@ export default function Page() {
     specificChart,
     specificChart2,
     specificChart3,
-  } = useAnalyticsSpecific();
+  } = useAnalyticsSpecific({ label: labels[0] });
   const [labelSelected] = labels.filter(
     (selected) => selected.id.toString() === labelId
   );

@@ -28,10 +28,11 @@ interface UserContextType {
   totalElements: number;
   setSearch: Dispatch<SetStateAction<string>>;
   search: string;
+  setStatusSupp: Dispatch<SetStateAction<string>>;
+  exportExcel: () => any;
 }
 
 export const supplierContext = createContext<UserContextType | null>(null);
-
 export const SupplierProvider = ({
   children,
 }: {
@@ -40,13 +41,14 @@ export const SupplierProvider = ({
   const [suppliers, setSuppliers] = useState<SupplierSchemaIN[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(9);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [search, setSearch] = useState("");
   const input = useDebounce(search);
+  const [statusSupp, setStatusSupp] = useState("");
 
   const getSuppliers = useCallback(async () => {
     if (!company) return;
@@ -58,6 +60,7 @@ export const SupplierProvider = ({
       if (page) queryParams.append("page", page.toString());
       if (perPage) queryParams.append("limit", perPage.toString());
       if (input) queryParams.append("name", input);
+      if (statusSupp) queryParams.append("status_group", statusSupp);
 
       const url = `${backend_url}/api/suppliers?${queryParams.toString()}`;
 
@@ -81,15 +84,51 @@ export const SupplierProvider = ({
       setPerPage(data.payload.limit);
       setSuppliers(data.payload.data);
     } catch (error) {
-      console.error("Error to fetch data suppliers", error);
+      throw new Error("Failed to fetch suppliers");
     } finally {
       setLoading(false);
     }
-  }, [company, input, page, perPage, tokenBack]);
+  }, [company, input, page, perPage, statusSupp, tokenBack]);
 
   useEffect(() => {
     getSuppliers();
   }, [getSuppliers]);
+
+  const exportExcel = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    setLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      if (page) queryParams.append("page", page.toString());
+      queryParams.append("limit", "10000");
+      if (input) queryParams.append("name", input);
+      if (statusSupp) queryParams.append("status_group", statusSupp);
+
+      const url = `${backend_url}/api/suppliers?${queryParams.toString()}`;
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch suppliers");
+      }
+
+      const data = await res.json();
+
+      return data.payload.data;
+    } catch (error) {
+      throw new Error("Failed to fetch suppliers");
+    } finally {
+      setLoading(false);
+    }
+  }, [company, input, page, statusSupp, tokenBack]);
 
   const value = useMemo(
     () => ({
@@ -104,6 +143,8 @@ export const SupplierProvider = ({
       totalElements,
       setSearch,
       search,
+      setStatusSupp,
+      exportExcel,
     }),
     [
       getSuppliers,
@@ -114,6 +155,8 @@ export const SupplierProvider = ({
       suppliers,
       totalElements,
       totalPages,
+      setStatusSupp,
+      exportExcel,
     ]
   );
   return (

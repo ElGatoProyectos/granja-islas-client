@@ -3,10 +3,10 @@ import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import {
   specific3ArraySchemaIN,
-  Specific3SchemaIN,
   specificArraySchemaIN,
   SpecificSchemaIN,
 } from "@/lib/validations/analytics";
+import { LabelSchemaIN } from "@/lib/validations/label";
 import {
   responseArraySchema,
   responseSchema,
@@ -19,17 +19,23 @@ export type Specific3Formated = {
   shopping: number;
 };
 
-export function useAnalyticsSpecific() {
+export function useAnalyticsSpecific({ label }: { label: LabelSchemaIN }) {
   const [loading, setLoading] = useState(false);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [labelId, setLabelId] = useState("");
-  const [filterMonth, setFilterMonth] = useState("1");
+  const [filterMonth, setFilterMonth] = useState("12");
   const [specificChart, setSpecificChart] = useState<SpecificSchemaIN[]>([]);
   const [specificChart2, setSpecificChart2] = useState<SpecificSchemaIN[]>([]);
   const [specificChart3, setspecificChart3] = useState<Specific3Formated[]>([]);
   const [measure, setMeasure] = useState<string[]>([]);
   const [measureSelect, setMeasureSelect] = useState("");
+
+  useEffect(() => {
+    if (label) {
+      setLabelId(label.id.toString());
+    }
+  }, [label]);
 
   const getMeasureSpecific2 = useCallback(async () => {
     if (!company) return;

@@ -187,6 +187,7 @@ export function DataTable<TData, TValue>({
         setLimit={setRowsPerPage}
         currentPage={currentPage}
         totalElements={totalElements}
+        arrayOfRows={[9, 18]}
       />
     </div>
   );

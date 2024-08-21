@@ -28,6 +28,8 @@ import {
   SupplierProductsFormatSchema,
 } from "@/lib/validations/supplier";
 import { labelArraySchemaIN, LabelSchemaIN } from "@/lib/validations/label";
+import { formatDate } from "@/utils/format-date";
+import { formatWithCommas } from "@/utils/format-number-comas";
 
 interface PaymentContextType {
   productsOfSupplier: SupplierProductsFormatSchema[];
@@ -48,6 +50,7 @@ interface PaymentContextType {
   setYear: Dispatch<SetStateAction<string>>;
   labelsFilters: LabelSchemaIN[];
   setLabelId: Dispatch<SetStateAction<string>>;
+  exportExcel: () => any;
 }
 
 export const SupplierProductsContext = createContext<PaymentContextType | null>(
@@ -162,6 +165,62 @@ export const SupplierProductsProvider = ({
     getProductsOfSupplier();
   }, [getProductsOfSupplier]);
 
+  const exportExcel = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    if (!id) return;
+    setLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      if (currentPage) queryParams.append("page", currentPage.toString());
+      queryParams.append("limit", "10000");
+      if (input) queryParams.append("filter", input);
+      if (month) queryParams.append("month", month);
+      if (year) queryParams.append("year", year);
+      if (labelId) queryParams.append("label_group_id", labelId);
+
+      const url = `${backend_url}/api/suppliers/${id}/products?${queryParams
+        .toString()
+        .replace(/%2C/g, ",")}`;
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+
+      const resJSON = await res.json();
+
+      const { error, payload } = responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("error to fetch products of supplier");
+      }
+      const { data } = paginationSchema.parse(payload);
+      const parseData = supplierProductsArraySchema.parse(data);
+      const formatProductsOfSupplier = formatSupplierProducts(parseData);
+      const formData = supplierProductsArrayFormatSchema.parse(
+        formatProductsOfSupplier
+      );
+      const formatNumbersAndDates = formData.map((data) => ({
+        ...data,
+        labels: data.DetailProductLabel.map(({ label }) => label).join(", "),
+        issue_date: formatDate(data.issue_date),
+        amount: formatWithCommas(data.amount),
+        price: formatWithCommas(data.price),
+        igv: formatWithCommas(data.igv ?? ""),
+        total: formatWithCommas(data.total ?? ""),
+      }));
+      return formatNumbersAndDates;
+    } catch (error) {
+      throw new Error("error to fetch products of supplier");
+    } finally {
+      setLoading(false);
+    }
+  }, [company, tokenBack, id, currentPage, input, month, year, labelId]);
+
   const value = useMemo(
     () => ({
       productsOfSupplier,
@@ -181,6 +240,7 @@ export const SupplierProductsProvider = ({
       year,
       labelsFilters,
       setLabelId,
+      exportExcel,
     }),
     [
       productsOfSupplier,
@@ -195,6 +255,7 @@ export const SupplierProductsProvider = ({
       year,
       labelsFilters,
       setLabelId,
+      exportExcel,
     ]
   );
   return (

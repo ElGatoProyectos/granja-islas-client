@@ -6,12 +6,13 @@ import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
 import {
   productsOfSupplierViewTable,
-  receiptViewTable,
+  transformData,
 } from "@/utils/change-name";
 import { DatePicker } from "@/components/date-picker";
 import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 import { useSupplierProducts } from "@/context/sections/supplier-product-context";
+import { exportToExcel } from "@/utils/export-excel";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -31,6 +32,8 @@ export function DataTableToolbar<TData>({
     month,
     labelsFilters,
     setLabelId,
+    exportExcel,
+    loading,
   } = useSupplierProducts();
 
   const options = labelsFilters.map(({ id, title }) => ({
@@ -75,7 +78,21 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex space-x-2">
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            const productsOfSuppliers = await exportExcel();
+            exportToExcel({
+              data: transformData(
+                productsOfSuppliers,
+                productsOfSupplierViewTable
+              ),
+              filename: "Productos del proveedor",
+            });
+          }}
+        >
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>

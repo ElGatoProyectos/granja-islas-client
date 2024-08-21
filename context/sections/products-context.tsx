@@ -29,6 +29,8 @@ import {
   labelArraySchemaFilter,
   LabelSchemaFilter,
 } from "@/lib/validations/label";
+import { formatDate } from "@/utils/format-date";
+import { formatWithCommas } from "@/utils/format-number-comas";
 
 interface ReceiptContextType {
   products: ProductSchemaINFormated[];
@@ -52,6 +54,7 @@ interface ReceiptContextType {
   idLabel: string;
   setIdLabel: Dispatch<SetStateAction<string>>;
   labelFilter: any[];
+  exportExcel: () => any;
 }
 
 export const productContext = createContext<ReceiptContextType | null>(null);
@@ -183,6 +186,69 @@ export const ProductProvider = ({
     getProducts();
   }, [getProducts]);
 
+  const exportExcel = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    setLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      if (currentPage) queryParams.append("page", currentPage.toString());
+      queryParams.append("limit", "10000");
+      if (input) queryParams.append("filter", input);
+      if (month) queryParams.append("month", month);
+      if (year) queryParams.append("year", year);
+      if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
+      if (idLabel) queryParams.append("label_group_id", idLabel);
+
+      const url = `${backend_url}/api/products/report?${queryParams
+        .toString()
+        .replace(/%2C/g, ",")}`;
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+
+      const resJSON = await res.json();
+      const { error, message, statusCode, payload } =
+        responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("Failed to fetch companies");
+      }
+      const { data } = paginationSchema.parse(payload);
+      const parseproductTable = productTableArrayReportIN.parse(data);
+      const formatProduct = formatProductTable(parseproductTable);
+      const formatNumbersAndDates = formatProduct.map((data) => ({
+        ...data,
+        issue_date: formatDate(data.issue_date),
+        ruc: data.Supplier.ruc,
+        business_name: data.Supplier.business_name,
+        amount: formatWithCommas(data.amount),
+        price: formatWithCommas(data.price),
+        igv: formatWithCommas(data.igv ?? ""),
+        total: formatWithCommas(data.total ?? ""),
+      }));
+      return formatNumbersAndDates;
+    } catch (error) {
+      throw new Error("Failed to fetch companies");
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    company,
+    tokenBack,
+    currentPage,
+    input,
+    month,
+    year,
+    idSupplier,
+    idLabel,
+  ]);
+
   const value = useMemo(
     () => ({
       products,
@@ -206,6 +272,7 @@ export const ProductProvider = ({
       idLabel,
       setIdLabel,
       labelFilter,
+      exportExcel,
     }),
     [
       products,
@@ -222,6 +289,7 @@ export const ProductProvider = ({
       supplierFilter,
       idLabel,
       labelFilter,
+      exportExcel,
     ]
   );
   return (

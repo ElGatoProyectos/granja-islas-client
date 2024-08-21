@@ -4,12 +4,17 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import { receiptViewTable } from "@/utils/change-name";
+import {
+  productsViewTable,
+  receiptViewTable,
+  transformData,
+} from "@/utils/change-name";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
 import { useProduct } from "@/context/sections/products-context";
 import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
+import { exportToExcel } from "@/utils/export-excel";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -31,6 +36,8 @@ export function DataTableToolbar<TData>({
     getProducts,
     setIdLabel,
     labelFilter,
+    exportExcel,
+    loading,
   } = useProduct();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -88,11 +95,22 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex space-x-2">
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            const products = await exportExcel();
+            exportToExcel({
+              data: transformData(products, productsViewTable),
+              filename: "productos",
+            });
+          }}
+        >
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
+        <DataTableViewOptions table={table} changeTitle={productsViewTable} />
       </div>
     </div>
   );

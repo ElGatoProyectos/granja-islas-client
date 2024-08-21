@@ -3,7 +3,6 @@ type TranslationDict = {
 };
 
 const translationDict: TranslationDict = {
-  id: "ID",
   ruc: "RUC",
   business_name: "Razón social",
   business_type: "Tipo",
@@ -15,6 +14,27 @@ const translationDict: TranslationDict = {
 
 export function translateString(key: string) {
   return translationDict[key] || key;
+}
+type TranslationFunction = (key: string) => string;
+
+export function transformData(
+  dataArray: Array<{ [key: string]: any }>,
+  translateFn: TranslationFunction
+): Array<{ [key: string]: any }> {
+  return dataArray.map((item) => {
+    const translatedItem: { [key: string]: any } = {};
+
+    // Filtrar y traducir solo las claves que tienen una traducción
+    for (const key in item) {
+      const translatedKey = translateFn(key);
+      if (translatedKey !== key) {
+        // Solo añade si hay una traducción
+        translatedItem[translatedKey] = item[key];
+      }
+    }
+
+    return translatedItem;
+  });
 }
 
 const usertranslationView: TranslationDict = {
@@ -30,9 +50,26 @@ export function userViewTable(key: string) {
   return usertranslationView[key] || key;
 }
 
+const productsView: TranslationDict = {
+  title: "Producto",
+  code: "Número",
+  issue_date: "Emisión",
+  ruc: "RUC",
+  business_name: "Proveedor",
+  amount: "Cantidad",
+  unit_measure: "Medida",
+  price: "Precio unitario",
+  igv: "IGV",
+  total: "Importe Total",
+};
+
+export function productsViewTable(key: string) {
+  return productsView[key] || key;
+}
+
 const receiptTranslationView: TranslationDict = {
   code: "Número",
-  ruc: "Ruc",
+  ruc: "RUC",
   business_name: "Proveedor",
   issue_date: "Fecha",
   currency_code: "Moneda",

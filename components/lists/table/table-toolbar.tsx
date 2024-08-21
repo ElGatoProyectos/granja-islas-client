@@ -4,12 +4,13 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import { listViewTable } from "@/utils/change-name";
+import { listViewTable, transformData } from "@/utils/change-name";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
 import { useList } from "@/context/sections/lists-context";
 import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
+import { exportToExcel } from "@/utils/export-excel";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -19,7 +20,6 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const pathname = usePathname();
   const {
     setSearch,
     search,
@@ -30,6 +30,8 @@ export function DataTableToolbar<TData>({
     year,
     month,
     getLists,
+    exportExcel,
+    loading,
   } = useList();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -73,7 +75,18 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex space-x-2">
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            const products = await exportExcel();
+            exportToExcel({
+              data: transformData(products, listViewTable),
+              filename: "lista-de-etiquetas",
+            });
+          }}
+        >
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
