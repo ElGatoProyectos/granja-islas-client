@@ -7,10 +7,12 @@ import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
 import { useReceipt } from "@/context/sections/receipts-context";
 import { DataTableFacetedFilter } from "./table-faceted-filter";
-import { receiptViewTable } from "@/utils/change-name";
+import { receiptViewTable, transformData } from "@/utils/change-name";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
+import { exportToExcel } from "@/utils/export-excel";
+import { arrayOfTypesDocument } from "@/constants/type-document";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -30,7 +32,10 @@ export function DataTableToolbar<TData>({
     setYear,
     year,
     month,
-    getReceipts
+    getReceipts,
+    loading,
+    exportExcel,
+    setIdsTypeDocument,
   } = useReceipt();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -62,6 +67,14 @@ export function DataTableToolbar<TData>({
             setFilter={setIdSupplier}
           />
         )}
+        {table.getColumn("document_description") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("document_description")}
+            title="Tipo de documento"
+            options={arrayOfTypesDocument}
+            setFilter={setIdsTypeDocument}
+          />
+        )}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -74,7 +87,18 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex space-x-2">
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            const products = await exportExcel();
+            exportToExcel({
+              data: transformData(products, receiptViewTable),
+              filename: "productos",
+            });
+          }}
+        >
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>

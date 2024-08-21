@@ -6,6 +6,8 @@ import { DataTableColumnHeader } from "@/components/ui-custom/table-column-heade
 import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {
@@ -19,13 +21,16 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "ruc",
-    accessorFn: (row) => `${row.Supplier.ruc}`,
+    accessorKey: "document_description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="RUC" />
+      <DataTableColumnHeader column={column} title="Tipo de documento" />
     ),
     cell: ({ row }) => {
-      return <span className="w-fit truncate">{row.getValue("ruc")}</span>;
+      return (
+        <span className="w-fit truncate">
+          {row.getValue("document_description")}
+        </span>
+      );
     },
     enableSorting: false,
   },
@@ -36,11 +41,17 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Proveedor" />
     ),
     cell: ({ row }) => {
+      const id = row.original.Supplier.id;
       const business_name = row.getValue("business_name") as string;
       return (
-        <p className="w-[200px] text-balance capitalize">
+        <Link
+          href={`/dashboard/suppliers/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
           {business_name.toLowerCase()}
-        </p>
+        </Link>
       );
     },
   },
@@ -118,7 +129,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {
     accessorKey: "bill_status_payment",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tipo de comprobante" />
+      <DataTableColumnHeader column={column} title="Tipo de pago" />
     ),
     cell: ({ row }) => {
       const bill_status_payment = row.getValue("bill_status_payment") as string;
