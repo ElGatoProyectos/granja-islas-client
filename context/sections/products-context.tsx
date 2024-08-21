@@ -85,6 +85,45 @@ export const ProductProvider = ({
   const [idLabel, setIdLabel] = useState("");
   const [labelFilter, setLabelFilter] = useState<LabelSchemaFilter[]>([]);
 
+  const getFilters = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    /* suppliers filter */
+    const resSuppliers = await fetch(
+      `${backend_url}/api/suppliers/no-pagination`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      }
+    );
+
+    const dataSupp = await resSuppliers.json();
+    const formatFilterSupplier = supplierArraySchemaFilter.parse(
+      dataSupp.payload
+    );
+    setsupplierFilter(formatFilterSupplier);
+
+    /* labels filter */
+    const resLabel = await fetch(`${backend_url}/api/labels`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${tokenBack}`,
+        ruc: company?.ruc,
+      },
+    });
+
+    const resLabelJSON = await resLabel.json();
+    const parseLabel = labelArraySchemaFilter.parse(resLabelJSON.payload);
+    setLabelFilter(parseLabel);
+  }, [company, tokenBack]);
+
+  useEffect(() => {
+    getFilters();
+  }, [getFilters]);
+
   const getProducts = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
@@ -111,38 +150,6 @@ export const ProductProvider = ({
           ruc: company.ruc,
         },
       });
-      /* suppliers filter */
-      const resSuppliers = await fetch(
-        `${backend_url}/api/suppliers/no-pagination`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${tokenBack}`,
-            ruc: company.ruc,
-          },
-        }
-      );
-
-      const dataSupp = await resSuppliers.json();
-      const formatFilterSupplier = supplierArraySchemaFilter.parse(
-        dataSupp.payload
-      );
-      setsupplierFilter(formatFilterSupplier);
-
-      /* labels filter */
-      const resLabel = await fetch(`${backend_url}/api/labels`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-          ruc: company?.ruc,
-        },
-      });
-
-      const resLabelJSON = await resLabel.json();
-      const parseLabel = labelArraySchemaFilter.parse(resLabelJSON.payload);
-      setLabelFilter(parseLabel);
-
-      /* res table */
 
       const resJSON = await res.json();
       const { error, payload } = responseSchema.parse(resJSON);

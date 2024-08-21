@@ -31,6 +31,7 @@ export function DataTableToolbar<TData>({
     getLists,
     exportExcel,
     loading,
+    setCurrentPage,
   } = useList();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -60,6 +61,7 @@ export function DataTableToolbar<TData>({
             title="Proveedores"
             options={options}
             setFilter={setIdSupplier}
+            setCurrentPage={setCurrentPage}
           />
         )}
         {isFiltered && (

@@ -34,6 +34,7 @@ export function DataTableToolbar<TData>({
     setLabelId,
     exportExcel,
     loading,
+    setCurrentPage,
   } = useSupplierProducts();
 
   const options = labelsFilters.map(({ id, title }) => ({
@@ -63,6 +64,7 @@ export function DataTableToolbar<TData>({
             title="Etiquetas"
             options={options}
             setFilter={setLabelId}
+            setCurrentPage={setCurrentPage}
           />
         )}
 

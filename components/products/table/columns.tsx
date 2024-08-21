@@ -6,6 +6,8 @@ import { ProductSchemaINFormated } from "@/lib/validations/product";
 import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const columns: ColumnDef<ProductSchemaINFormated>[] = [
   {
@@ -62,11 +64,17 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       <DataTableColumnHeader column={column} title="Proveedor" />
     ),
     cell: ({ row }) => {
+      const id = row.original.Supplier.id;
       const business_name = row.getValue("business_name") as string;
       return (
-        <p className="w-[200px] text-balance capitalize">
+        <Link
+          href={`/dashboard/suppliers/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
           {business_name.toLowerCase()}
-        </p>
+        </Link>
       );
     },
   },

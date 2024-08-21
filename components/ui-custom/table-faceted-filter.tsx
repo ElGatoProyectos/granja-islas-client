@@ -25,6 +25,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
   setFilter: Dispatch<SetStateAction<string>>;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
   options: {
     label: string;
     value: string;
@@ -37,10 +38,15 @@ export function DataTableFacetedFilter<TData, TValue>({
   title,
   options,
   setFilter,
+  setCurrentPage,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
   const formatToFilter = Array.from(selectedValues).join(",");
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [setCurrentPage, formatToFilter]);
 
   useEffect(() => {
     setFilter(formatToFilter);

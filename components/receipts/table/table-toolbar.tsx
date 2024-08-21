@@ -6,13 +6,13 @@ import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
 import { useReceipt } from "@/context/sections/receipts-context";
-import { DataTableFacetedFilter } from "./table-faceted-filter";
 import { receiptViewTable, transformData } from "@/utils/change-name";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
 import { exportToExcel } from "@/utils/export-excel";
 import { arrayOfTypesDocument } from "@/constants/type-document";
+import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -36,6 +36,7 @@ export function DataTableToolbar<TData>({
     loading,
     exportExcel,
     setIdsTypeDocument,
+    setCurrentPage,
   } = useReceipt();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -65,6 +66,7 @@ export function DataTableToolbar<TData>({
             title="Proveedores"
             options={options}
             setFilter={setIdSupplier}
+            setCurrentPage={setCurrentPage}
           />
         )}
         {table.getColumn("document_description") && (
@@ -73,6 +75,7 @@ export function DataTableToolbar<TData>({
             title="Tipo de documento"
             options={arrayOfTypesDocument}
             setFilter={setIdsTypeDocument}
+            setCurrentPage={setCurrentPage}
           />
         )}
         {isFiltered && (

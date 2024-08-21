@@ -28,6 +28,7 @@ export function DataTableToolbar<TData>({
     month,
     usersFilters,
     setUserId,
+    setCurrentPage,
   } = usePayment();
 
   const options = usersFilters.map(({ id, name }) => ({
@@ -57,6 +58,7 @@ export function DataTableToolbar<TData>({
             title="Usuarios"
             options={options}
             setFilter={setUserId}
+            setCurrentPage={setCurrentPage}
           />
         )}
 

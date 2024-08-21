@@ -22,8 +22,14 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { search, setSearch, getSuppliers, setStatusSupp, exportExcel } =
-    useSupplier();
+  const {
+    search,
+    setSearch,
+    getSuppliers,
+    setStatusSupp,
+    exportExcel,
+    setPage,
+  } = useSupplier();
 
   return (
     <div className="flex items-center justify-between">
@@ -41,6 +47,7 @@ export function DataTableToolbar<TData>({
             title="Estado"
             options={states}
             setFilter={setStatusSupp}
+            setCurrentPage={setPage}
           />
         )}
 

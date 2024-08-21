@@ -1,15 +1,10 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
 import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import {
-  productsViewTable,
-  receiptViewTable,
-  transformData,
-} from "@/utils/change-name";
-import { usePathname } from "next/navigation";
+import { productsViewTable, transformData } from "@/utils/change-name";
 import { DatePicker } from "@/components/date-picker";
 import { useProduct } from "@/context/sections/products-context";
 import { Input } from "@/components/ui/input";
@@ -38,6 +33,7 @@ export function DataTableToolbar<TData>({
     labelFilter,
     exportExcel,
     loading,
+    setCurrentPage,
   } = useProduct();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -72,6 +68,7 @@ export function DataTableToolbar<TData>({
             title="Proveedores"
             options={options}
             setFilter={setIdSupplier}
+            setCurrentPage={setCurrentPage}
           />
         )}
         {table.getColumn("title") && (
@@ -80,6 +77,7 @@ export function DataTableToolbar<TData>({
             title="Etiquetas"
             options={options2}
             setFilter={setIdLabel}
+            setCurrentPage={setCurrentPage}
           />
         )}
 
