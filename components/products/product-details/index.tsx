@@ -13,6 +13,8 @@ import { CONTADO } from "@/constants/type-receipt";
 import { useProductDetails } from "@/context/sections/product-details";
 import { formatDate } from "@/utils/format-date";
 import { ProductLabels } from "./product-labels";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export function ProductDetails() {
   const {
@@ -36,7 +38,9 @@ export function ProductDetails() {
             </h1>
             <div className="flex justify-end items-end mb-[6px] ml-2 gap-2">
               {productDetails.labels.map(({ id, title }) => (
-                <Badge key={id}>{title}</Badge>
+                <Link key={id} href={`/dashboard/list/${id}`}>
+                  <Badge className="cursor-pointer">{title}</Badge>
+                </Link>
               ))}
             </div>
           </div>
@@ -151,9 +155,15 @@ export function ProductDetails() {
                 </div>
                 <div className="flex justify-between">
                   <span>Razón social</span>
-                  <p className="text-muted-foreground capitalize">
+                  <Link
+                    href={`/dashboard/suppliers/${productDetails.supplier.id}`}
+                    className={`${buttonVariants({
+                      variant: "link",
+                    })} !p-0 !text-base !h-auto`}
+                  >
                     {productDetails.supplier.business_name.toLowerCase()}
-                  </p>
+                  </Link>
+                  {/* <p className="text-muted-foreground capitalize"></p> */}
                 </div>
                 <div className="flex justify-between">
                   <span>Domicilio fiscal</span>
