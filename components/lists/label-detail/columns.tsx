@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui-custom/table-column-header";
-import { formatDate } from "@/utils/format-date";
 import { FormatDocumentsOfLabelType } from "@/lib/validations/label";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -16,7 +15,7 @@ export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
     cell: ({ row }) => {
       return (
         <span className="w-fit truncate font-medium">
-          {formatDate(row.getValue("issue_date"))}
+          {row.getValue("issue_date")}
         </span>
       );
     },
@@ -96,9 +95,10 @@ export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
       <DataTableColumnHeader column={column} title="Precio unitario" />
     ),
     cell: ({ row }) => {
-      const price = row.getValue("price") as number;
       return (
-        <span className="w-fit truncate font-medium">{price.toFixed(2)}</span>
+        <span className="w-fit truncate font-medium">
+          {row.getValue("price")}
+        </span>
       );
     },
     enableSorting: false,

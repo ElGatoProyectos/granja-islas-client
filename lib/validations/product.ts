@@ -33,6 +33,7 @@ export const productTableArrayReportIN = z.array(productTableReport);
 export const productArraySchemaIN = z.array(productSchemaIN);
 export type ProductSchemaIN = z.infer<typeof productSchemaIN>;
 
+/* falta terminar */
 export function formatProductTable(data: ProductTableReport[]) {
   return data.map(({ document, product }) => {
     return {

@@ -145,8 +145,7 @@ export const ProductProvider = ({
       /* res table */
 
       const resJSON = await res.json();
-      const { error, message, statusCode, payload } =
-        responseSchema.parse(resJSON);
+      const { error, payload } = responseSchema.parse(resJSON);
       if (error) {
         throw new Error("Failed to fetch companies");
       }

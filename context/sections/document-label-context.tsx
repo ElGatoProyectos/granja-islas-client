@@ -42,6 +42,8 @@ interface DocumentLabelType {
   idSupplier: string;
   setIdSupplier: Dispatch<SetStateAction<string>>;
   supplierFilter: SupplierSchemaFilter[];
+  loading: boolean;
+  exportExcel: () => any;
 }
 
 export const DocumentLabelContext = createContext<DocumentLabelType | null>(
@@ -68,7 +70,7 @@ export const DocumentLabelProvider = ({
   const [supplierFilter, setsupplierFilter] = useState<SupplierSchemaFilter[]>(
     []
   );
-
+  const [loading, setloading] = useState(false);
   const { id } = useParams();
 
   const getDocumentsOfLabel = useCallback(async () => {
@@ -145,6 +147,48 @@ export const DocumentLabelProvider = ({
     getDocumentsOfLabel();
   }, [getDocumentsOfLabel]);
 
+  const exportExcel = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    setloading(true);
+    const queryParams = new URLSearchParams();
+    if (currentPage) queryParams.append("page", currentPage.toString());
+    queryParams.append("limit", "10000");
+    if (month) queryParams.append("month", month);
+    if (year) queryParams.append("year", year);
+    if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
+    try {
+      const res = await fetch(
+        `${backend_url}/api/labels/${id as string}/documents?${queryParams
+          .toString()
+          .replace(/%2C/g, ",")}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenBack}`,
+            ruc: company?.ruc,
+          },
+        }
+      );
+
+      const resJSON = await res.json();
+      const { error, payload } = responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("Failed to fetch documents of label");
+      }
+
+      const { data } = paginationSchema.parse(payload);
+
+      const parseDocumentsOfLabel = documentsArrayOfLabel.parse(data);
+      const formatedData = formatDocumentsOfLabel(parseDocumentsOfLabel);
+      return formatedData;
+    } catch (error) {
+      throw new Error("Failed to fetch documents of label");
+    } finally {
+      setloading(false);
+    }
+  }, [company, currentPage, id, idSupplier, month, tokenBack, year]);
+
   const value = useMemo(
     () => ({
       documents,
@@ -162,6 +206,8 @@ export const DocumentLabelProvider = ({
       setIdSupplier,
       idSupplier,
       supplierFilter,
+      loading,
+      exportExcel,
     }),
     [
       documents,
@@ -174,6 +220,8 @@ export const DocumentLabelProvider = ({
       year,
       idSupplier,
       supplierFilter,
+      loading,
+      exportExcel,
     ]
   );
   return (

@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { receiptSchemaIN } from "./receipt";
 import { supplierSchemaIN } from "./supplier";
+import { formatWithCommas } from "@/utils/format-number-comas";
+import { formatDate } from "@/utils/format-date";
 
 export const labelSchemaIN = z.object({
   id: z.number(),
@@ -51,13 +53,13 @@ export type DocumentsOfLabel = z.infer<typeof documentsOfLabel>;
 export function formatDocumentsOfLabel(data: DocumentsOfLabel[]) {
   return data.map(({ Document, Supplier, price }) => {
     return {
-      issue_date: Document.issue_date,
+      issue_date: formatDate(Document.issue_date),
       code: Document.code,
       ruc: Supplier.ruc,
       business_name: Supplier.business_name,
       id_supplier: Supplier.id,
       currency_code: Document.currency_code,
-      price,
+      price: formatWithCommas(price),
     };
   });
 }
@@ -69,6 +71,6 @@ export const documentsOfLabelType = z.object({
   business_name: z.string(),
   id_supplier: z.number(),
   currency_code: z.string(),
-  price: z.number(),
+  price: z.string(),
 });
 export type FormatDocumentsOfLabelType = z.infer<typeof documentsOfLabelType>;

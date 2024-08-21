@@ -60,19 +60,19 @@ export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
       label: "Gasto total",
     },
     [top5Suppliers[0]?.business_name]: {
-      label: top5Suppliers[0]?.business_name,
+      label: top5Suppliers[0]?.business_name.toLowerCase(),
     },
     [top5Suppliers[1]?.business_name]: {
-      label: top5Suppliers[1]?.business_name,
+      label: top5Suppliers[1]?.business_name.toLowerCase(),
     },
     [top5Suppliers[2]?.business_name]: {
-      label: top5Suppliers[2]?.business_name,
+      label: top5Suppliers[2]?.business_name.toLowerCase(),
     },
     [top5Suppliers[3]?.business_name]: {
-      label: top5Suppliers[3]?.business_name,
+      label: top5Suppliers[3]?.business_name.toLowerCase(),
     },
     [top5Suppliers[4]?.business_name]: {
-      label: top5Suppliers[4]?.business_name,
+      label: top5Suppliers[4]?.business_name.toLowerCase(),
     },
   } satisfies ChartConfig;
 
@@ -117,7 +117,8 @@ export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                width={150}
+                width={160}
+                className="capitalize text-balance"
                 tickFormatter={(value) =>
                   chartConfig[value as keyof typeof chartConfig]?.label
                 }
