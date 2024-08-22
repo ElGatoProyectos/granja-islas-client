@@ -1,12 +1,7 @@
 "use client";
 
 import { SupplierProductsDataTable } from "@/components/suppliers/table-product";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SupplierProductsProvider } from "@/context/sections/supplier-product-context";
 import { useInfoSupplier } from "@/hooks/useInfoSupplier";
@@ -21,7 +16,7 @@ export default function Page() {
             Detalles de proveedor
           </CardTitle>
           {supplier ? (
-            <CardDescription className="flex gap-6 w-full flex-1">
+            <div className="flex gap-6 w-full flex-1 text-sm text-muted-foreground">
               <div className="flex flex-col font-medium w-full">
                 <span>Razón social</span>
                 <p className="text-foreground capitalize">
@@ -48,7 +43,7 @@ export default function Page() {
                 <span>Celular</span>
                 <p className="text-foreground">{supplier.phone}</p>
               </div>
-            </CardDescription>
+            </div>
           ) : (
             <div className="flex gap-6 w-full flex-1">
               <div className="flex flex-col font-medium w-full gap-2">

@@ -23,7 +23,6 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
   },
   {
     accessorKey: "labels",
-    accessorFn: (row) => `${row.DetailProductLabel}`,
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
