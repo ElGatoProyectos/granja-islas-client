@@ -137,7 +137,6 @@ export const PaymentProvider = ({
         total,
       } = paginationSchema.parse(payload);
       const formatdata = paymentGeneralArraySchemaIN.parse(data);
-      console.log(formatdata);
 
       setPayments(formatdata);
       setTotalPages(pageCount);

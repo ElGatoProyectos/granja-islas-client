@@ -141,6 +141,7 @@ const paymentsView: TranslationDict = {
   date: "Fecha de emisión",
   type_currency: "Moneda",
   amount_original: "Depositado",
+  amount_converted: "Soles",
   id: "Foto",
   code: "Nro. de Comprobante",
   user_name: "Usuario",

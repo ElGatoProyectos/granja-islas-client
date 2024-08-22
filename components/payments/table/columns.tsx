@@ -17,6 +17,8 @@ import {
 import { backend_url } from "@/constants/config";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { USD } from "@/constants/currency";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
   {
@@ -46,18 +48,16 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
   },
   {
     accessorKey: "operation_number",
-    accessorFn: (row) => `${row.operation_number}_/${row.color}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nro. de operación" />
     ),
     cell: ({ row }) => {
-      const opandcolor = row.getValue("operation_number") as string;
-      const parts = opandcolor.toString().split("_/");
+      const abc = row.original.color;
+      console.log(abc);
+
       return (
-        <span
-          className={cn(`w-fit truncate `, parts[1] ? "text-orange-400" : "")}
-        >
-          {parts[0]}
+        <span className={cn(`w-fit truncate `, abc ? "text-orange-400" : "")}>
+          {row.getValue("operation_number")}
         </span>
       );
     },
@@ -93,7 +93,6 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
         >
           {row.getValue("type_currency")}
         </span>
-        // <span className="w-fit truncate">{row.getValue("type_currency")}</span>
       );
     },
   },
@@ -104,6 +103,21 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     ),
     cell: ({ row }) => {
       const amount_original = row.getValue("amount_original") as number;
+      return (
+        <span className="w-fit truncate">
+          {formatWithCommas(amount_original)}
+        </span>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "exchange_rate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="TC" />
+    ),
+    cell: ({ row }) => {
+      const amount_original = row.getValue("exchange_rate") as number;
       return (
         <span className="w-fit truncate">
           {formatWithCommas(amount_original)}
@@ -163,7 +177,18 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Nro. de Comprobante" />
     ),
     cell: ({ row }) => {
-      return <p className="text-balance capitalize">{row.getValue("code")}</p>;
+      const document_code = row.original.document_code;
+      const id = row.original.document_id;
+      return (
+        <Link
+          href={`/receipts/${id}-${document_code}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
+          {row.getValue("code")}
+        </Link>
+      );
     },
     enableSorting: false,
   },
