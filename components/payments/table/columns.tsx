@@ -53,8 +53,6 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     ),
     cell: ({ row }) => {
       const abc = row.original.color;
-      console.log(abc);
-
       return (
         <span className={cn(`w-fit truncate `, abc ? "text-orange-400" : "")}>
           {row.getValue("operation_number")}

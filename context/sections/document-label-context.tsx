@@ -131,7 +131,6 @@ export const DocumentLabelProvider = ({
       } = paginationSchema.parse(payload);
 
       const parseDocumentsOfLabel = documentsArrayOfLabel.parse(data);
-      console.log(parseDocumentsOfLabel);
       const formatedData = formatDocumentsOfLabel(parseDocumentsOfLabel);
       setDocuments(formatedData);
       setTotalPages(pageCount);
