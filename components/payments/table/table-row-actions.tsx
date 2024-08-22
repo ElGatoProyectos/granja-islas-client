@@ -34,13 +34,15 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const payment = paymentGeneralSchemaIN.parse(row.original);
-  const pathname = usePathname();
   const [currentState, setCurrentState] = useState<string>(payment.status);
   const { updateState } = usePayment();
   const handleStatus = async (value: string) => {
     setCurrentState(value);
     await updateState({ idVoucher: payment.id.toString(), statusNew: value });
   };
+
+  const id = payment.document.id;
+  const document_code = payment.document.document_code;
 
   return (
     <DropdownMenu>
@@ -75,7 +77,7 @@ export function DataTableRowActions<TData>({
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-        <Link href={`${pathname}/${payment.id}`}>
+        <Link href={`/receipts/${id}-${document_code}`}>
           <DropdownMenuItem>Ver detalles</DropdownMenuItem>
         </Link>
       </DropdownMenuContent>

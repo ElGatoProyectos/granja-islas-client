@@ -24,6 +24,10 @@ import {
   PaymentGeneralSchemaIN,
 } from "@/lib/validations/payment";
 import { userArraySchemaIN, UserSchemaIN } from "@/lib/validations/user";
+import { getUsers } from "@/service/users";
+import { statusPayment_formatSpanish } from "@/constants/status-payment";
+import { formatDate } from "@/utils/format-date";
+import { formatWithCommas } from "@/utils/format-number-comas";
 
 interface PaymentContextType {
   payments: PaymentGeneralSchemaIN[];
@@ -50,6 +54,7 @@ interface PaymentContextType {
     idVoucher: string;
     statusNew: string;
   }) => Promise<void>;
+  exportExcel: () => any;
 }
 
 export const PaymentContext = createContext<PaymentContextType | null>(null);
@@ -76,7 +81,21 @@ export const PaymentProvider = ({
   const [usersFilters, setUsersFilters] = useState<UserSchemaIN[]>([]);
   const [userId, setUserId] = useState("");
 
-  /* change status */
+  const getFilters = useCallback(async () => {
+    if (!tokenBack) return;
+    const resUsersJSON = await getUsers({ tokenBack });
+    const { payload: dataUsers, error: ErrorUsers } =
+      responseArraySchema.parse(resUsersJSON);
+    if (ErrorUsers) {
+      throw new Error("error to fetch users");
+    }
+    const parseusers = userArraySchemaIN.parse(dataUsers);
+    setUsersFilters(parseusers);
+  }, [tokenBack]);
+
+  useEffect(() => {
+    getFilters();
+  }, [getFilters]);
 
   const getPayments = useCallback(async () => {
     if (!company) return;
@@ -104,26 +123,8 @@ export const PaymentProvider = ({
         },
       });
 
-      /* filterUsers */
-      const resUsers = await fetch(`${backend_url}/api/users`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenBack}`,
-        },
-      });
-      const resUsersJSON = await resUsers.json();
-      const { payload: dataUsers, error: ErrorUsers } =
-        responseArraySchema.parse(resUsersJSON);
-      if (ErrorUsers) {
-        throw new Error("error to fetch users");
-      }
-      const parseusers = userArraySchemaIN.parse(dataUsers);
-      setUsersFilters(parseusers);
-      /* filterUsers */
       const resJSON = await res.json();
-
-      const { error, message, statusCode, payload } =
-        responseSchema.parse(resJSON);
+      const { error, payload } = responseSchema.parse(resJSON);
       if (error) {
         throw new Error("error to fetch payments");
       }
@@ -135,7 +136,8 @@ export const PaymentProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
-      const formatdata = paymentGeneralArraySchemaIN.parse(payload.data);
+      const formatdata = paymentGeneralArraySchemaIN.parse(data);
+      console.log(formatdata);
 
       setPayments(formatdata);
       setTotalPages(pageCount);
@@ -152,6 +154,61 @@ export const PaymentProvider = ({
   useEffect(() => {
     getPayments();
   }, [getPayments]);
+
+  const exportExcel = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    setLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      if (currentPage) queryParams.append("page", currentPage.toString());
+      queryParams.append("limit", "10000");
+      if (input) queryParams.append("filter", input);
+      if (month) queryParams.append("month", month);
+      if (year) queryParams.append("year", year);
+      if (userId) queryParams.append("user_group_id", userId);
+
+      const url = `${backend_url}/api/vouchers/report?${queryParams
+        .toString()
+        .replace(/%2C/g, ",")}`;
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+      const resJSON = await res.json();
+      const { error, payload } = responseSchema.parse(resJSON);
+      if (error) {
+        throw new Error("error to fetch payments");
+      }
+      const { data } = paginationSchema.parse(payload);
+      const formatdata = paymentGeneralArraySchemaIN.parse(data);
+
+      const updatedDocuments = formatdata.map((document) => {
+        const foundType = statusPayment_formatSpanish.find(
+          (type) => type.value === document.status
+        );
+        if (foundType) {
+          document.status = foundType.label as
+            | "PENDING"
+            | "APPROVED"
+            | "REFUSED";
+        }
+        document.date = formatDate(document.date);
+        return document;
+      });
+
+      return updatedDocuments;
+    } catch (error) {
+      throw new Error("error to fetch payments");
+    } finally {
+      setLoading(false);
+    }
+  }, [company, tokenBack, currentPage, input, month, year, userId]);
 
   const updateState = useCallback(
     async ({
@@ -174,6 +231,7 @@ export const PaymentProvider = ({
       });
 
       const data = await res.json();
+      console.log(data);
       if (data.error) {
         throw new Error("error to update status");
       }
@@ -202,6 +260,7 @@ export const PaymentProvider = ({
       usersFilters,
       setUserId,
       updateState,
+      exportExcel,
     }),
     [
       payments,
@@ -217,6 +276,7 @@ export const PaymentProvider = ({
       usersFilters,
       setUserId,
       updateState,
+      exportExcel,
     ]
   );
   return (

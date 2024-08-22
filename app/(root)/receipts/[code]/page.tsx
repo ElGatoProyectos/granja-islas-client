@@ -16,6 +16,7 @@ import { CONTADO } from "@/constants/type-receipt";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";
+import { formatWithCommas } from "@/utils/format-number-comas";
 import { useParams } from "next/navigation";
 
 export default function Page() {
@@ -79,14 +80,22 @@ export default function Page() {
                 ) : null}
 
                 <div className="flex justify-between">
-                  <span>Tipo de comprobante</span>
+                  <span>Tipo de Documento</span>
+                  <p className="text-muted-foreground capitalize">
+                    {receipt.document_description.toLowerCase()}
+                  </p>
+                </div>
+                <div className="flex justify-between">
+                  <span>Tipo de pago</span>
                   <p className="text-muted-foreground capitalize">
                     {receipt.bill_status_payment.toLowerCase()}
                   </p>
                 </div>
                 <div className="flex justify-between">
                   <span>Importe total</span>
-                  <p className="text-muted-foreground">{receipt.total}</p>
+                  <p className="text-muted-foreground">
+                    {formatWithCommas(receipt.total)}
+                  </p>
                 </div>
                 {CONTADO === receipt.bill_status_payment ? null : (
                   <>

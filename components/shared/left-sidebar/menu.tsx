@@ -34,7 +34,7 @@ export function Menu({ isOpen }: MenuProps) {
             <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
               {isOpen && groupLabel ? (
                 <>
-                  {userInfo?.role === "USER" && groupLabel === "Finanzas" && (
+                  {userInfo?.role === "USER" && groupLabel === "" && (
                     <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
                       {groupLabel}
                     </p>
@@ -47,7 +47,7 @@ export function Menu({ isOpen }: MenuProps) {
                 </>
               ) : !isOpen && groupLabel ? (
                 <>
-                  {userInfo?.role === "USER" && groupLabel === "Finanzas" && (
+                  {userInfo?.role === "USER" && groupLabel === "" && (
                     <TooltipProvider>
                       <Tooltip delayDuration={100}>
                         <TooltipTrigger className="w-full">
@@ -83,7 +83,7 @@ export function Menu({ isOpen }: MenuProps) {
                 ({ href, label, icon: Icon, active, submenus }, index) =>
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
-                      {userInfo?.role === "USER" && href === "/payments" && (
+                      {userInfo?.role === "USER" && href === "/receipts" && (
                         <TooltipProvider disableHoverableContent>
                           <Tooltip delayDuration={100}>
                             <TooltipTrigger asChild>
@@ -162,7 +162,7 @@ export function Menu({ isOpen }: MenuProps) {
                     </div>
                   ) : (
                     <div className="w-full" key={index}>
-                      {userInfo?.role === "USER" && href === "/payments" && (
+                      {userInfo?.role === "USER" && href === "/receipts" && (
                         <CollapseMenuButton
                           icon={Icon}
                           label={label}

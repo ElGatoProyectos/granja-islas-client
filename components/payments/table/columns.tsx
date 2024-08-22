@@ -15,6 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { backend_url } from "@/constants/config";
+import { formatWithCommas } from "@/utils/format-number-comas";
+import { USD } from "@/constants/currency";
 
 export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
   {
@@ -81,8 +83,17 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Moneda" />
     ),
     cell: ({ row }) => {
+      const currency = row.getValue("type_currency") as string;
       return (
-        <span className="w-fit truncate">{row.getValue("type_currency")}</span>
+        <span
+          className={cn(
+            "text-balance truncate capitalize",
+            currency === USD ? "text-green-500" : "text-slate-500"
+          )}
+        >
+          {row.getValue("type_currency")}
+        </span>
+        // <span className="w-fit truncate">{row.getValue("type_currency")}</span>
       );
     },
   },
@@ -92,9 +103,25 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Depositado" />
     ),
     cell: ({ row }) => {
+      const amount_original = row.getValue("amount_original") as number;
       return (
         <span className="w-fit truncate">
-          {row.getValue("amount_original")}
+          {formatWithCommas(amount_original)}
+        </span>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "amount_converted",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Soles" />
+    ),
+    cell: ({ row }) => {
+      const amount_converted = row.getValue("amount_converted") as number;
+      return (
+        <span className="w-fit truncate">
+          S/.{formatWithCommas(amount_converted)}
         </span>
       );
     },
@@ -129,7 +156,6 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
     },
     enableSorting: false,
   },
-
   {
     accessorKey: "code",
     accessorFn: (row) => `${row.document.code}`,

@@ -27,10 +27,17 @@ export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
       <DataTableColumnHeader column={column} title="Número" />
     ),
     cell: ({ row }) => {
+      const id = row.original.document_id;
+      const document_code = row.original.document_code;
       return (
-        <span className="w-fit truncate font-medium">
+        <Link
+          href={`/receipts/${id}-${document_code}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
           {row.getValue("code")}
-        </span>
+        </Link>
       );
     },
     enableSorting: false,

@@ -1,6 +1,5 @@
 import { backend_url } from "@/constants/config";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signOut } from "next-auth/react";
 
 export const authOptions = {
   providers: [

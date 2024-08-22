@@ -16,7 +16,7 @@ export const createPaymentSchema = z.object({
   operation_number: z.string().min(1, "El número de operacion es requerido"),
   type_currency: z.enum(["PEN", "USD"]),
   amount_original: z.string().min(1, "El monto es requerido"),
-  exchange_rate: z.string().min(1, "El tipo de cambio es requerido"),
+  exchange_rate: z.string(),
   voucher: z
     .any()
     .refine((files) => {

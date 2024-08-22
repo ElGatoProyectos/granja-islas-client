@@ -53,6 +53,8 @@ export type DocumentsOfLabel = z.infer<typeof documentsOfLabel>;
 export function formatDocumentsOfLabel(data: DocumentsOfLabel[]) {
   return data.map(({ Document, Supplier, price }) => {
     return {
+      document_id: Document.id,
+      document_code: Document.document_code,
       issue_date: formatDate(Document.issue_date),
       code: Document.code,
       ruc: Supplier.ruc,
@@ -65,6 +67,8 @@ export function formatDocumentsOfLabel(data: DocumentsOfLabel[]) {
 }
 
 export const documentsOfLabelType = z.object({
+  document_id: z.number(),
+  document_code: z.string(),
   issue_date: z.string(),
   code: z.string(),
   ruc: z.string(),

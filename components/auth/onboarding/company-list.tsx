@@ -19,7 +19,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
   const handleCompany = ({ company }: { company: CompanySchemaIN }) => {
     setCompany(company);
     if (userInfo?.role === USER) {
-      route.push("/payments");
+      route.push("/receipts");
       return;
     }
     route.push("/dashboard");

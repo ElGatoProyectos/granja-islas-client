@@ -71,6 +71,7 @@ export function PaymentForm({
     if (form.getValues("type_currency") === PEN) {
       values.exchange_rate = "1";
     }
+
     const { voucher, ...payment } = values;
     const formData = new FormData();
     if (voucher) {

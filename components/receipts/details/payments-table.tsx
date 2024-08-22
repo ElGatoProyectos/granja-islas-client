@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { backend_url } from "@/constants/config";
 import { formatDate } from "@/utils/format-date";
-import { formatNumberWithCommas } from "@/utils/format-number-comas";
+import { formatWithCommas } from "@/utils/format-number-comas";
 import { PaymentReceiptSchemaIN } from "@/lib/validations/payment";
 
 interface Props {
@@ -57,13 +57,11 @@ export function PaymentsTable({ receiptPayments }: Props) {
                 <TableCell>{Bank.title}</TableCell>
                 <TableCell>{operation_number}</TableCell>
                 <TableCell>{type_currency}</TableCell>
-                <TableCell>{amount_original}</TableCell>
+                <TableCell>{formatWithCommas(amount_original)}</TableCell>
                 <TableCell>
                   {exchange_rate === 1 ? "" : exchange_rate}
                 </TableCell>
-                <TableCell>
-                  {formatNumberWithCommas(amount_converted)}
-                </TableCell>
+                <TableCell>S/.{formatWithCommas(amount_converted)}</TableCell>
                 <TableCell>
                   <Dialog>
                     <DialogTrigger asChild>

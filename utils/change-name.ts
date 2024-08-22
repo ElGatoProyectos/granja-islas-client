@@ -132,3 +132,20 @@ const productsOfSupplierView: TranslationDict = {
 export function productsOfSupplierViewTable(key: string) {
   return productsOfSupplierView[key] || key;
 }
+
+/* payments view */
+
+const paymentsView: TranslationDict = {
+  status: "Estado",
+  operation_number: "Nro. de operación",
+  date: "Fecha de emisión",
+  type_currency: "Moneda",
+  amount_original: "Depositado",
+  id: "Foto",
+  code: "Nro. de Comprobante",
+  user_name: "Usuario",
+};
+
+export function paymentsViewTable(key: string) {
+  return paymentsView[key] || key;
+}
