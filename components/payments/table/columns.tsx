@@ -117,10 +117,10 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="TC" />
     ),
     cell: ({ row }) => {
-      const amount_original = row.getValue("exchange_rate") as number;
+      const exchange_rate = row.getValue("exchange_rate") as number;
       return (
         <span className="w-fit truncate">
-          {formatWithCommas(amount_original)}
+          {exchange_rate === 1 ? "" : exchange_rate}
         </span>
       );
     },

@@ -198,6 +198,10 @@ export const PaymentProvider = ({
             | "REFUSED";
         }
         document.date = formatDate(document.date);
+        const newdf =
+          document.exchange_rate === 1 ? "" : document.exchange_rate;
+        document.exchange_rate = newdf as number;
+
         return document;
       });
 
@@ -230,7 +234,6 @@ export const PaymentProvider = ({
       });
 
       const data = await res.json();
-      console.log(data);
       if (data.error) {
         throw new Error("error to update status");
       }
