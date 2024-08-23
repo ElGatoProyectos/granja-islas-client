@@ -46,12 +46,12 @@ export const billSchemaCreate = z.object({
   currency_code: z.enum([USD, PEN]),
   exchange_rate: z.string(),
 
-  productos: z.array(
+  products: z.array(
     z.object({
-      name: z.string(),
-      cantidad: z.string(),
-      medida: z.string(),
-      precio: z.string(),
+      title: z.string(),
+      amount: z.string(), // quantity
+      unit_measure: z.string(),
+      price: z.string(),
     })
   ),
 });

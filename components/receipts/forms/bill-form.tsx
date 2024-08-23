@@ -39,6 +39,7 @@ import { SupplierField } from "../supplier-field";
 import { es } from "date-fns/locale";
 import { arrayTypePayments, CONTADO } from "@/constants/type-payments";
 import { backend_url } from "@/constants/config";
+import { useMeasure } from "@/hooks/useMeause";
 
 export function BillForm() {
   const form = useForm<z.infer<typeof billSchemaCreate>>({
@@ -53,11 +54,11 @@ export function BillForm() {
       note: "",
       currency_code: PEN,
       exchange_rate: "",
-      productos: [{ cantidad: "", medida: "", name: "", precio: "" }],
+      products: [{ amount: "", unit_measure: "", title: "", price: "" }],
     },
   });
-  const [submitting, setSubmitting] = useState<boolean>(false);
 
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
   const { tokenBack } = useUserInfo();
 
@@ -82,7 +83,7 @@ export function BillForm() {
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
       control: form.control,
-      name: "productos",
+      name: "products",
     }
   );
 
@@ -104,6 +105,9 @@ export function BillForm() {
       console.error("Error to fetch data TC", error);
     }
   };
+
+  const { measure } = useMeasure();
+  console.log(measure);
   return (
     <section>
       <Form {...form}>
@@ -346,7 +350,7 @@ export function BillForm() {
                 </div>
                 <FormField
                   control={form.control}
-                  name={`productos.${index}.name`}
+                  name={`products.${index}.title`}
                   render={({ field }) => (
                     <FormItem className="col-span-2">
                       <FormControl>
@@ -357,7 +361,7 @@ export function BillForm() {
                 />
                 <FormField
                   control={form.control}
-                  name={`productos.${index}.cantidad`}
+                  name={`products.${index}.amount`}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -368,18 +372,32 @@ export function BillForm() {
                 />
                 <FormField
                   control={form.control}
-                  name={`productos.${index}.medida`}
+                  name={`products.${index}.unit_measure`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {measure.map((measure) => (
+                            <SelectItem key={measure} value={measure}>
+                              {measure}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
-                  name={`productos.${index}.precio`}
+                  name={`products.${index}.price`}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -394,7 +412,7 @@ export function BillForm() {
               type="button"
               variant="ghost"
               onClick={() =>
-                append({ cantidad: "", medida: "", name: "", precio: "" })
+                append({ amount: "", unit_measure: "", title: "", price: "" })
               }
             >
               <Plus className="w-4 h-4 stroke-primary" />
