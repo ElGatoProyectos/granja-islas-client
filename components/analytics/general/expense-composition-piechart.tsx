@@ -33,28 +33,29 @@ const colors = [
   "hsl(var(--chart-5))",
 ];
 
+const dates_radio = [
+  {
+    id: "4",
+    value: "1",
+    label: "1M",
+  },
+  {
+    id: "5",
+    value: "6",
+    label: "6M",
+  },
+  {
+    id: "6",
+    value: "12",
+    label: "1A",
+  },
+];
+
 export function ExpenseCompositionPiechart({
   monthRadio,
   setMonthRadio,
   expComposition,
 }: Props) {
-  const dates_radio = [
-    {
-      id: crypto.randomUUID(),
-      value: "1",
-      label: "1M",
-    },
-    {
-      id: crypto.randomUUID(),
-      value: "6",
-      label: "6M",
-    },
-    {
-      id: crypto.randomUUID(),
-      value: "12",
-      label: "1A",
-    },
-  ];
   const expCompositionTop5 = expComposition.slice(0, 5);
   const dataWithColors = expCompositionTop5.map((item, index) => ({
     ...item,

@@ -1,7 +1,6 @@
 "use client";
 
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -32,24 +31,25 @@ const colors = [
   "hsl(var(--chart-5))",
 ];
 
+const dates_radio = [
+  {
+    id: "1",
+    value: "1",
+    label: "1M",
+  },
+  {
+    id: "2",
+    value: "6",
+    label: "6M",
+  },
+  {
+    id: "3",
+    value: "12",
+    label: "1A",
+  },
+];
+
 export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
-  const dates_radio = [
-    {
-      id: crypto.randomUUID(),
-      value: "1",
-      label: "1M",
-    },
-    {
-      id: crypto.randomUUID(),
-      value: "6",
-      label: "6M",
-    },
-    {
-      id: crypto.randomUUID(),
-      value: "12",
-      label: "1A",
-    },
-  ];
   const top5Suppliers = topSuppliers.slice(0, 5);
   const dataWithColors = top5Suppliers.map((item, index) => ({
     ...item,

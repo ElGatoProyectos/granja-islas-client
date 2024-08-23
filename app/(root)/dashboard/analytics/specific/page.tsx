@@ -22,17 +22,17 @@ import Link from "next/link";
 
 const dates_radio = [
   {
-    id: crypto.randomUUID(),
+    id: "1",
     value: "1",
     label: "1M",
   },
   {
-    id: crypto.randomUUID(),
+    id: "2",
     value: "6",
     label: "6M",
   },
   {
-    id: crypto.randomUUID(),
+    id: "3",
     value: "12",
     label: "1A",
   },
