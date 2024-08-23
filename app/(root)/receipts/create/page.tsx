@@ -26,10 +26,10 @@ export default function Page() {
         className="flex gap-3 justify-start items-start"
       >
         <Card className="w-full">
-          <CardHeader>
+          <CardHeader className="pb-4">
             <CardTitle>Terminos de factura</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent>
             <BillForm />
           </CardContent>
         </Card>

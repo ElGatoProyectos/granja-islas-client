@@ -35,36 +35,19 @@ import {
 } from "@/components/ui/select";
 import { PEN, USD } from "@/constants/currency";
 import { useAllSuppliers } from "@/hooks/useAllSuppliers";
-
-const proveedor = [
-  {
-    id: "1",
-    label: "Don agusto",
-  },
-  {
-    id: "2",
-    label: "Don pedro",
-  },
-  {
-    id: "3",
-    label: "Don carlos",
-  },
-  {
-    id: "4",
-    label: "Don Jose",
-  },
-];
+import { SupplierField } from "../supplier-field";
+import { es } from "date-fns/locale";
 
 export function BillForm() {
   const form = useForm<z.infer<typeof billSchemaCreate>>({
     resolver: zodResolver(billSchemaCreate),
     defaultValues: {
-      comprobante: "",
-      proveedor: "",
-      fecha_emision: "",
+      code: "",
+      supplier_id: "",
+      // issue_date: "",
       impuestos: "",
       tipo_pago: "",
-      vencimiento: "",
+      // expiration_date: "",
       notas: "",
       moneda: "",
       tipo_cambio: "",
@@ -77,6 +60,7 @@ export function BillForm() {
   const { tokenBack } = useUserInfo();
 
   async function onSubmit(values: z.infer<typeof billSchemaCreate>) {
+    console.log(values);
     try {
       toast({
         variant: "success",
@@ -111,7 +95,7 @@ export function BillForm() {
         >
           <FormField
             control={form.control}
-            name="comprobante"
+            name="code"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nro. de comprobante</FormLabel>
@@ -123,37 +107,11 @@ export function BillForm() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="proveedor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Proveedor</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {totalSuppliers.map(({ id, business_name }) => (
-                      <SelectItem key={id} value={id.toString()}>
-                        {business_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <SupplierField form={form} />
 
           <FormField
             control={form.control}
-            name="fecha_emision"
+            name="issue_date"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fecha de emisión</FormLabel>
@@ -168,9 +126,9 @@ export function BillForm() {
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP")
+                          format(field.value, "PPP", { locale: es })
                         ) : (
-                          <span>Escoje una fecha</span>
+                          <span>Escoge una fecha</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -179,30 +137,29 @@ export function BillForm() {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value as unknown as Date}
+                      selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
+                        date > new Date() || date < new Date("1990-01-01")
                       }
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
-
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="impuestos"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="relative">
                 <FormLabel>Impuesto</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <div className="absolute opacity-50 top-8 right-4">%</div>
                 <FormMessage />
               </FormItem>
             )}
@@ -220,15 +177,42 @@ export function BillForm() {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="vencimiento"
+            name="expiration_date"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fecha de vencimiento</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: es })
+                        ) : (
+                          <span>Escoge una fecha</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
@@ -290,8 +274,7 @@ export function BillForm() {
               )}
             />
           </div>
-
-          <div className="grid grid-cols-5 col-span-2 gap-3">
+          <div className="grid grid-cols-5 col-span-2 gap-3 text-sm">
             <p className="col-span-2">Descripción</p>
             <p>Cantidad</p>
             <p>Medida</p>

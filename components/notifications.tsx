@@ -17,7 +17,7 @@ export function Notifications() {
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <div className="bg-red-500 h-5 w-5 absolute -top-1 -right-1 rounded-full flex justify-center items-center">
-            <p className="text-xs">13</p>
+            <p className="text-xs text-white">13</p>
           </div>
           <Bell className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Notificaciones</span>

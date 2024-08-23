@@ -27,6 +27,7 @@ export function useAllSuppliers() {
     });
 
     const dataSupp = await resSuppliers.json();
+    console.log(dataSupp);
     const formatFilterSupplier = supplierArraySchemaFilter.parse(
       dataSupp.payload
     );
