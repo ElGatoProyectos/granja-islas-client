@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CONTADO } from "@/constants/type-receipt";
+import { CONTADO } from "@/constants/type-payments";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";

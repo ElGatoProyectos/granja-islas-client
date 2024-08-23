@@ -1,3 +1,5 @@
+import { PEN, USD } from "@/constants/currency";
+import { CONTADO, CREDITO } from "@/constants/type-payments";
 import { z } from "zod";
 
 // {
@@ -32,16 +34,18 @@ export const billSchemaCreate = z.object({
   issue_date: z.date({
     required_error: "La fecha de emisión es obligatoria",
   }), // emision
-  expiration_date: z.date({
-    required_error: "La fecha de vencimiento es obligatoria",
-  }), // vencimiento
+  expiration_date: z
+    .date({
+      required_error: "La fecha de vencimiento es obligatoria",
+    })
+    .optional(), // vencimiento
   supplier_id: z.string().min(1, "El proveedor es obligatorio"), // id de proveedor
-  impuestos: z.string(),
-  tipo_pago: z.string(),
+  impuestos: z.string(), // falta impuestos
+  bill_status_payment: z.enum([CONTADO, CREDITO]),
+  note: z.string(),
+  currency_code: z.enum([USD, PEN]),
+  exchange_rate: z.string(),
 
-  notas: z.string(),
-  moneda: z.string(),
-  tipo_cambio: z.string(),
   productos: z.array(
     z.object({
       name: z.string(),

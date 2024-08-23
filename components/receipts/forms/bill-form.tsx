@@ -22,7 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, Plus, Trash } from "lucide-react";
+import { CalendarIcon, Plus, Search, Trash } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -37,6 +37,8 @@ import { PEN, USD } from "@/constants/currency";
 import { useAllSuppliers } from "@/hooks/useAllSuppliers";
 import { SupplierField } from "../supplier-field";
 import { es } from "date-fns/locale";
+import { arrayTypePayments, CONTADO } from "@/constants/type-payments";
+import { backend_url } from "@/constants/config";
 
 export function BillForm() {
   const form = useForm<z.infer<typeof billSchemaCreate>>({
@@ -46,11 +48,11 @@ export function BillForm() {
       supplier_id: "",
       // issue_date: "",
       impuestos: "",
-      tipo_pago: "",
+      bill_status_payment: CONTADO,
       // expiration_date: "",
-      notas: "",
-      moneda: "",
-      tipo_cambio: "",
+      note: "",
+      currency_code: PEN,
+      exchange_rate: "",
       productos: [{ cantidad: "", medida: "", name: "", precio: "" }],
     },
   });
@@ -85,6 +87,23 @@ export function BillForm() {
   );
 
   const { totalSuppliers } = useAllSuppliers();
+
+  const getTC = async () => {
+    try {
+      const res = await fetch(`${backend_url}/api/sunat/currency-rate-dollar`, {
+        method: "GET",
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        throw new Error("Failed to fetch TC");
+      }
+
+      form.setValue("exchange_rate", data.payload.selling.toString());
+    } catch (error) {
+      console.error("Error to fetch data TC", error);
+    }
+  };
   return (
     <section>
       <Form {...form}>
@@ -166,65 +185,82 @@ export function BillForm() {
           />
           <FormField
             control={form.control}
-            name="tipo_pago"
+            name="bill_status_payment"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de pago</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar el tipo de pago" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {arrayTypePayments.map(({ label, value }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="expiration_date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de vencimiento</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: es })
-                        ) : (
-                          <span>Escoge una fecha</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <span className="col-span-2">Detalles de factura</span>
-          <div className="col-span-2 grid grid-cols-3 gap-3">
+          {form.getValues("bill_status_payment") === CONTADO ? null : (
             <FormField
               control={form.control}
-              name="notas"
+              name="expiration_date"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Fecha de vencimiento</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP", { locale: es })
+                          ) : (
+                            <span>Escoge una fecha</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <span className="col-span-2 text-xl font-semibold">
+            Detalles de factura
+          </span>
+          <div className="col-span-2 grid grid-cols-5 gap-3">
+            <FormField
+              control={form.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem className="col-span-3">
                   <FormLabel>Notas</FormLabel>
                   <FormControl>
                     <Input {...field} />
@@ -235,7 +271,7 @@ export function BillForm() {
             />
             <FormField
               control={form.control}
-              name="moneda"
+              name="currency_code"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Moneda</FormLabel>
@@ -249,9 +285,12 @@ export function BillForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {[PEN, USD].map((currency) => (
-                        <SelectItem key={currency} value={currency}>
-                          {currency}
+                      {[
+                        { value: PEN, label: "PEN / Soles" },
+                        { value: USD, label: "USD" },
+                      ].map(({ label, value }) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -262,13 +301,23 @@ export function BillForm() {
             />
             <FormField
               control={form.control}
-              name="tipo_cambio"
+              name="exchange_rate"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full relative">
                   <FormLabel>Tipo de cambio</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-6 right-0"
+                    onClick={getTC}
+                  >
+                    <Search className="shrink-0 stroke-primary" />
+                    <span className="sr-only">Buscar TC</span>
+                  </Button>
                   <FormMessage />
                 </FormItem>
               )}

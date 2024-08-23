@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CONTADO } from "@/constants/type-receipt";
+import { CONTADO } from "@/constants/type-payments";
 import { useProductDetails } from "@/context/sections/product-details";
 import { formatDate } from "@/utils/format-date";
 import { ProductLabels } from "./product-labels";
