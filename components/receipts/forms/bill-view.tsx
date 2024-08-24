@@ -1,4 +1,6 @@
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -9,6 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PEN } from "@/constants/currency";
+import { useCompanySession } from "@/context/company-context";
+import { billSchemaCreate } from "@/lib/validations/receipt-forms/bill";
+import { SupplierSchemaFilter } from "@/lib/validations/supplier";
+import { formatWithCommas } from "@/utils/format-number-comas";
+import { format } from "date-fns";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
 const receipts = [
   {
     document_type: "holo",
@@ -16,61 +26,207 @@ const receipts = [
   },
 ];
 
-export function BillView() {
+export function BillView({
+  form,
+  totalSuppliers,
+}: {
+  form: UseFormReturn<z.infer<typeof billSchemaCreate>>;
+  totalSuppliers: SupplierSchemaFilter[];
+}) {
+  const { company } = useCompanySession();
+
+  const supplierSelected = totalSuppliers.find(
+    (supplier) => supplier.id.toString() === form.watch("supplier_id")
+  );
+
+  const products = form.watch("products");
+  const subtotal = products.reduce((acc, product) => {
+    const price = parseFloat(product.price) || 0;
+    const amount = parseInt(product.amount, 10) || 0;
+    return acc + price * amount;
+  }, 0);
+
+  const percentage = 18;
+  const taxAmount = (subtotal * percentage) / 100;
+  const totalWithTax = subtotal + taxAmount;
+
   return (
-    <div className="grid grid-cols-2">
-      <div className="p-6 pr-0">
-        <p>Empresa de Transporte Don Agusto S.A.C</p>
-        <p>Jr. las flores 167, San Juan de Lurigancho</p>
-        <p>Lima, Peru</p>
+    <Card className="w-full">
+      <div className="grid grid-cols-2">
+        <div className="p-8 pr-6">
+          {company ? (
+            <>
+              <p className="capitalize font-semibold text-lg text-balance">
+                {company?.business_name.toLowerCase() +
+                  company?.business_type.toLowerCase()}
+              </p>
+              <p className="capitalize text-muted-foreground text-balance">
+                {company.business_direction_fiscal.toLowerCase()}
+              </p>
+            </>
+          ) : null}
+        </div>
+        <div className="p-8 pl-0 space-y-1">
+          <p className="text-primary font-semibold">Factura Electronica</p>
+          {company ? (
+            <>
+              <p>RUC: {company.ruc}</p>
+            </>
+          ) : null}
+
+          {form.watch("code") ? (
+            <p className="text-muted-foreground">{form.watch("code")}</p>
+          ) : (
+            <Skeleton className="h-6 w-24" />
+          )}
+        </div>
+        <Separator className="col-span-2" />
+        <div className="grid grid-cols-2 col-span-2 p-8 gap-2">
+          <p className="text-muted-foreground">Fecha de emisión</p>
+          {form.watch("issue_date") ? (
+            <p>{format(form.watch("issue_date"), "yyyy-MM-dd")}</p>
+          ) : (
+            <Skeleton className="h-full w-28" />
+          )}
+          <p className="text-muted-foreground">Señor(es)</p>
+          {supplierSelected ? (
+            <p className="capitalize text-balance">
+              {supplierSelected.business_name.toLowerCase()}
+            </p>
+          ) : (
+            <Skeleton className="h-full w-52" />
+          )}
+          <p className="text-muted-foreground">RUC</p>
+          {supplierSelected ? (
+            <p className="capitalize">{supplierSelected.ruc}</p>
+          ) : (
+            <Skeleton className="h-full w-40" />
+          )}
+
+          <p className="text-muted-foreground">Domicilio Fiscal</p>
+          {supplierSelected ? (
+            <p className="capitalize text-balance">
+              {supplierSelected.business_direction}
+            </p>
+          ) : (
+            <Skeleton className="h-full w-40" />
+          )}
+          <p className="text-muted-foreground">Moneda</p>
+          {form.watch("currency_code") ? (
+            <p>
+              {form.watch("currency_code") === PEN
+                ? "PEN / Soles"
+                : form.watch("currency_code")}
+            </p>
+          ) : (
+            <Skeleton className="h-6 w-24" />
+          )}
+        </div>
+        <Separator className="col-span-2" />
+        <div className="grid grid-cols-2 col-span-2 p-8 gap-2">
+          <p className="text-muted-foreground">Observación</p>
+          <p>Factura suejata al spot del 12%</p>
+          <p className="text-muted-foreground">Forma de pago</p>
+          {form.watch("bill_status_payment") ? (
+            <p className="capitalize">
+              {form.watch("bill_status_payment").toLowerCase()}
+            </p>
+          ) : (
+            <Skeleton className="h-6 w-24" />
+          )}
+          {form.watch("expiration_date") ? (
+            <>
+              <p className="text-muted-foreground">Fecha de vencimiento</p>
+              <p>
+                {format(form.watch("expiration_date") as Date, "yyyy-MM-dd")}
+              </p>
+            </>
+          ) : null}
+        </div>
+        <Separator className="col-span-2" />
+        <div className="col-span-2 pb-10 p-8">
+          <Table>
+            <TableCaption>Lista de tus comprobantes.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="pl-0 w-full">Descripción</TableHead>
+                <TableHead className="text-right">Cantidad</TableHead>
+                <TableHead className="text-center">Medida</TableHead>
+                <TableHead className="text-right">Precio</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products
+                ? products.map(({ amount, price, title, unit_measure }) => (
+                    <TableRow key={title + amount + price}>
+                      <TableCell className="font-medium pl-0">
+                        {title}
+                      </TableCell>
+                      <TableCell className="text-right">{amount}</TableCell>
+                      <TableCell className="text-center">
+                        {unit_measure}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {form.getValues("currency_code") === PEN ? (
+                          <div>
+                            {price ? `S/.${formatWithCommas(price)}` : ""}
+                          </div>
+                        ) : (
+                          <div>
+                            {price ? `$${formatWithCommas(price)}` : ""}
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : null}
+            </TableBody>
+            <TableFooter className=" gap-2 bg-transparent">
+              <TableRow className="w-full col-span-2">
+                <TableCell className="pl-0 max-w-32 overflow-hidden">
+                  <span className="text-muted-foreground">Notas</span>
+                  <p>
+                    {form.watch("note") ? (
+                      <p className="capitalize">
+                        {form.watch("note").toLowerCase()}
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                  </p>
+                </TableCell>
+                <TableCell colSpan={2} className="text-muted-foreground">
+                  Subtotal
+                </TableCell>
+                <TableCell className="text-right">
+                  {form.getValues("currency_code") === PEN ? "S/." : "$"}
+                  {formatWithCommas(subtotal)}
+                </TableCell>
+              </TableRow>
+              <TableRow className="w-full col-span-2">
+                <TableCell className="pl-0 max-w-32 overflow-hidden"></TableCell>
+                <TableCell colSpan={2} className="text-muted-foreground">
+                  Impuesto (18%)
+                </TableCell>
+                <TableCell className="text-right">
+                  {form.getValues("currency_code") === PEN ? "S/." : "$"}
+                  {formatWithCommas(taxAmount)}
+                </TableCell>
+              </TableRow>
+              <TableRow className="w-full col-span-2">
+                <TableCell className="pl-0 max-w-32 overflow-hidden"></TableCell>
+                <TableCell colSpan={2} className="text-muted-foreground">
+                  Total
+                </TableCell>
+                <TableCell className="text-right">
+                  {form.getValues("currency_code") === PEN ? "S/." : "$"}
+                  {formatWithCommas(totalWithTax)}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
       </div>
-      <div className="p-6 pl-0">
-        <p>Factura Electronica</p>
-        <p>RUC: 20535014940</p>
-        <p>FFA1-2799</p>
-      </div>
-      <Separator className="col-span-2" />
-      <div className="grid grid-cols-2 col-span-2 p-6">
-        <p>Fecha de emisión</p>
-        <p>2024-06-01</p>
-        <p>Señor(es)</p>
-        <p>Taller de soldadura Martinez E.I.R.L</p>
-        <p>RUC</p>
-        <p>20452342236</p>
-        <p>Domicilio Fiscal</p>
-        <p>Jr. las flores 167, San juan de lurigancho, Lima, Peru</p>
-        <p>Moneda</p>
-        <p>PEN</p>
-      </div>
-      <Separator className="col-span-2" />
-      <div className="grid grid-cols-2 col-span-2 p-6">
-        <p>Observación</p>
-        <p>Factura suejata al spot del 12%</p>
-        <p>Forma de pago</p>
-        <p>Credito</p>
-        <p>Fecha de vencimiento</p>
-        <p>2024-07-01</p>
-      </div>
-      <Separator className="col-span-2" />
-      <Table className="col-span-2">
-        <TableCaption>Lista de tus comprobantes.</TableCaption>
-        <TableHeader className="col-span-2">
-          <TableRow>
-            <TableHead>Tipo de documento</TableHead>
-            <TableHead>Total de documentos</TableHead>
-            <TableHead>Total de documentos2</TableHead>
-            <TableHead>Total de documentos3</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody className="col-span-2">
-          {receipts.map(({ document_type, total_documents }) => (
-            <TableRow key={document_type}>
-              <TableCell className="font-medium">{document_type}</TableCell>
-              <TableCell>{total_documents}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    </Card>
   );
 }

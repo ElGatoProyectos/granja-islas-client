@@ -1,5 +1,4 @@
 import { BillForm } from "@/components/receipts/forms/bill-form";
-import { BillView } from "@/components/receipts/forms/bill-view";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,22 +20,7 @@ export default function Page() {
         <TabsTrigger value="credit_note">Nota de credio</TabsTrigger>
         <TabsTrigger value="debit_note">Nota de debito</TabsTrigger>
       </TabsList>
-      <TabsContent
-        value="bill"
-        className="flex gap-3 justify-start items-start"
-      >
-        <Card className="w-full">
-          <CardHeader className="pb-4">
-            <CardTitle>Terminos de factura</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <BillForm />
-          </CardContent>
-        </Card>
-        <Card className="w-full">
-          <BillView />
-        </Card>
-      </TabsContent>
+      <BillForm />
       <TabsContent value="credit_note">
         <Card>
           <CardHeader>

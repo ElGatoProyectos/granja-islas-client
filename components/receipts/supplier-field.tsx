@@ -24,11 +24,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
-import { useAllSuppliers } from "@/hooks/useAllSuppliers";
+import { SupplierSchemaFilter } from "@/lib/validations/supplier";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { billSchemaCreate } from "@/lib/validations/receipt-forms/bill";
 
-export function SupplierField({ form }: { form: any }) {
+export function SupplierField({
+  form,
+  totalSuppliers,
+}: {
+  form: UseFormReturn<z.infer<typeof billSchemaCreate>>;
+  totalSuppliers: SupplierSchemaFilter[];
+}) {
   const [open, setOpen] = useState(false);
-  const { totalSuppliers } = useAllSuppliers();
+
   const formatSuppliers = totalSuppliers.map((supplier) => ({
     ...supplier,
     business_name: supplier.business_name.toLowerCase(),
@@ -49,15 +58,14 @@ export function SupplierField({ form }: { form: any }) {
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className={"w-full justify-between overflow-hidden"}
+                  className={
+                    "w-full justify-between overflow-hidden capitalize"
+                  }
                 >
                   {field.value
                     ? `${
-                        formatSuppliers.find(
-                          ({ business_name }) =>
-                            business_name.toLowerCase().trim() ===
-                            field.value.toLowerCase().trim()
-                        )?.business_name
+                        formatSuppliers.find(({ id }) => id === field.value)
+                          ?.business_name
                       }`
                     : "Seleccionar proveedor"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -74,8 +82,8 @@ export function SupplierField({ form }: { form: any }) {
                       <CommandItem
                         key={id}
                         value={business_name}
-                        onSelect={(currentValue) => {
-                          form.setValue("supplier_id", currentValue);
+                        onSelect={() => {
+                          form.setValue("supplier_id", id);
                           setOpen(false);
                         }}
                         className="capitalize"
@@ -83,10 +91,7 @@ export function SupplierField({ form }: { form: any }) {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            business_name.toLowerCase().trim() ===
-                              field.value.toLowerCase().trim()
-                              ? "opacity-100"
-                              : "opacity-0"
+                            id === field.value ? "opacity-100" : "opacity-0"
                           )}
                         />
                         {business_name}

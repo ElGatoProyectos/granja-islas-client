@@ -59,6 +59,7 @@ const supplierSchemaFilter = z.object({
   id: z.number(),
   business_name: z.string(),
   ruc: z.string(),
+  business_direction: z.string(),
 });
 export const supplierArraySchemaFilter = z.array(supplierSchemaFilter);
 export type SupplierSchemaFilter = z.infer<typeof supplierSchemaFilter>;
