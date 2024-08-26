@@ -39,7 +39,7 @@ export function BillView({
     (supplier) => supplier.id.toString() === form.watch("supplier_id")
   );
 
-  const products = form.watch("products");
+  const products = form.watch("products") || [];
   const subtotal = products.reduce((acc, product) => {
     const price = parseFloat(product.price) || 0;
     const amount = parseInt(product.amount, 10) || 0;

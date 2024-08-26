@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { DownloadExcel } from "../download-excel";
 import { Dispatch, SetStateAction } from "react";
 import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
 import { formatWithCommas } from "@/utils/format-number-comas";
@@ -26,6 +25,9 @@ import { DataTableSkeleton } from "./table-skeleton";
 import { defaultDate } from "@/utils/default-date";
 import { months } from "@/constants/dates";
 import Link from "next/link";
+import { Download } from "lucide-react";
+import { exportToExcel } from "@/utils/export-excel";
+import { homeViewTable, transformData } from "@/utils/change-name";
 
 const currentDate = new Date();
 const currentYear = currentDate.getFullYear();
@@ -104,10 +106,22 @@ export function ShoppingRecordTable({
               </SelectGroup>
             </SelectContent>
           </Select>
-
           <Button>Buscar</Button>
         </form>
-        <DownloadExcel />
+        <Button
+          variant="outline"
+          type="button"
+          disabled={loading}
+          onClick={async () => {
+            exportToExcel({
+              data: transformData(receipts, homeViewTable),
+              filename: "Registro de compras",
+            });
+          }}
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Excel
+        </Button>
       </div>
       {loading ? (
         <DataTableSkeleton

@@ -26,6 +26,8 @@ import { responseSchema } from "@/lib/validations/response";
 import { paginationSchema } from "@/lib/validations/pagination";
 import { typesSpanishFormat } from "@/constants/type-document";
 import { getSuppliers } from "@/service/suppliers";
+import { formatDate } from "@/utils/format-date";
+import { formatWithCommas } from "@/utils/format-number-comas";
 
 interface ReceiptContextType {
   receipts: ReceiptSchemaIN[];
@@ -199,8 +201,18 @@ export const ReceiptProvider = ({
       }
       const { data } = paginationSchema.parse(payload);
       const formatdata = receiptArraySchemaIN.parse(data);
-
-      return formatdata;
+      const formatNumbersAndDates = formatdata.map((data) => ({
+        ...data,
+        issue_date: formatDate(data.issue_date),
+        ruc: data.Supplier.ruc,
+        business_name: data.Supplier.business_name,
+        igv: formatWithCommas(data.igv),
+        total: formatWithCommas(data.total),
+        amount_base: formatWithCommas(data.amount_base),
+        amount_paid: formatWithCommas(data.amount_paid),
+        amount_pending: formatWithCommas(data.amount_pending),
+      }));
+      return formatNumbersAndDates;
     } catch (error) {
       throw new Error("Failed to fetch receipts");
     } finally {

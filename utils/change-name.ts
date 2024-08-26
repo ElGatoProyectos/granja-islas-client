@@ -69,6 +69,7 @@ export function productsViewTable(key: string) {
 
 const receiptTranslationView: TranslationDict = {
   code: "Número",
+  document_description: "Tipo de documento",
   ruc: "RUC",
   business_name: "Proveedor",
   issue_date: "Fecha",
@@ -150,4 +151,20 @@ const paymentsView: TranslationDict = {
 
 export function paymentsViewTable(key: string) {
   return paymentsView[key] || key;
+}
+
+/* home view */
+
+const homeView: TranslationDict = {
+  document_type: "Tipo de documento",
+  total_documents: "Total de documentos",
+  total_amount_base: "BI Gravado DG",
+  total_amount_igv: "IGV/IPM DG",
+  total_amount_dgng_base: "BI Gravado DGNG	",
+  total_amount_dgng_igv: "IGV/IPM DGNG",
+  total_amount_documents: "Total",
+};
+
+export function homeViewTable(key: string) {
+  return homeView[key] || key;
 }

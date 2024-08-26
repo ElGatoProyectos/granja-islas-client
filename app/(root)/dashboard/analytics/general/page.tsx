@@ -11,6 +11,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAnalyticsGeneral } from "@/hooks/useAnalyticsGeneral";
 import { useLabels } from "@/hooks/useLabels";
+import { format } from "date-fns";
 import Link from "next/link";
 import { useEffect } from "react";
 
@@ -34,6 +35,7 @@ export default function Page() {
     }
   }, [labels, setLabelId]);
 
+  const currentYear = format(new Date(), "yyyy");
   return (
     <LayerPage title="Análisis por etiqueta">
       <Tabs className="w-full mt-6 h-full" value={labelId}>
@@ -80,7 +82,9 @@ export default function Page() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="font-bold">Compras por mes</CardTitle>
+                <CardTitle className="font-bold">
+                  Compras por mes de {currentYear}
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex justify-center">
                 <PurchasesPerMoth buyforMonth={generalAnalytics?.buyForMonth} />

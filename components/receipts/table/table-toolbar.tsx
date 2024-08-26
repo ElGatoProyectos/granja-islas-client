@@ -96,9 +96,10 @@ export function DataTableToolbar<TData>({
           disabled={loading}
           onClick={async () => {
             const products = await exportExcel();
+            const currentDate = new Date().toISOString().split("T")[0];
             exportToExcel({
               data: transformData(products, receiptViewTable),
-              filename: "productos",
+              filename: `Comprobantes ${currentDate}`,
             });
           }}
         >
