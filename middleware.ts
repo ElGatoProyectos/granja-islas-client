@@ -29,6 +29,13 @@ export default withAuth(
       }
     }
 
+    // Proteger específicamente la ruta /receipts/create
+    if (pathname === "/receipts/create") {
+      if (token?.role !== SUPERADMIN && token?.role !== ADMIN) {
+        return NextResponse.rewrite(new URL("/receipts", req.url));
+      }
+    }
+
     // Ruta específica para usuarios con rol USER y también accesible para ADMIN y SUPERADMIN
     if (pathname === "/receipts") {
       if (
@@ -48,5 +55,11 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/receipts", "/onboarding"],
+  matcher: [
+    "/",
+    "/dashboard/:path*",
+    "/receipts",
+    "/receipts/create",
+    "/onboarding",
+  ],
 };

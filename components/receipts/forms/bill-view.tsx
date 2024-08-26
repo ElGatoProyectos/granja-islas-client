@@ -19,12 +19,6 @@ import { formatWithCommas } from "@/utils/format-number-comas";
 import { format } from "date-fns";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-const receipts = [
-  {
-    document_type: "holo",
-    total_documents: "holo",
-  },
-];
 
 export function BillView({
   form,

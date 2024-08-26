@@ -27,15 +27,14 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { SupplierSchemaFilter } from "@/lib/validations/supplier";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { billSchemaCreate } from "@/lib/validations/receipt-forms/bill";
+import { billSchemaCreate, creditNoteSchemaCreate } from "@/lib/validations/receipt-forms/bill";
 
-export function SupplierField({
+export function SupplierFieldForCreditNote({
   form,
   totalSuppliers,
   setIdSupplier,
 }: {
-  form: UseFormReturn<z.infer<typeof billSchemaCreate>>;
-
+  form: UseFormReturn<z.infer<typeof creditNoteSchemaCreate>>;
   totalSuppliers: SupplierSchemaFilter[];
   setIdSupplier?: Dispatch<SetStateAction<string>>;
 }) {

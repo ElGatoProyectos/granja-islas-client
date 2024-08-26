@@ -23,37 +23,37 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Dispatch, SetStateAction, useState } from "react";
-import { SupplierSchemaFilter } from "@/lib/validations/supplier";
+import { useState } from "react";
+
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { billSchemaCreate } from "@/lib/validations/receipt-forms/bill";
+import { creditNoteSchemaCreate } from "@/lib/validations/receipt-forms/bill";
+import { ReceiptSchemaIN } from "@/lib/validations/receipt";
 
-export function SupplierField({
+export function CodeDocumentField({
   form,
-  totalSuppliers,
-  setIdSupplier,
+  receipts,
 }: {
-  form: UseFormReturn<z.infer<typeof billSchemaCreate>>;
-
-  totalSuppliers: SupplierSchemaFilter[];
-  setIdSupplier?: Dispatch<SetStateAction<string>>;
+  form: UseFormReturn<z.infer<typeof creditNoteSchemaCreate>>;
+  receipts: ReceiptSchemaIN[];
 }) {
   const [open, setOpen] = useState(false);
 
-  const formatSuppliers = totalSuppliers.map((supplier) => ({
-    ...supplier,
-    business_name: supplier.business_name.toLowerCase(),
-    id: supplier.id.toString(),
+  const formatReceipts = receipts.map((receipt) => ({
+    ...receipt,
+    code: receipt.code.toLowerCase(),
+    id: receipt.id.toString(),
   }));
+
+  console.log(formatReceipts);
 
   return (
     <FormField
       control={form.control}
-      name="supplier_id"
+      name="document_id"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Proveedor</FormLabel>
+          <FormLabel>Factura de referencia</FormLabel>
           <Popover open={open} onOpenChange={setOpen} modal={true}>
             <PopoverTrigger asChild>
               <FormControl>
@@ -67,10 +67,10 @@ export function SupplierField({
                 >
                   {field.value
                     ? `${
-                        formatSuppliers.find(({ id }) => id === field.value)
-                          ?.business_name
+                        formatReceipts.find(({ id }) => id === field.value)
+                          ?.code
                       }`
-                    : "Seleccionar proveedor"}
+                    : "Nro. de factura"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>
@@ -81,15 +81,12 @@ export function SupplierField({
                 <CommandEmpty>Codigo no encontrado</CommandEmpty>
                 <CommandList>
                   <CommandGroup>
-                    {formatSuppliers.map(({ id, business_name }) => (
+                    {formatReceipts.map(({ id, code }) => (
                       <CommandItem
                         key={id}
-                        value={business_name}
+                        value={code}
                         onSelect={() => {
                           form.setValue("supplier_id", id);
-                          if (setIdSupplier) {
-                            setIdSupplier(id);
-                          }
                           setOpen(false);
                         }}
                         className="capitalize"
@@ -100,7 +97,7 @@ export function SupplierField({
                             id === field.value ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        {business_name}
+                        {code}
                       </CommandItem>
                     ))}
                   </CommandGroup>

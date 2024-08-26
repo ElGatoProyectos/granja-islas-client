@@ -50,30 +50,31 @@ import { useMeasure } from "@/hooks/useMeause";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
 import { BillView } from "./bill-view";
+import { createBill } from "@/lib/actions/bill.actions";
+import { useCompanySession } from "@/context/company-context";
 
 export function BillForm() {
   const form = useForm<z.infer<typeof billSchemaCreate>>({
     resolver: zodResolver(billSchemaCreate),
     defaultValues: {
       code: "",
-      supplier_id: "",
-      // issue_date: "",
-      impuestos: "",
+      igv: "",
       bill_status_payment: CONTADO,
-      // expiration_date: "",
       note: "",
       currency_code: PEN,
-      exchange_rate: "",
     },
   });
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
   const { tokenBack } = useUserInfo();
+  const { company } = useCompanySession();
 
   async function onSubmit(values: z.infer<typeof billSchemaCreate>) {
     console.log(values);
+    setSubmitting(true);
     try {
+      await createBill({ jsonData: values, tokenBack, ruc: company?.ruc });
       toast({
         variant: "success",
         title: `Se creó correctamente la factura`,
@@ -107,7 +108,7 @@ export function BillForm() {
         throw new Error("Failed to fetch TC");
       }
 
-      form.setValue("exchange_rate", data.payload.selling.toString());
+      form.setValue("exchange_rate", data.payload.selling);
     } catch (error) {
       console.error("Error to fetch data TC", error);
     }
@@ -191,7 +192,7 @@ export function BillForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="impuestos"
+                  name="igv"
                   render={({ field }) => (
                     <FormItem className="relative">
                       <FormLabel>Impuesto</FormLabel>
@@ -325,29 +326,34 @@ export function BillForm() {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="exchange_rate"
-                    render={({ field }) => (
-                      <FormItem className="w-full relative">
-                        <FormLabel>Tipo de cambio</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="ghost"
-                          className="absolute top-6 right-0"
-                          onClick={getTC}
-                        >
-                          <Search className="shrink-0 stroke-primary" />
-                          <span className="sr-only">Buscar TC</span>
-                        </Button>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
+                  {form.watch("currency_code") === PEN ? null : (
+                    <FormField
+                      control={form.control}
+                      name="exchange_rate"
+                      render={({ field }) => (
+                        <FormItem className="w-full relative">
+                          <FormLabel>Tipo de cambio</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            className="absolute top-6 right-0"
+                            onClick={getTC}
+                          >
+                            <Search className="shrink-0 stroke-primary" />
+                            <span className="sr-only">
+                              Buscar Tipo de cambio
+                            </span>
+                          </Button>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </div>
                 <div className="grid grid-cols-5 col-span-2 gap-2 text-sm mt-2">
                   <p className="col-span-2">Descripción</p>
@@ -458,7 +464,7 @@ export function BillForm() {
                 </div>
                 <div className="flex mt-6 justify-between col-span-2">
                   <div />
-                  <Button type="submit" className="px-14">
+                  <Button type="submit" className="px-14" disabled={submitting}>
                     Crear Factura
                   </Button>
                 </div>
