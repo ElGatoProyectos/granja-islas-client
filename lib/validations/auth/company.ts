@@ -19,7 +19,7 @@ export const createCompanySchema = z.object({
       "Solo .jpg, .jpeg, .png and .webp formatos soportados."
     )
     .optional(),
-  ruc: z.string().min(1, "El RUC es obligatorio."),
+  ruc: z.string().min(11, "El RUC es obligatorio."),
   business_name: z.string().min(1, "La razón social es obligatoria."),
   business_type: z.string().min(1, "El tipo es obligatorio."),
   business_status: z.string().min(1, "El estado es obligatorio."),
