@@ -40,7 +40,7 @@ export function BillView({
     return acc + price * amount;
   }, 0);
 
-  const percentage = 18;
+  const percentage = parseInt(form.watch("igv"), 10) || 18;
   const taxAmount = (subtotal * percentage) / 100;
   const totalWithTax = subtotal + taxAmount;
 
@@ -193,17 +193,17 @@ export function BillView({
                   Subtotal
                 </TableCell>
                 <TableCell className="text-right">
-                  {form.getValues("currency_code") === PEN ? "S/." : "$"}
+                  {form.watch("currency_code") === PEN ? "S/." : "$"}
                   {formatWithCommas(subtotal)}
                 </TableCell>
               </TableRow>
               <TableRow className="w-full col-span-2">
                 <TableCell className="pl-0 max-w-32 overflow-hidden"></TableCell>
                 <TableCell colSpan={2} className="text-muted-foreground">
-                  Impuesto (18%)
+                  Impuesto ({parseInt(form.watch("igv"), 10)}%)
                 </TableCell>
                 <TableCell className="text-right">
-                  {form.getValues("currency_code") === PEN ? "S/." : "$"}
+                  {form.watch("currency_code") === PEN ? "S/." : "$"}
                   {formatWithCommas(taxAmount)}
                 </TableCell>
               </TableRow>
@@ -213,7 +213,7 @@ export function BillView({
                   Total
                 </TableCell>
                 <TableCell className="text-right">
-                  {form.getValues("currency_code") === PEN ? "S/." : "$"}
+                  {form.watch("currency_code") === PEN ? "S/." : "$"}
                   {formatWithCommas(totalWithTax)}
                 </TableCell>
               </TableRow>

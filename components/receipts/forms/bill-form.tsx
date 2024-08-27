@@ -58,7 +58,7 @@ export function BillForm() {
     resolver: zodResolver(billSchemaCreate),
     defaultValues: {
       code: "",
-      igv: "",
+      igv: "18",
       bill_status_payment: CONTADO,
       note: "",
       currency_code: PEN,
@@ -71,7 +71,6 @@ export function BillForm() {
   const { company } = useCompanySession();
 
   async function onSubmit(values: z.infer<typeof billSchemaCreate>) {
-    console.log(values);
     setSubmitting(true);
     try {
       await createBill({ jsonData: values, tokenBack, ruc: company?.ruc });
