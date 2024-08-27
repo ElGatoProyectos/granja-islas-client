@@ -1,3 +1,4 @@
+"use server";
 import { backend_url } from "@/constants/config";
 import { BillSchemaCreate } from "../validations/receipt-forms/bill";
 
@@ -32,8 +33,6 @@ export async function createBill({
     })),
   };
 
-  console.log(formatData);
-
   try {
     const res = await fetch(`${backend_url}/api/bills/create`, {
       method: "POST",
@@ -46,7 +45,7 @@ export async function createBill({
     });
 
     const data = await res.json();
-    console.log(data);
+
     if (data.error) {
       throw new Error("Failed backend to create bill");
     }

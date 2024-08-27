@@ -14,6 +14,7 @@ export const productSchemaIN = z.object({
   slug: z.string(),
   unit_measure: z.string(),
   supplier_id: z.number(),
+  issue_date: z.string(),
   document_type: z.string(),
   document_id: z.number(),
   status_deleted: z.boolean(),
@@ -38,7 +39,6 @@ export function formatProductTable(data: ProductTableReport[]) {
   return data.map(({ document, product }) => {
     return {
       document_code: document.document_code,
-      issue_date: document.issue_date,
       code: document.code,
       ...product,
     };
@@ -48,7 +48,6 @@ export function formatProductTable(data: ProductTableReport[]) {
 export const productSchemaINFormated = productSchemaIN.extend({
   document_code: z.string(),
   code: z.string(),
-  issue_date: z.string(),
 });
 
 export const productSchemaArrayINFormated = z.array(productSchemaINFormated);

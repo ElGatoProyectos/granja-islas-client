@@ -76,6 +76,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     if (image) {
       formData.append("company-profile", image[0]);
     }
+    
     type CompanyWithoutKey = Omit<CreateCompanySchema, "image">;
     for (const key in company) {
       if (company.hasOwnProperty(key)) {

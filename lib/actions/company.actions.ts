@@ -102,6 +102,7 @@ export async function createCompany({
     },
     body: formData,
   });
+
   revalidatePath("/onboarding");
   if (!res.ok) {
     throw new Error("Failed to post companies");

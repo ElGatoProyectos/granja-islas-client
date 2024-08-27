@@ -81,11 +81,7 @@ export function UserForm({ type, userInfo }: Props) {
   async function onSubmit(values: z.infer<typeof userSchema>) {
     setSubmitting(true);
     const { image, confirmPassword, ...userFormInfo } = values;
-
-    if (type === "edit" && userInfo) {
-      values.role = userInfo.role;
-    }
-
+    console.log(image);
     const formData = new FormData();
     if (image) {
       formData.append("user-profile", image[0]);
@@ -177,11 +173,6 @@ export function UserForm({ type, userInfo }: Props) {
               >
                 {selectedImage ? (
                   <div className="md:max-w-[100px]">
-                    {/* <img
-                      src={URL.createObjectURL(selectedImage)}
-                      alt="Selected"
-                      className="rounded-full aspect-square"
-                    /> */}
                     <Avatar className={"h-[100px] w-[100px]"}>
                       <AvatarImage src={URL.createObjectURL(selectedImage)} />
                       <AvatarFallback className="text-3xl">I</AvatarFallback>
@@ -197,11 +188,6 @@ export function UserForm({ type, userInfo }: Props) {
                         {userInfo.name.substring(0, 1)}
                       </AvatarFallback>
                     </Avatar>
-                    {/* <img
-                      src={`${backend_url}/api/users/file/${userInfo?.id}`}
-                      alt="Selected"
-                      className="rounded-full aspect-square"
-                    /> */}
                   </div>
                 ) : (
                   <div className="inline-flex items-center justify-between">
