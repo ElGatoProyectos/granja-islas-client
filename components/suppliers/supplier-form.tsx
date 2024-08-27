@@ -30,7 +30,7 @@ import {
   createSupplierSchema,
   SupplierSchemaIN,
 } from "@/lib/validations/supplier";
-import { Plus, Search } from "lucide-react";
+import { Loader2, Plus, Search } from "lucide-react";
 import { createSupplier, updateSupplier } from "@/lib/actions/supplier.actions";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
@@ -110,11 +110,11 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
       setSubmitting(false);
     }
   }
-
+  const [loadingDataOfRuc, setloadingDataOfRuc] = useState(false);
   const getRucData = async () => {
     const ruc = form.watch("ruc");
     if (!ruc) return;
-
+    setloadingDataOfRuc(true);
     try {
       const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
         method: "GET",
@@ -165,6 +165,8 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
         title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
       });
       console.error("Error fetching data:", error);
+    } finally {
+      setloadingDataOfRuc(false);
     }
   };
 
@@ -208,16 +210,26 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                 <FormItem className="relative">
                   <FormLabel>RUC</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Numero de RUC" />
+                    <Input
+                      {...field}
+                      placeholder="Numero de RUC"
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <Button
                     type="button"
                     size="icon"
                     variant="ghost"
                     className="absolute top-6 right-0"
+                    disabled={submitting || loadingDataOfRuc}
                     onClick={getRucData}
                   >
-                    <Search className="shrink-0 stroke-primary" />
+                    {loadingDataOfRuc ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Search className="shrink-0 stroke-primary" />
+                    )}
+                    <span className="sr-only">Buscar por ruc</span>
                   </Button>
                   <FormMessage />
                 </FormItem>
@@ -230,7 +242,10 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                 <FormItem>
                   <FormLabel>Razón social</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -243,7 +258,11 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
                   <FormControl>
-                    <Input placeholder="EIRL, SAC, SA, etc." {...field} />
+                    <Input
+                      placeholder="EIRL, SAC, SA, etc."
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -256,7 +275,10 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -270,7 +292,10 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                 <FormItem>
                   <FormLabel>Dirección fiscal</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -289,10 +314,10 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                       <Input
                         {...field}
                         type="tel"
-                        // universal input options
                         autoComplete="off"
                         autoCorrect="off"
                         inputMode="numeric"
+                        disabled={submitting || loadingDataOfRuc}
                       />
                     </FormControl>
                   </div>
@@ -311,7 +336,7 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={submitting}>
+              <Button type="submit" disabled={submitting || loadingDataOfRuc}>
                 {type === "create" ? "Registrar" : "Actualizar"}
               </Button>
             </DialogFooter>

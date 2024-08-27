@@ -29,7 +29,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Image as AddImage, Pencil, Plus, Search, Upload } from "lucide-react";
+import {
+  Image as AddImage,
+  Loader2,
+  Pencil,
+  Plus,
+  Search,
+  Upload,
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
 import { backend_url } from "@/constants/config";
@@ -120,10 +127,12 @@ export function CompanyForm({ type, company, companyId }: Props) {
   }
 
   const urlUpdate = `${backend_url}/api/companies/file/${companyId}`;
+  const [loadingDataOfRuc, setLoadingDataOfRuc] = useState(false);
 
   const getRucData = async () => {
     const ruc = form.watch("ruc");
     if (!ruc) return;
+    setLoadingDataOfRuc(true);
     try {
       const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
         method: "GET",
@@ -172,6 +181,8 @@ export function CompanyForm({ type, company, companyId }: Props) {
         title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
       });
       console.error("Error fetching data:", error);
+    } finally {
+      setLoadingDataOfRuc(false);
     }
   };
 
@@ -269,6 +280,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                             setSelectedImage(e.target.files?.[0] || null);
                           }}
                           ref={field.ref}
+                          disabled={submitting || loadingDataOfRuc}
                         />
                       </div>
                     </FormControl>
@@ -285,16 +297,25 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 <FormItem className="relative">
                   <FormLabel>RUC</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Numero de RUC" />
+                    <Input
+                      {...field}
+                      placeholder="Numero de RUC"
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <Button
                     type="button"
                     size="icon"
                     variant="ghost"
                     className="absolute top-6 right-0"
+                    disabled={submitting || loadingDataOfRuc}
                     onClick={getRucData}
                   >
-                    <Search className="shrink-0 stroke-primary" />
+                    {loadingDataOfRuc ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Search className="shrink-0 stroke-primary" />
+                    )}
                     <span className="sr-only">Buscar por ruc</span>
                   </Button>
                   <FormMessage />
@@ -308,7 +329,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 <FormItem>
                   <FormLabel>Razón social</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -321,7 +345,11 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
                   <FormControl>
-                    <Input placeholder="EIRL, SAC, SA, etc." {...field} />
+                    <Input
+                      placeholder="EIRL, SAC, SA, etc."
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -334,7 +362,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -348,7 +379,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 <FormItem>
                   <FormLabel>Dirección fiscal</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -364,7 +398,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                   <div className="flex">
                     <CodeCountry form={form} />
                     <FormControl className="ml-2">
-                      <Input {...field} />
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -382,7 +419,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                     <span className="text-gray-400 text-xs">(SUNAT)</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -399,7 +439,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                     <span className="text-gray-400 text-xs">(SUNAT)</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -416,7 +459,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                     <span className="text-gray-400 text-xs">(API SUNAT)</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -432,7 +478,10 @@ export function CompanyForm({ type, company, companyId }: Props) {
                     <span className="text-gray-400 text-xs">(API SUNAT)</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -450,7 +499,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 </Button>
               </DialogClose>
 
-              <Button type="submit" disabled={submitting}>
+              <Button type="submit" disabled={submitting || loadingDataOfRuc}>
                 {submitting
                   ? `${type === "create" ? "Creando" : "Actualizando"}`
                   : `${type === "create" ? "Crear" : "Actualizar"}`}
