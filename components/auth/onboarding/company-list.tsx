@@ -7,7 +7,7 @@ import { CompanyDelete } from "./company-delete";
 import { useCompanySession } from "@/context/company-context";
 import { useRouter } from "next/navigation";
 import { useUserInfo } from "@/context/user-context";
-import { USER } from "@/constants/roles";
+import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CompanySchemaIN } from "@/lib/validations/auth/company";
 
@@ -49,7 +49,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
               </div>
             </CardHeader>
           </Card>
-          {userInfo?.role === USER ? null : (
+          {userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
             <div className="absolute top-0 -right-10 flex flex-col justify-center group-hover:opacity-100 opacity-0 transition-opacity">
               <CompanyForm
                 type="edit"
@@ -63,7 +63,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
                 companyId={company.id}
               />
             </div>
-          )}
+          ) : null}
         </div>
       ))}
     </>

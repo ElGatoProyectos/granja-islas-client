@@ -36,7 +36,7 @@ import { backend_url } from "@/constants/config";
 import { useToast } from "@/components/ui/use-toast";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
-import { USER } from "@/constants/roles";
+import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
 
 interface Props {
   type: "create" | "edit";
@@ -76,7 +76,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     if (image) {
       formData.append("company-profile", image[0]);
     }
-    
+
     type CompanyWithoutKey = Omit<CreateCompanySchema, "image">;
     for (const key in company) {
       if (company.hasOwnProperty(key)) {
@@ -177,7 +177,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
   const [open, setOpen] = useState(false);
 
-  return userInfo?.role === USER ? null : (
+  return userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {type === "create" ? (
@@ -460,5 +460,5 @@ export function CompanyForm({ type, company, companyId }: Props) {
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  ) : null;
 }

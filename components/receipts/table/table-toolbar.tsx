@@ -13,6 +13,8 @@ import { DatePicker } from "@/components/date-picker";
 import { exportToExcel } from "@/utils/export-excel";
 import { arrayOfTypesDocument } from "@/constants/type-document";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
+import { useUserInfo } from "@/context/user-context";
+import { ADMIN, SUPERADMIN } from "@/constants/roles";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -43,6 +45,8 @@ export function DataTableToolbar<TData>({
     value: id.toString(),
     label: business_name.toLowerCase(),
   }));
+
+  const { userInfo } = useUserInfo();
 
   return (
     <div className="flex items-center justify-between">
@@ -90,25 +94,30 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex space-x-2">
-        <Button
-          variant="outline"
-          type="button"
-          disabled={loading}
-          onClick={async () => {
-            const products = await exportExcel();
-            const currentDate = new Date().toISOString().split("T")[0];
-            exportToExcel({
-              data: transformData(products, receiptViewTable),
-              filename: `Comprobantes ${currentDate}`,
-            });
-          }}
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Excel
-        </Button>
-        <Link href={`${pathname}/create`} className={buttonVariants()}>
-          Agregar comprobante
-        </Link>
+        {userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
+          <>
+            <Button
+              variant="outline"
+              type="button"
+              disabled={loading}
+              onClick={async () => {
+                const products = await exportExcel();
+                const currentDate = new Date().toISOString().split("T")[0];
+                exportToExcel({
+                  data: transformData(products, receiptViewTable),
+                  filename: `Comprobantes ${currentDate}`,
+                });
+              }}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Excel
+            </Button>
+            <Link href={`${pathname}/create`} className={buttonVariants()}>
+              Agregar comprobante
+            </Link>
+          </>
+        ) : null}
+
         <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
       </div>
     </div>

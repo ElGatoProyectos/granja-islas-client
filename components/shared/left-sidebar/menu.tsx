@@ -16,6 +16,7 @@ import { CollapseMenuButton } from "./collapse-menu-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { signOut } from "next-auth/react";
 import { useUserInfo } from "@/context/user-context";
+import { ADMIN, SUPERADMIN } from "@/constants/roles";
 
 interface MenuProps {
   isOpen: boolean;
@@ -34,20 +35,20 @@ export function Menu({ isOpen }: MenuProps) {
             <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>
               {isOpen && groupLabel ? (
                 <>
-                  {userInfo?.role === "USER" && groupLabel === "" && (
-                    <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
-                      {groupLabel}
-                    </p>
-                  )}
-                  {userInfo?.role !== "USER" && (
-                    <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
-                      {groupLabel}
-                    </p>
-                  )}
+                  {userInfo?.role === SUPERADMIN ||
+                    (userInfo?.role === ADMIN ? (
+                      <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
+                        {groupLabel}
+                      </p>
+                    ) : groupLabel === "" ? (
+                      <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
+                        {groupLabel}
+                      </p>
+                    ) : null)}
                 </>
               ) : !isOpen && groupLabel ? (
                 <>
-                  {userInfo?.role === "USER" && groupLabel === "" && (
+                  {userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={100}>
                         <TooltipTrigger className="w-full">
@@ -60,8 +61,7 @@ export function Menu({ isOpen }: MenuProps) {
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  )}
-                  {userInfo?.role !== "USER" && (
+                  ) : groupLabel === "" ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={100}>
                         <TooltipTrigger className="w-full">
@@ -74,7 +74,7 @@ export function Menu({ isOpen }: MenuProps) {
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  )}
+                  ) : null}
                 </>
               ) : (
                 <p className="pb-2"></p>
@@ -83,103 +83,103 @@ export function Menu({ isOpen }: MenuProps) {
                 ({ href, label, icon: Icon, active, submenus }, index) =>
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
-                      {userInfo?.role === "USER" && href === "/receipts" && (
-                        <TooltipProvider disableHoverableContent>
-                          <Tooltip delayDuration={100}>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant={active ? "default" : "ghost"}
-                                className="w-full justify-start h-10 mb-1"
-                                asChild
-                              >
-                                <Link href={href}>
-                                  <span
-                                    className={cn(
-                                      isOpen === false ? "" : "mr-4"
-                                    )}
-                                  >
-                                    <Icon size={18} />
-                                  </span>
-                                  <p
-                                    className={cn(
-                                      "max-w-[200px] truncate",
-                                      isOpen === false
-                                        ? "-translate-x-96 opacity-0"
-                                        : "translate-x-0 opacity-100"
-                                    )}
-                                  >
-                                    {label}
-                                  </p>
-                                </Link>
-                              </Button>
-                            </TooltipTrigger>
-                            {isOpen === false && (
-                              <TooltipContent side="right">
-                                {label}
-                              </TooltipContent>
-                            )}
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                      {userInfo?.role !== "USER" && (
-                        <TooltipProvider disableHoverableContent>
-                          <Tooltip delayDuration={100}>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant={active ? "default" : "ghost"}
-                                className="w-full justify-start h-10 mb-1"
-                                asChild
-                              >
-                                <Link href={href}>
-                                  <span
-                                    className={cn(
-                                      isOpen === false ? "" : "mr-4"
-                                    )}
-                                  >
-                                    <Icon size={18} />
-                                  </span>
-                                  <p
-                                    className={cn(
-                                      "max-w-[200px] truncate",
-                                      isOpen === false
-                                        ? "-translate-x-96 opacity-0"
-                                        : "translate-x-0 opacity-100"
-                                    )}
-                                  >
-                                    {label}
-                                  </p>
-                                </Link>
-                              </Button>
-                            </TooltipTrigger>
-                            {isOpen === false && (
-                              <TooltipContent side="right">
-                                {label}
-                              </TooltipContent>
-                            )}
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
+                      {userInfo?.role === SUPERADMIN ||
+                        (userInfo?.role === ADMIN ? (
+                          <TooltipProvider disableHoverableContent>
+                            <Tooltip delayDuration={100}>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant={active ? "default" : "ghost"}
+                                  className="w-full justify-start h-10 mb-1"
+                                  asChild
+                                >
+                                  <Link href={href}>
+                                    <span
+                                      className={cn(
+                                        isOpen === false ? "" : "mr-4"
+                                      )}
+                                    >
+                                      <Icon size={18} />
+                                    </span>
+                                    <p
+                                      className={cn(
+                                        "max-w-[200px] truncate",
+                                        isOpen === false
+                                          ? "-translate-x-96 opacity-0"
+                                          : "translate-x-0 opacity-100"
+                                      )}
+                                    >
+                                      {label}
+                                    </p>
+                                  </Link>
+                                </Button>
+                              </TooltipTrigger>
+                              {isOpen === false && (
+                                <TooltipContent side="right">
+                                  {label}
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+                        ) : href === "/receipts" ? (
+                          <TooltipProvider disableHoverableContent>
+                            <Tooltip delayDuration={100}>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant={active ? "default" : "ghost"}
+                                  className="w-full justify-start h-10 mb-1"
+                                  asChild
+                                >
+                                  <Link href={href}>
+                                    <span
+                                      className={cn(
+                                        isOpen === false ? "" : "mr-4"
+                                      )}
+                                    >
+                                      <Icon size={18} />
+                                    </span>
+                                    <p
+                                      className={cn(
+                                        "max-w-[200px] truncate",
+                                        isOpen === false
+                                          ? "-translate-x-96 opacity-0"
+                                          : "translate-x-0 opacity-100"
+                                      )}
+                                    >
+                                      {label}
+                                    </p>
+                                  </Link>
+                                </Button>
+                              </TooltipTrigger>
+                              {isOpen === false && (
+                                <TooltipContent side="right">
+                                  {label}
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+                        ) : null)}
                     </div>
                   ) : (
                     <div className="w-full" key={index}>
-                      {userInfo?.role === "USER" && href === "/receipts" && (
-                        <CollapseMenuButton
-                          icon={Icon}
-                          label={label}
-                          active={active}
-                          submenus={submenus}
-                          isOpen={isOpen}
-                        />
-                      )}
-                      {userInfo?.role !== "USER" && (
-                        <CollapseMenuButton
-                          icon={Icon}
-                          label={label}
-                          active={active}
-                          submenus={submenus}
-                          isOpen={isOpen}
-                        />
-                      )}
+                      {userInfo?.role === SUPERADMIN ||
+                        (userInfo?.role === ADMIN ? (
+                          <CollapseMenuButton
+                            icon={Icon}
+                            label={label}
+                            active={active}
+                            submenus={submenus}
+                            isOpen={isOpen}
+                          />
+                        ) : href === "/receipts" ? (
+                          <CollapseMenuButton
+                            icon={Icon}
+                            label={label}
+                            active={active}
+                            submenus={submenus}
+                            isOpen={isOpen}
+                          />
+                        ) : null)}
                     </div>
                   )
               )}

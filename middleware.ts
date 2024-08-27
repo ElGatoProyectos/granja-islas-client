@@ -16,7 +16,11 @@ export default withAuth(
     // Verificar accesos según el rol del usuario
     if (token.role === USER) {
       // Permitir acceso a /receipts y /receipts/[id] solo para USER
-      if (pathname === "/receipts" || pathname.startsWith("/receipts/")) {
+      if (
+        pathname === "/receipts" ||
+        pathname.startsWith("/receipts/") ||
+        pathname === "/onboarding"
+      ) {
         // Permitir acceso
         return NextResponse.next();
       } else {
