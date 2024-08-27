@@ -31,7 +31,7 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
         >
           <CardHeader
             className={cn(
-              "p-0 space-y-0",
+              "px-4 py-0 space-y-0",
               isOpen === false ? "justify-end items-end" : ""
             )}
           >

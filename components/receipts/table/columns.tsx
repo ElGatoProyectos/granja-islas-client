@@ -16,7 +16,18 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Número" />
     ),
     cell: ({ row }) => {
-      return <span className="w-fit truncate">{row.getValue("code")}</span>;
+      const id = row.original.id;
+      const document_code = row.original.document_code;
+      return (
+        <Link
+          href={`/receipts/${id}-${document_code}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
+          {row.getValue("code")}
+        </Link>
+      );
     },
     enableSorting: false,
   },
