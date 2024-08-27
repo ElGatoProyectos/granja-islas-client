@@ -8,44 +8,30 @@ export default withAuth(
     const { pathname } = req.nextUrl;
     const token = await getToken({ req });
 
-    // Redirigir desde la raíz "/" a "/signin" si no está autenticado
-    if (pathname === "/") {
-      if (!token) {
-        return NextResponse.rewrite(new URL("/signin", req.url));
-      }
-      // Redirigir usuarios autenticados según su rol
-      if (token.role === SUPERADMIN || token.role === ADMIN) {
-        return NextResponse.rewrite(new URL("/dashboard", req.url));
-      }
-      if (token.role === USER) {
+    if (!token) {
+      // Redirigir a "/signin" si no hay token
+      return NextResponse.rewrite(new URL("/signin", req.url));
+    }
+
+    // Verificar accesos según el rol del usuario
+    if (token.role === USER) {
+      // Permitir acceso a /receipts y /receipts/[id] solo para USER
+      if (pathname === "/receipts" || pathname.startsWith("/receipts/")) {
+        // Permitir acceso
+        return NextResponse.next();
+      } else {
+        // Bloquear acceso a otras rutas
         return NextResponse.rewrite(new URL("/receipts", req.url));
       }
     }
 
-    // Rutas protegidas por ADMIN y SUPERADMIN
-    if (pathname.startsWith("/dashboard")) {
-      if (token?.role !== SUPERADMIN && token?.role !== ADMIN) {
-        return NextResponse.rewrite(new URL("/receipts", req.url));
-      }
+    // Permitir acceso completo a ADMIN y SUPERADMIN
+    if (token.role === ADMIN || token.role === SUPERADMIN) {
+      return NextResponse.next();
     }
 
-    // Proteger específicamente la ruta /receipts/create
-    if (pathname === "/receipts/create") {
-      if (token?.role !== SUPERADMIN && token?.role !== ADMIN) {
-        return NextResponse.rewrite(new URL("/receipts", req.url));
-      }
-    }
-
-    // Ruta específica para usuarios con rol USER y también accesible para ADMIN y SUPERADMIN
-    if (pathname === "/receipts") {
-      if (
-        token?.role !== USER &&
-        token?.role !== ADMIN &&
-        token?.role !== SUPERADMIN
-      ) {
-        return NextResponse.rewrite(new URL("/signin", req.url));
-      }
-    }
+    // Bloquear acceso a cualquier ruta no cubierta para roles inesperados (opcional)
+    return NextResponse.rewrite(new URL("/signin", req.url));
   },
   {
     callbacks: {
@@ -58,8 +44,7 @@ export const config = {
   matcher: [
     "/",
     "/dashboard/:path*",
-    "/receipts",
-    "/receipts/create",
+    "/receipts/:path*", // Cubre todas las rutas bajo /receipts
     "/onboarding",
   ],
 };
