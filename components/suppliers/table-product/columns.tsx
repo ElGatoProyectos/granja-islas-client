@@ -110,7 +110,7 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
   {
     accessorKey: "igv",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="IGV" />
+      <DataTableColumnHeader column={column} title="IGV Total" />
     ),
     cell: ({ row }) => {
       const igv = row.getValue("igv") as string;

@@ -126,7 +126,7 @@ const productsOfSupplierView: TranslationDict = {
   amount: "Cantidad",
   unit_measure: "Medida",
   price: "Precio unitario",
-  igv: "IGV",
+  igv: "IGV Total",
   total: "Importe Total",
 };
 
