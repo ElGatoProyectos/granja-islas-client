@@ -4,7 +4,7 @@ import {
   createPaymentSchema,
   PaymentSchemaIN,
 } from "@/lib/validations/payment";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -64,7 +64,7 @@ export function PaymentForm({
   });
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-
+  const socket: any = useRef();
   async function onSubmit(values: z.infer<typeof createPaymentSchema>) {
     setSubmitting(true);
 
@@ -107,6 +107,9 @@ export function PaymentForm({
       form.reset();
       getReceiptPayments();
       setSelectedImage(null);
+      socket.current.emit("create-voucher", (data: any) => {
+        console.log(data);
+      });
     } catch (e) {
       toast({
         variant: "destructive",

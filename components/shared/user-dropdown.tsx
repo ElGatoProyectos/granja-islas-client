@@ -22,15 +22,15 @@ import { Skeleton } from "../ui/skeleton";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCompany } from "@/lib/actions/company.actions";
 import { CompanySchemaIN } from "@/lib/validations/auth/company";
-import { io } from "socket.io-client";
 
 export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
   const { loading, userInfo } = useUserInfo();
   const { company, setCompany } = useCompanySession();
   const [changeCompany, setChangeCompany] = useState("");
+
   const handleCompany = async (value: string) => {
     setChangeCompany(value);
     const companyformated = await getCompany({ idCompany: value });
@@ -41,20 +41,6 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
       setChangeCompany(company?.id.toString());
     }
   }, [company]);
-
-  /* socket */
-  // const socket = useRef();
-  // const [dataChat, setDataChat] = useState([]);
-  // useEffect(() => {
-  //   socket.current = io(`${backend_url}`);
-  //   socket.current.on("return-messages", (data) => {
-  //     if (data.messages) {
-  //       setDataChat([data.messages]);
-  //     } else {
-  //       setDataChat([]);
-  //     }
-  //   });
-  // }, []);
 
   return loading ? (
     <div className="flex gap-2 justify-center items-center">
