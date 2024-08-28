@@ -45,7 +45,10 @@ export function DataTableToolbar<TData>({
         <Input
           placeholder="Buscar por etiqueta"
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => {
+            setSearch(event.target.value);
+            setCurrentPage(1);
+          }}
           className="w-[150px] lg:w-[250px]"
         />
         <DatePicker
