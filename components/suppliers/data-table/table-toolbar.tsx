@@ -37,7 +37,10 @@ export function DataTableToolbar<TData>({
         <Input
           placeholder="Buscar razón social o RUC"
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) => {
+            setSearch(event.target.value);
+            setPage(1);
+          }}
           className="w-[150px] lg:w-[250px]"
         />
         <ViewToggle />
