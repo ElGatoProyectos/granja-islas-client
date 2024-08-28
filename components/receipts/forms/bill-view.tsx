@@ -34,14 +34,23 @@ export function BillView({
   );
 
   const products = form.watch("products") || [];
+  const percentage = parseInt(form.watch("igv"), 10) || 18;
+
+  // Calcular el subtotal considerando que el precio ya incluye IGV
   const subtotal = products.reduce((acc, product) => {
-    const price = parseFloat(product.price) || 0;
+    const priceWithTax = parseFloat(product.price) || 0;
     const amount = parseInt(product.amount, 10) || 0;
-    return acc + price * amount;
+
+    // Calcular el precio sin IGV
+    const priceWithoutTax = priceWithTax / (1 + percentage / 100);
+
+    return acc + priceWithoutTax * amount;
   }, 0);
 
-  const percentage = parseInt(form.watch("igv"), 10) || 18;
-  const taxAmount = (subtotal * percentage) / 100;
+  // Calcular el IGV a partir del subtotal
+  const taxAmount = subtotal * (percentage / 100);
+
+  // Calcular el total con IGV
   const totalWithTax = subtotal + taxAmount;
 
   return (
@@ -140,7 +149,6 @@ export function BillView({
         <Separator className="col-span-2" />
         <div className="col-span-2 pb-10 p-8">
           <Table>
-            <TableCaption>Lista de tus comprobantes.</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead className="pl-0 w-full">Descripción</TableHead>

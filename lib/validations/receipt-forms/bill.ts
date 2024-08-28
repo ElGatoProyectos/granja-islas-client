@@ -17,7 +17,7 @@ export const billSchemaCreate = z.object({
   bill_status_payment: z.enum([CONTADO, CREDITO]),
   note: z.string(),
   currency_code: z.enum([USD, PEN]), // Moneda
-  exchange_rate: z.number().optional(), // tipo de cambio
+  exchange_rate: z.string().optional(), // tipo de cambio
   products: z.array(
     z.object({
       title: z.string(),
@@ -46,7 +46,7 @@ export const creditNoteSchemaCreate = z.object({
   bill_status_payment: z.enum([CONTADO, CREDITO]),
   note: z.string(),
   currency_code: z.enum([USD, PEN]), // Moneda
-  exchange_rate: z.number().optional(), // tipo de cambio
+  exchange_rate: z.string().optional(), // tipo de cambio
   products: z.array(
     z.object({
       title: z.string(),

@@ -78,7 +78,7 @@ export function BillForm() {
         variant: "success",
         title: `Se creó correctamente la factura`,
       });
-      // form.reset();
+      form.reset();
     } catch (e) {
       toast({
         variant: "destructive",
@@ -89,12 +89,10 @@ export function BillForm() {
     }
   }
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control: form.control,
-      name: "products",
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "products",
+  });
 
   const getTC = async () => {
     try {
