@@ -34,7 +34,6 @@ export function Notifications() {
     if (company && tokenBack) {
       socket.current = io(`${backend_url}`);
       socket.current.on("notification", (data: NotificationsSchemaIN) => {
-        console.log(data);
         setNotifications(data.payload);
       });
       socket.current.emit("init-notification", {

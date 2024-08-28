@@ -74,7 +74,6 @@ export function CreditNoteForm() {
   const { company } = useCompanySession();
 
   async function onSubmit(values: z.infer<typeof creditNoteSchemaCreate>) {
-    console.log(values);
     setSubmitting(true);
     try {
       await createCreditNote({
@@ -122,9 +121,9 @@ export function CreditNoteForm() {
   };
 
   const { measure } = useMeasure();
+  const filteredUnits = measure.filter((measure) => measure !== "");
   const { totalSuppliers } = useAllSuppliers();
   const { receipts, setIdSupplier } = useDocumentsOfSupplier();
-  console.log(receipts);
   return (
     <TabsContent
       value="credit_note"
@@ -429,7 +428,7 @@ export function CreditNoteForm() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {measure.map((measure) => (
+                                {filteredUnits.map((measure) => (
                                   <SelectItem key={measure} value={measure}>
                                     {measure}
                                   </SelectItem>

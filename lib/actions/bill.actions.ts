@@ -17,7 +17,6 @@ export async function createBill({
   const formatsupplier_id = Number(jsonData.supplier_id);
   const formatIGV = parseInt(jsonData.igv, 10) / 100;
 
-  console.log("->", formatExchange_rate);
   const formatData = {
     ...jsonData,
     igv: formatIGV,
@@ -67,7 +66,7 @@ export async function createCreditNote({
 
   const formatExchange_rate = Number(jsonData.exchange_rate ?? 1);
   const formatsupplier_id = Number(jsonData.supplier_id);
-  console.log("->", formatExchange_rate);
+
   const formatData = {
     ...jsonData,
     issue_date: new Date(jsonData.issue_date),
@@ -82,8 +81,6 @@ export async function createCreditNote({
     })),
   };
 
-  console.log(formatData);
-
   try {
     const res = await fetch(`${backend_url}/api/bills/create`, {
       method: "POST",
@@ -96,7 +93,7 @@ export async function createCreditNote({
     });
 
     const data = await res.json();
-    console.log(data);
+
     if (data.error) {
       throw new Error("Failed backend to create bill");
     }

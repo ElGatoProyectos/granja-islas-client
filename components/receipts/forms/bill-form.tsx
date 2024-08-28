@@ -114,6 +114,7 @@ export function BillForm() {
   };
 
   const { measure } = useMeasure();
+  const filteredUnits = measure.filter((measure) => measure !== "");
   const { totalSuppliers } = useAllSuppliers();
   return (
     <TabsContent value="bill" className="flex gap-3 justify-start items-start">
@@ -412,7 +413,7 @@ export function BillForm() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {measure.map((measure) => (
+                                {filteredUnits.map((measure) => (
                                   <SelectItem key={measure} value={measure}>
                                     {measure}
                                   </SelectItem>

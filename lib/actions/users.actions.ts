@@ -60,7 +60,7 @@ export async function updateUser({
   formData: FormData;
 }) {
   if (!userId) throw new Error("No id for update user");
-  console.log(userId);
+
   const res = await fetch(`${backend_url}/api/users/${userId}`, {
     method: "PATCH",
     headers: {
@@ -68,11 +68,10 @@ export async function updateUser({
     },
     body: formData,
   });
-  console.log(res);
+
   if (!res.ok) {
     throw new Error("Failed to update user");
   }
 
   const resJSON = await res.json();
-  console.log(resJSON);
 }

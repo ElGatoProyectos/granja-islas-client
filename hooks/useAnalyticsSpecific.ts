@@ -53,8 +53,12 @@ export function useAnalyticsSpecific({ label }: { label: LabelSchemaIN }) {
     if (error) {
       throw new Error("Failed to fetch measure");
     }
-    setMeasure(payload);
-    setMeasureSelect(payload[0]);
+
+    const filteredUnits: string[] = payload.filter(
+      (measure: string) => measure !== ""
+    );
+    setMeasure(filteredUnits);
+    setMeasureSelect(filteredUnits[0]);
   }, [company, tokenBack]);
   useEffect(() => {
     getMeasureSpecific2();

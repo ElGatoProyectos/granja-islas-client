@@ -26,44 +26,6 @@ import {
 import { Dispatch, SetStateAction } from "react";
 import { SpecificSchemaIN } from "@/lib/validations/analytics";
 
-const monthlyExpense = [
-  {
-    month: "Ene",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Feb",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Mar",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Abr",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "May",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Jun",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-  {
-    month: "Jul",
-    expense: Math.floor(Math.random() * 100000),
-    average: Math.floor(Math.random() * 100000),
-  },
-];
-
 const chartConfig = {
   amount: {
     label: "Gasto",

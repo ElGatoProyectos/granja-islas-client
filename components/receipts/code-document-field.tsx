@@ -45,8 +45,6 @@ export function CodeDocumentField({
     id: receipt.id.toString(),
   }));
 
-  console.log(formatReceipts);
-
   return (
     <FormField
       control={form.control}

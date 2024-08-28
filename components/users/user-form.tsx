@@ -81,7 +81,7 @@ export function UserForm({ type, userInfo }: Props) {
   async function onSubmit(values: z.infer<typeof userSchema>) {
     setSubmitting(true);
     const { image, confirmPassword, ...userFormInfo } = values;
-    console.log(image);
+
     const formData = new FormData();
     if (image) {
       formData.append("user-profile", image[0]);
