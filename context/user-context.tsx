@@ -2,7 +2,6 @@
 
 import { backend_url } from "@/constants/config";
 import { UserSchemaIN } from "@/lib/validations/user";
-
 import { useSession } from "next-auth/react";
 import {
   createContext,
@@ -20,6 +19,8 @@ interface UserContextType {
   setUserInfo: Dispatch<SetStateAction<UserSchemaIN | null>>;
   loading: boolean;
   tokenBack: string;
+  avatarURL: string;
+  setavatarURL: Dispatch<SetStateAction<string>>;
 }
 
 interface DataUser {
@@ -37,6 +38,7 @@ export const UserInfoProvider = ({
   children: React.ReactNode;
 }) => {
   const [userInfo, setUserInfo] = useState<UserSchemaIN | null>(null);
+  const [avatarURL, setavatarURL] = useState("");
   const [loading, setLoading] = useState(false);
   const {
     data: session,
@@ -66,6 +68,7 @@ export const UserInfoProvider = ({
       }
 
       setUserInfo(data.payload);
+      setavatarURL(`${backend_url}/api/users/file/${data.payload.id}`);
     } catch (error) {
       console.error("Error fetching user", error);
     } finally {
@@ -85,8 +88,10 @@ export const UserInfoProvider = ({
       setUserInfo,
       loading,
       tokenBack: session?.user?.tokenBack,
+      avatarURL,
+      setavatarURL,
     }),
-    [loading, session?.user?.tokenBack, userInfo]
+    [avatarURL, loading, session?.user?.tokenBack, userInfo]
   );
 
   return (

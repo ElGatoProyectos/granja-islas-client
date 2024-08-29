@@ -15,11 +15,11 @@ export async function createBill({
 
   const formatExchange_rate = Number(jsonData.exchange_rate ?? 1);
   const formatsupplier_id = Number(jsonData.supplier_id);
-  const formatIGV = parseInt(jsonData.igv, 10) / 100;
+  const formatIGV = parseInt(jsonData.base_igv, 10) / 100;
 
   const formatData = {
     ...jsonData,
-    igv: formatIGV,
+    base_igv: formatIGV,
     issue_date: new Date(jsonData.issue_date),
     exchange_rate: formatExchange_rate,
     period: "2024-07",

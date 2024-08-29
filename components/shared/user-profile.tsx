@@ -16,7 +16,7 @@ import { UserForm } from "../users/user-form";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function UserProfile() {
-  const { userInfo } = useUserInfo();
+  const { userInfo, avatarURL } = useUserInfo();
   return (
     <>
       {userInfo ? (
@@ -44,10 +44,8 @@ export function UserProfile() {
 
             <div className="w-full flex flex-col space-y-4">
               <Avatar className="h-[100px] w-[100px]">
-                <AvatarImage
-                  src={`${backend_url}/api/users/file/${userInfo.id}`}
-                />
-                <AvatarFallback className="text-3xl">
+                <AvatarImage src={avatarURL} />
+                <AvatarFallback className="text-3xl capitalize">
                   {userInfo.name.substring(0, 1)}
                 </AvatarFallback>
               </Avatar>

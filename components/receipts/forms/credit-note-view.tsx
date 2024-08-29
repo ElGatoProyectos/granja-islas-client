@@ -36,7 +36,7 @@ export function CreditNoteView({
   const products = form.watch("products") || [];
   const subtotal = products.reduce((acc, product) => {
     const price = parseFloat(product.price) || 0;
-    const amount = parseInt(product.amount, 10) || 0;
+    const amount = parseFloat(product.amount) || 0;
     return acc + price * amount;
   }, 0);
 

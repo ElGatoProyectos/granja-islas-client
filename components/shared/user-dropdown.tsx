@@ -27,7 +27,7 @@ import { getCompany } from "@/lib/actions/company.actions";
 import { CompanySchemaIN } from "@/lib/validations/auth/company";
 
 export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
-  const { loading, userInfo } = useUserInfo();
+  const { loading, userInfo, avatarURL } = useUserInfo();
   const { company, setCompany } = useCompanySession();
   const [changeCompany, setChangeCompany] = useState("");
 
@@ -58,8 +58,10 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
           className="gap-x-3 hover:bg-transparent p-0 focus-visible:ring-0"
         >
           <Avatar>
-            <AvatarImage src={`${backend_url}/api/users/file/${userInfo.id}`} />
-            <AvatarFallback>{userInfo.name.substring(0, 1)}</AvatarFallback>
+            <AvatarImage src={avatarURL} />
+            <AvatarFallback className="capitalize">
+              {userInfo.name.substring(0, 1)}
+            </AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start">
             <p className="text-sm font-bold">{userInfo.name}</p>

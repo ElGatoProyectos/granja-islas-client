@@ -43,7 +43,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useToggle } from "@/hooks/use-toggle";
-import { ADMIN, USER } from "@/constants/roles";
+import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
@@ -75,8 +75,7 @@ export function UserForm({ type, userInfo }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
-  const { tokenBack } = useUserInfo();
-  const route = useRouter();
+  const { tokenBack, userInfo: currentUser, setavatarURL } = useUserInfo();
 
   async function onSubmit(values: z.infer<typeof userSchema>) {
     setSubmitting(true);
@@ -108,6 +107,9 @@ export function UserForm({ type, userInfo }: Props) {
           formData,
           tokenBack,
         });
+        if (image) {
+          setavatarURL(`${URL.createObjectURL(image[0])}`);
+        }
       }
 
       toast({
@@ -116,7 +118,7 @@ export function UserForm({ type, userInfo }: Props) {
           type === "create" ? "creó" : "editó"
         } correctamente el usuario`,
       });
-      route.refresh();
+
       setOpen(false);
       form.reset();
     } catch (e) {
@@ -167,77 +169,85 @@ export function UserForm({ type, userInfo }: Props) {
             className="space-y-2"
             autoComplete="off"
           >
-            <div className="flex items-center justify-center">
-              <div
-                className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row`}
-              >
-                {selectedImage ? (
-                  <div className="md:max-w-[100px]">
-                    <Avatar className={"h-[100px] w-[100px]"}>
-                      <AvatarImage src={URL.createObjectURL(selectedImage)} />
-                      <AvatarFallback className="text-3xl">I</AvatarFallback>
-                    </Avatar>
-                  </div>
-                ) : userInfo?.id ? (
-                  <div className="md:max-w-[100px]">
-                    <Avatar className={"h-[100px] w-[100px]"}>
-                      <AvatarImage
-                        src={`${backend_url}/api/users/file/${userInfo?.id}`}
-                      />
-                      <AvatarFallback className="text-3xl">
-                        {userInfo.name.substring(0, 1)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                ) : (
-                  <div className="inline-flex items-center justify-between">
-                    <div className="p-7 bg-muted justify-center items-center flex rounded-full">
-                      <AddImage className="stroke-foreground" />
+            {type === "edit" && (
+              <div className="flex items-center justify-center">
+                <div
+                  className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row`}
+                >
+                  {selectedImage ? (
+                    <div className="md:max-w-[100px]">
+                      <Avatar className={"h-[100px] w-[100px]"}>
+                        <AvatarImage src={URL.createObjectURL(selectedImage)} />
+                        <AvatarFallback className="text-3xl capitalize">
+                          I
+                        </AvatarFallback>
+                      </Avatar>
                     </div>
-                  </div>
-                )}
-              </div>
-
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div
-                        className={
-                          "grid w-full max-w-sm items-center gap-1.5 p-3 rounded-lg"
-                        }
-                      >
-                        <Label
-                          htmlFor="fileInput"
-                          className={"inline-flex items-center cursor-pointer"}
-                        >
-                          <Upload className="h-4 w-4 mr-2 stroke-foreground" />
-                          <span className="whitespace-nowrap">
-                            Elija la imagen
-                          </span>
-                        </Label>
-                        <Input
-                          type="file"
-                          className="hidden"
-                          id="fileInput"
-                          accept="image/*"
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          onChange={(e) => {
-                            field.onChange(e.target.files);
-                            setSelectedImage(e.target.files?.[0] || null);
-                          }}
-                          ref={field.ref}
+                  ) : userInfo?.id ? (
+                    <div className="md:max-w-[100px]">
+                      <Avatar className={"h-[100px] w-[100px]"}>
+                        <AvatarImage
+                          src={`${backend_url}/api/users/file/${userInfo?.id}`}
                         />
+                        <AvatarFallback className="text-3xl capitalize">
+                          {userInfo.name.substring(0, 1)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center justify-between">
+                      <div className="p-7 bg-muted justify-center items-center flex rounded-full">
+                        <AddImage className="stroke-foreground" />
                       </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    </div>
+                  )}
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div
+                          className={
+                            "grid w-full max-w-sm items-center gap-1.5 p-3 rounded-lg"
+                          }
+                        >
+                          <Label
+                            htmlFor="fileInput"
+                            className={
+                              "inline-flex items-center cursor-pointer"
+                            }
+                          >
+                            <Upload className="h-4 w-4 mr-2 stroke-foreground" />
+                            <span className="whitespace-nowrap">
+                              Elija la imagen
+                            </span>
+                          </Label>
+                          <Input
+                            type="file"
+                            className="hidden"
+                            id="fileInput"
+                            accept="image/*"
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            onChange={(e) => {
+                              field.onChange(e.target.files);
+                              setSelectedImage(e.target.files?.[0] || null);
+                            }}
+                            ref={field.ref}
+                            disabled={submitting}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+
             <FormField
               control={form.control}
               name="name"
@@ -245,7 +255,7 @@ export function UserForm({ type, userInfo }: Props) {
                 <FormItem>
                   <FormLabel>Nombres</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={submitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -259,7 +269,7 @@ export function UserForm({ type, userInfo }: Props) {
                 <FormItem>
                   <FormLabel>Apellidos</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={submitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -273,7 +283,11 @@ export function UserForm({ type, userInfo }: Props) {
                 <FormItem>
                   <FormLabel>Correo Electronico</FormLabel>
                   <FormControl>
-                    <Input placeholder="correo@gmail.com" {...field} />
+                    <Input
+                      placeholder="correo@gmail.com"
+                      {...field}
+                      disabled={submitting}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -296,6 +310,7 @@ export function UserForm({ type, userInfo }: Props) {
                         autoComplete="off"
                         autoCorrect="off"
                         inputMode="numeric"
+                        disabled={submitting}
                       />
                     </FormControl>
                   </div>
@@ -304,6 +319,35 @@ export function UserForm({ type, userInfo }: Props) {
               )}
             />
 
+            {currentUser?.role === SUPERADMIN && type === "create" && (
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rol</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value.toString()}
+                        disabled={submitting}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un rol" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={USER}>Usuario</SelectItem>
+                          <SelectItem value={ADMIN}>Administrador</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="password"
@@ -315,6 +359,7 @@ export function UserForm({ type, userInfo }: Props) {
                       {...field}
                       placeholder="*******"
                       type={showPassword ? "text" : "password"}
+                      disabled={submitting}
                     />
                   </FormControl>
                   <Button
@@ -342,40 +387,13 @@ export function UserForm({ type, userInfo }: Props) {
                       {...field}
                       placeholder="*******"
                       type={showPassword ? "text" : "password"}
+                      disabled={submitting}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {userInfo?.role === "SUPERADMIN" && type === "create" && (
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Rol</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un rol" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value={USER}>Usuario</SelectItem>
-                          <SelectItem value={ADMIN}>Administrador</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
 
             <DialogFooter className="!mt-6 !justify-between">
               <DialogClose asChild>
@@ -387,7 +405,7 @@ export function UserForm({ type, userInfo }: Props) {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit">
+              <Button type="submit" disabled={submitting}>
                 {type === "create" ? "Registrar" : "Actualizar"}
               </Button>
             </DialogFooter>

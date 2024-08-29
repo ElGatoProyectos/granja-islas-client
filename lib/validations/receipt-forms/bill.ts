@@ -12,8 +12,10 @@ export const billSchemaCreate = z.object({
       required_error: "La fecha de vencimiento es obligatoria",
     })
     .optional(), // vencimiento
-  supplier_id: z.string().min(1, "El proveedor es obligatorio"), // id de proveedor
-  igv: z.string(),
+  supplier_id: z
+    .string({ required_error: "El proveedor es obligatorio" })
+    .min(1, "El proveedor es obligatorio"), // id de proveedor
+  base_igv: z.string(),
   bill_status_payment: z.enum([CONTADO, CREDITO]),
   note: z.string(),
   currency_code: z.enum([USD, PEN]), // Moneda

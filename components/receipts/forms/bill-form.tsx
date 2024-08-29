@@ -52,13 +52,14 @@ import { TabsContent } from "@/components/ui/tabs";
 import { BillView } from "./bill-view";
 import { createBill } from "@/lib/actions/bill.actions";
 import { useCompanySession } from "@/context/company-context";
+import { igv_percentage } from "@/constants/igv";
 
 export function BillForm() {
   const form = useForm<z.infer<typeof billSchemaCreate>>({
     resolver: zodResolver(billSchemaCreate),
     defaultValues: {
       code: "",
-      igv: "18",
+      base_igv: "18",
       bill_status_payment: CONTADO,
       note: "",
       currency_code: PEN,
@@ -190,14 +191,30 @@ export function BillForm() {
                 />
                 <FormField
                   control={form.control}
-                  name="igv"
+                  name="base_igv"
                   render={({ field }) => (
                     <FormItem className="relative">
                       <FormLabel>Impuesto</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <div className="absolute opacity-50 top-8 right-4">%</div>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="pl-10">
+                            <SelectValue placeholder="Seleccionar" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <div className="absolute opacity-50 top-8 left-4">
+                          %
+                        </div>
+                        <SelectContent>
+                          {igv_percentage.map(({ label, value }) => (
+                            <SelectItem key={value} value={value}>
+                              {label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
