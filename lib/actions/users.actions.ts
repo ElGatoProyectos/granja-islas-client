@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth-options";
 import { backend_url } from "@/constants/config";
 import { getServerSession } from "next-auth";
 import { UserSchemaIN } from "../validations/user";
+import { revalidatePath } from "next/cache";
 
 export async function getUsers(): Promise<UserSchemaIN[]> {
   const session = await getServerSession(authOptions);
@@ -48,6 +49,8 @@ export async function createUser({
   if (!res.ok) {
     throw new Error("Failed to post user");
   }
+
+  revalidatePath("/dashboard/users");
 }
 
 export async function updateUser({
@@ -74,6 +77,7 @@ export async function updateUser({
     if (resJSON.error) {
       throw new Error("Failed to update user");
     }
+    revalidatePath("/dashboard/users");
   } catch (e) {
     throw new Error("Failed to update user");
   }
@@ -98,6 +102,8 @@ export async function deleteUser({
     if (resJSON.error) {
       throw new Error("Failed to update user");
     }
+
+    revalidatePath("/dashboard/users");
   } catch (e) {
     throw new Error("Failed to update user");
   }
