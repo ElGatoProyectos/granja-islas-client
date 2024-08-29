@@ -8,6 +8,8 @@ import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { USD } from "@/constants/currency";
 
 export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {
@@ -27,6 +29,26 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
         >
           {row.getValue("code")}
         </Link>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "created_status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Creación" />
+    ),
+    cell: ({ row }) => {
+      const created_status = row.getValue("created_status") as string;
+      return (
+        <span
+          className={cn(
+            "w-fit truncate",
+            created_status === "LOCAL" ? "text-teal-600" : ""
+          )}
+        >
+          {created_status}
+        </span>
       );
     },
     enableSorting: false,
@@ -59,7 +81,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
           href={`/dashboard/suppliers/${id}`}
           className={`${buttonVariants({
             variant: "link",
-          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+          })} "!w-[150px] capitalize text-balance font-medium !p-0 !h-auto"`}
         >
           {business_name.toLowerCase()}
         </Link>
@@ -86,10 +108,16 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Moneda" />
     ),
     cell: ({ row }) => {
+      const currency_code = row.getValue("currency_code") as string;
       return (
-        <div className="flex max-w-[220px] items-center">
-          <span>{row.getValue("currency_code")}</span>
-        </div>
+        <span
+          className={cn(
+            "text-balance truncate capitalize font-bold",
+            currency_code === USD ? "text-green-500" : "text-slate-500"
+          )}
+        >
+          {currency_code}
+        </span>
       );
     },
     enableSorting: false,

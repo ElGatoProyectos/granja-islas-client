@@ -61,17 +61,44 @@ export async function updateUser({
 }) {
   if (!userId) throw new Error("No id for update user");
 
-  const res = await fetch(`${backend_url}/api/users/${userId}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${tokenBack}`,
-    },
-    body: formData,
-  });
+  try {
+    const res = await fetch(`${backend_url}/api/users/${userId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${tokenBack}`,
+      },
+      body: formData,
+    });
 
-  if (!res.ok) {
+    const resJSON = await res.json();
+    if (resJSON.error) {
+      throw new Error("Failed to update user");
+    }
+  } catch (e) {
     throw new Error("Failed to update user");
   }
+}
 
-  const resJSON = await res.json();
+export async function deleteUser({
+  tokenBack,
+  userId,
+}: {
+  tokenBack: string;
+  userId: number;
+}) {
+  try {
+    const res = await fetch(`${backend_url}/api/users/${userId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${tokenBack}`,
+      },
+    });
+
+    const resJSON = await res.json();
+    if (resJSON.error) {
+      throw new Error("Failed to update user");
+    }
+  } catch (e) {
+    throw new Error("Failed to update user");
+  }
 }

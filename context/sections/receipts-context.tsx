@@ -124,6 +124,7 @@ export const ReceiptProvider = ({
       if (error) {
         throw new Error("Error to fetch data receipts");
       }
+
       const {
         data,
         limit: MaxLimit,

@@ -45,10 +45,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: [
-    "/",
-    "/dashboard/:path*",
-    "/receipts/:path*", // Cubre todas las rutas bajo /receipts
-    "/onboarding",
-  ],
+  matcher: ["/", "/dashboard/:path*", "/receipts/:path*", "/onboarding"],
 };

@@ -129,8 +129,7 @@ export const SupplierProductsProvider = ({
       /* filterUsers */
       const resJSON = await res.json();
 
-      const { error, message, statusCode, payload } =
-        responseSchema.parse(resJSON);
+      const { error, payload } = responseSchema.parse(resJSON);
       if (error) {
         throw new Error("error to fetch products of supplier");
       }
@@ -142,12 +141,15 @@ export const SupplierProductsProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
+      console.log(data);
 
       const parseData = supplierProductsArraySchema.parse(data);
+
       const formatProductsOfSupplier = formatSupplierProducts(parseData);
       const formData = supplierProductsArrayFormatSchema.parse(
         formatProductsOfSupplier
       );
+      console.log("wtf");
 
       setProductsOfSupplier(formData);
       setTotalPages(pageCount);

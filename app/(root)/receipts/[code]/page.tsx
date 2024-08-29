@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PEN } from "@/constants/currency";
 import { CONTADO } from "@/constants/type-payments";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
@@ -32,6 +33,7 @@ export default function Page() {
     document_id: parts[0],
   });
 
+  console.log(receipt);
   return (
     <LayerPage title="Comprobante">
       {receipt ? (
@@ -62,6 +64,15 @@ export default function Page() {
                 <Separator orientation="vertical" className="h-4" />
                 <p className="text-muted-foreground">{receipt.currency_code}</p>
               </div>
+              {receipt.currency_code !== PEN ? (
+                <div className="flex gap-x-3 h-12 md:text-base items-center">
+                  <span>TC</span>
+                  <Separator orientation="vertical" className="h-4" />
+                  <p className="text-muted-foreground">
+                    {receipt.exchange_rate}
+                  </p>
+                </div>
+              ) : null}
             </CardHeader>
           </Card>
           <main className="mt-6 flex gap-6">
