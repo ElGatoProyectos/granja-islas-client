@@ -22,7 +22,7 @@ export async function TopBar() {
           <span className="text-sm font-normal ">{formattedDate}</span>
         </div>
         <div className="flex gap-2">
-          <Notifications />
+          {/* <Notifications /> */}
           <ModeToggle />
           <div className="flex gap-x-2">
             <UserDropdown companies={companies} />
