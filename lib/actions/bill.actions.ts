@@ -59,7 +59,7 @@ export async function createCreditNote({
 }: {
   ruc?: string;
   tokenBack: string;
-  jsonData: BillSchemaCreate;
+  jsonData: any;
 }) {
   if (!ruc) return;
 
@@ -73,7 +73,7 @@ export async function createCreditNote({
     period: "2024-07",
     supplier_id: formatsupplier_id,
     amount_paid: 0,
-    products: jsonData.products.map((data) => ({
+    products: jsonData.products.map((data: any) => ({
       ...data,
       amount: Number(data.amount),
       price: Number(data.price),

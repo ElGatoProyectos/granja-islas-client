@@ -61,7 +61,7 @@ export function CreditNoteView({
           ) : null}
         </div>
         <div className="p-8 pl-0 space-y-1">
-          <p className="text-primary font-semibold">Factura Electronica</p>
+          <p className="text-primary font-semibold">Nota de crédito</p>
           {company ? (
             <>
               <p>RUC: {company.ruc}</p>
@@ -116,27 +116,7 @@ export function CreditNoteView({
             <Skeleton className="h-6 w-24" />
           )}
         </div>
-        <Separator className="col-span-2" />
-        <div className="grid grid-cols-2 col-span-2 p-8 gap-2">
-          <p className="text-muted-foreground">Observación</p>
-          <p>Factura suejata al spot del 12%</p>
-          <p className="text-muted-foreground">Forma de pago</p>
-          {form.watch("bill_status_payment") ? (
-            <p className="capitalize">
-              {form.watch("bill_status_payment").toLowerCase()}
-            </p>
-          ) : (
-            <Skeleton className="h-6 w-24" />
-          )}
-          {form.watch("expiration_date") ? (
-            <>
-              <p className="text-muted-foreground">Fecha de vencimiento</p>
-              <p>
-                {format(form.watch("expiration_date") as Date, "yyyy-MM-dd")}
-              </p>
-            </>
-          ) : null}
-        </div>
+
         <Separator className="col-span-2" />
         <div className="col-span-2 pb-10 p-8">
           <Table>

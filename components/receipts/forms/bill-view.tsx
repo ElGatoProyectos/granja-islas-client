@@ -70,7 +70,7 @@ export function BillView({
           ) : null}
         </div>
         <div className="p-8 pl-0 space-y-1">
-          <p className="text-primary font-semibold">Factura Electronica</p>
+          <p className="text-primary font-semibold">Factura Electrónica</p>
           {company ? (
             <>
               <p>RUC: {company.ruc}</p>

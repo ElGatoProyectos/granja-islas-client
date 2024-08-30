@@ -66,7 +66,7 @@ export function CodeDocumentField({
                   {field.value
                     ? `${
                         formatReceipts.find(({ id }) => id === field.value)
-                          ?.code
+                          ?.code ?? "Seleccionar factura"
                       }`
                     : "Nro. de factura"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -75,7 +75,7 @@ export function CodeDocumentField({
             </PopoverTrigger>
             <PopoverContent className="w-[280px] p-0">
               <Command>
-                <CommandInput placeholder="Nombre..." />
+                <CommandInput placeholder="Número..." />
                 <CommandEmpty>Codigo no encontrado</CommandEmpty>
                 <CommandList>
                   <CommandGroup>
@@ -84,7 +84,7 @@ export function CodeDocumentField({
                         key={id}
                         value={code}
                         onSelect={() => {
-                          form.setValue("supplier_id", id);
+                          form.setValue("document_id", id);
                           setOpen(false);
                         }}
                         className="capitalize"

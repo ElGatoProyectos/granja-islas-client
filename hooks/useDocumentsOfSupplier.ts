@@ -16,6 +16,7 @@ export function useDocumentsOfSupplier() {
   const { company } = useCompanySession();
   const [receipts, setReceipts] = useState<ReceiptSchemaIN[]>([]);
   const [idSupplier, setIdSupplier] = useState("");
+  console.log(idSupplier);
 
   const getDocuments = useCallback(async () => {
     if (!company) return;

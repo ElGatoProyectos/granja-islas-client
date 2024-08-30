@@ -27,7 +27,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { SupplierSchemaFilter } from "@/lib/validations/supplier";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { billSchemaCreate, creditNoteSchemaCreate } from "@/lib/validations/receipt-forms/bill";
+import { creditNoteSchemaCreate } from "@/lib/validations/receipt-forms/bill";
 
 export function SupplierFieldForCreditNote({
   form,

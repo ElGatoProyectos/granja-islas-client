@@ -42,9 +42,8 @@ import {
 } from "@/components/ui/select";
 import { PEN, USD } from "@/constants/currency";
 import { useAllSuppliers } from "@/hooks/useAllSuppliers";
-import { SupplierField } from "../supplier-field";
 import { es } from "date-fns/locale";
-import { arrayTypePayments, CONTADO } from "@/constants/type-payments";
+import { CONTADO } from "@/constants/type-payments";
 import { backend_url } from "@/constants/config";
 import { useMeasure } from "@/hooks/useMeause";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,15 +53,13 @@ import { useCompanySession } from "@/context/company-context";
 import { CreditNoteView } from "./credit-note-view";
 import { useDocumentsOfSupplier } from "@/hooks/useDocumentsOfSupplier";
 import { CodeDocumentField } from "../code-document-field";
-import { SupplierFieldForCreditNote } from "../supplier-field copy";
+import { SupplierFieldForCreditNote } from "../Supplier-field-credit-note";
 
 export function CreditNoteForm() {
   const form = useForm<z.infer<typeof creditNoteSchemaCreate>>({
     resolver: zodResolver(creditNoteSchemaCreate),
     defaultValues: {
       code: "",
-      igv: "",
-      bill_status_payment: CONTADO,
       note: "",
       currency_code: PEN,
     },
@@ -96,12 +93,10 @@ export function CreditNoteForm() {
     }
   }
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control: form.control,
-      name: "products",
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "products",
+  });
 
   const getTC = async () => {
     try {
@@ -133,7 +128,7 @@ export function CreditNoteForm() {
         <CardHeader className="pb-4">
           <CardTitle className="text-xl flex gap-2 items-center">
             <BookOpen className="w-6 h-6" />
-            Terminos de nota de credito
+            Terminos de nota de crédito
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -205,93 +200,6 @@ export function CreditNoteForm() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="igv"
-                  render={({ field }) => (
-                    <FormItem className="relative">
-                      <FormLabel>Impuesto</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <div className="absolute opacity-50 top-8 right-4">%</div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="bill_status_payment"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tipo de pago</FormLabel>
-                      <Select
-                        onValueChange={(value) => {
-                          if (value === CONTADO) {
-                            form.setValue("expiration_date", undefined);
-                          }
-                          field.onChange(value);
-                        }}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccionar el tipo de pago" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {arrayTypePayments.map(({ label, value }) => (
-                            <SelectItem key={value} value={value}>
-                              {label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {form.getValues("bill_status_payment") === CONTADO ? null : (
-                  <FormField
-                    control={form.control}
-                    name="expiration_date"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Fecha de vencimiento</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP", { locale: es })
-                                ) : (
-                                  <span>Escoge una fecha</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date < new Date()}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
 
                 <span className="col-span-2 text-xl font-semibold flex items-center gap-2 mt-5">
                   <ListCollapse className="w-6 h-6" />
