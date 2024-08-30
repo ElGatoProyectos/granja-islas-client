@@ -4,7 +4,7 @@ import {
   createPaymentSchema,
   PaymentSchemaIN,
 } from "@/lib/validations/payment";
-import { useRef, useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,6 +35,7 @@ import Link from "next/link";
 import { createPayment } from "@/lib/actions/payment.actions";
 import { useCompanySession } from "@/context/company-context";
 import { PEN } from "@/constants/currency";
+import { io, Socket } from "socket.io-client";
 
 interface Props {
   type: "create" | "edit";
@@ -64,7 +65,7 @@ export function PaymentForm({
   });
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const socket: any = useRef();
+  const socket: MutableRefObject<Socket | undefined> = useRef();
   async function onSubmit(values: z.infer<typeof createPaymentSchema>) {
     setSubmitting(true);
 
@@ -95,6 +96,12 @@ export function PaymentForm({
           tokenBack,
           ruc: company?.ruc,
         });
+
+        socket.current = io(`${backend_url}`);
+        socket.current.emit("create-voucher", {
+          ruc: company?.ruc,
+          token: `Bearer ${tokenBack}`,
+        });
       }
       if (type === "edit") {
       }
@@ -107,9 +114,6 @@ export function PaymentForm({
       form.reset();
       getReceiptPayments();
       setSelectedImage(null);
-      socket.current.emit("create-voucher", (data: any) => {
-        console.log(data);
-      });
     } catch (e) {
       toast({
         variant: "destructive",

@@ -33,7 +33,6 @@ export default function Page() {
     document_id: parts[0],
   });
 
-  console.log(receipt);
   return (
     <LayerPage title="Comprobante">
       {receipt ? (

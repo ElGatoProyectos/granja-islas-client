@@ -20,7 +20,6 @@ export async function createBill({
   const formatData = {
     ...jsonData,
     base_igv: formatIGV,
-    issue_date: new Date(jsonData.issue_date),
     exchange_rate: formatExchange_rate,
     period: "2024-07",
     supplier_id: formatsupplier_id,

@@ -17,7 +17,7 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { backend_url } from "@/constants/config";
-import { PEN, USD } from "@/constants/currency";
+import { PEN } from "@/constants/currency";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
