@@ -3,7 +3,6 @@ import { ModeToggle } from "../dark-mode/mode-toggle";
 import { SheetMenu } from "./left-sidebar/sheet-menu";
 import { UserDropdown } from "./user-dropdown";
 import { getCompanies } from "@/lib/actions/company.actions";
-import { Notifications } from "../notifications";
 
 export async function TopBar() {
   const now = new Date();
