@@ -114,6 +114,11 @@ export function BillView({
           ) : (
             <Skeleton className="h-full w-40" />
           )}
+        </div>
+        <Separator className="col-span-2" />
+        <div className="grid grid-cols-2 col-span-2 p-8 gap-2">
+          {/* <p className="text-muted-foreground">Observación</p>
+          <p>Factura suejata al spot del 12%</p> */}
           <p className="text-muted-foreground">Moneda</p>
           {form.watch("currency_code") ? (
             <p>
@@ -124,11 +129,6 @@ export function BillView({
           ) : (
             <Skeleton className="h-6 w-24" />
           )}
-        </div>
-        <Separator className="col-span-2" />
-        <div className="grid grid-cols-2 col-span-2 p-8 gap-2">
-          <p className="text-muted-foreground">Observación</p>
-          <p>Factura suejata al spot del 12%</p>
           <p className="text-muted-foreground">Forma de pago</p>
           {form.watch("bill_status_payment") ? (
             <p className="capitalize">
