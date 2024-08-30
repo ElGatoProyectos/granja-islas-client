@@ -15,6 +15,7 @@ import {
 import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useToast } from "@/components/ui/use-toast";
 
 interface UserContextType {
   suppliers: SupplierSchemaIN[];
@@ -30,6 +31,7 @@ interface UserContextType {
   search: string;
   setStatusSupp: Dispatch<SetStateAction<string>>;
   exportExcel: () => any;
+  syncSuppliersData: () => void;
 }
 
 export const supplierContext = createContext<UserContextType | null>(null);
@@ -49,6 +51,7 @@ export const SupplierProvider = ({
   const [search, setSearch] = useState("");
   const input = useDebounce(search);
   const [statusSupp, setStatusSupp] = useState("");
+  const { toast } = useToast();
 
   const getSuppliers = useCallback(async () => {
     if (!company) return;
@@ -130,6 +133,46 @@ export const SupplierProvider = ({
     }
   }, [company, input, page, statusSupp, tokenBack]);
 
+  const syncSuppliersData = useCallback(async () => {
+    if (!company) return;
+    if (!tokenBack) return;
+    setLoading(true);
+
+    try {
+      const url = `${backend_url}/api/sunat/synchronize-suppliers`;
+
+      const res = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to sync suppliers");
+      }
+
+      const data = await res.json();
+
+      if (data.error) {
+        throw new Error("Failed to sync suppliers");
+      }
+      toast({
+        variant: "success",
+        title: `Se actualizaron los datos con exito`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `Ocurrio un error actualizar los datos`,
+      });
+      throw new Error("Failed to sync suppliers");
+    } finally {
+      setLoading(false);
+    }
+  }, [company, toast, tokenBack]);
+
   const value = useMemo(
     () => ({
       suppliers,
@@ -145,6 +188,7 @@ export const SupplierProvider = ({
       search,
       setStatusSupp,
       exportExcel,
+      syncSuppliersData,
     }),
     [
       getSuppliers,
@@ -157,6 +201,7 @@ export const SupplierProvider = ({
       totalPages,
       setStatusSupp,
       exportExcel,
+      syncSuppliersData,
     ]
   );
   return (

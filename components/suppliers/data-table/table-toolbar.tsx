@@ -23,12 +23,14 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const {
+    loadingSuppliers,
     search,
     setSearch,
     getSuppliers,
     setStatusSupp,
     exportExcel,
     setPage,
+    syncSuppliersData,
   } = useSupplier();
 
   return (
@@ -69,6 +71,7 @@ export function DataTableToolbar<TData>({
         <Button
           variant="outline"
           type="button"
+          disabled={loadingSuppliers}
           onClick={async () => {
             const suppliers = await exportExcel();
             exportToExcel({
@@ -81,6 +84,14 @@ export function DataTableToolbar<TData>({
           Excel
         </Button>
         <SupplierForm type="create" getSuppliers={getSuppliers} />
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={syncSuppliersData}
+          disabled={loadingSuppliers}
+        >
+          Actualizar Datos
+        </Button>
         <DataTableViewOptions changeTitle={translateString} table={table} />
       </div>
     </div>
