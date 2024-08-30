@@ -7,11 +7,11 @@ export default function Page() {
     <Tabs defaultValue="bill" className="w-full">
       <TabsList className="flex w-[600px]">
         <TabsTrigger value="bill">Factura</TabsTrigger>
-        <TabsTrigger value="credit_note">Nota de crédito</TabsTrigger>
-        <TabsTrigger value="debit_note">Nota de débito</TabsTrigger>
+        {/* <TabsTrigger value="credit_note">Nota de crédito</TabsTrigger>
+        <TabsTrigger value="debit_note">Nota de débito</TabsTrigger> */}
       </TabsList>
       <BillForm />
-      <CreditNoteForm />
+      {/* <CreditNoteForm /> */}
     </Tabs>
   );
 }
