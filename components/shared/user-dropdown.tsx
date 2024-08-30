@@ -36,6 +36,7 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
     const companyformated = await getCompany({ idCompany: value });
     setCompany(companyformated);
   };
+
   useEffect(() => {
     if (company) {
       setChangeCompany(company?.id.toString());
