@@ -31,7 +31,7 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
         >
           <CardHeader
             className={cn(
-              "px-4 py-0 space-y-0",
+              "px-0 py-0 space-y-0",
               isOpen === false ? "justify-end items-end" : ""
             )}
           >
@@ -50,9 +50,14 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                     />
                     <AvatarFallback>E</AvatarFallback>
                   </Avatar>
-                  <span className={cn(isOpen === false ? "hidden" : "block")}>
+                  <p
+                    className={cn(
+                      "text-center",
+                      isOpen === false ? "hidden" : "block"
+                    )}
+                  >
                     {company.business_name}
-                  </span>
+                  </p>
                 </Button>
               </DialogTrigger>
 
@@ -115,7 +120,7 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
             </Dialog>
             <div
               className={cn(
-                "flex justify-between items-center",
+                "flex justify-center items-center",
                 isOpen === false ? "hidden" : ""
               )}
             >
