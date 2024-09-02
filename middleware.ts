@@ -13,6 +13,11 @@ export default withAuth(
       return NextResponse.rewrite(new URL("/signin", req.url));
     }
 
+    // Redirigir desde "/" a "/dashboard" si está autenticado
+    if (pathname === "/") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
     // Verificar accesos según el rol del usuario
     if (token.role === USER) {
       // Permitir acceso a /receipts y /receipts/[id] solo para USER

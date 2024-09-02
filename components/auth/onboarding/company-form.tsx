@@ -44,6 +44,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
+import { useCompanySession } from "@/context/company-context";
 
 interface Props {
   type: "create" | "edit";
@@ -73,6 +74,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
   });
 
   const { userInfo, tokenBack } = useUserInfo();
+  const { setCompanyURL } = useCompanySession();
 
   async function onSubmit(values: z.infer<typeof createCompanySchema>) {
     setSubmitting(true);

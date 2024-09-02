@@ -91,7 +91,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {
     accessorKey: "issue_date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Fecha" />
+      <DataTableColumnHeader column={column} title="Emisión" />
     ),
     cell: ({ row }) => {
       return (
