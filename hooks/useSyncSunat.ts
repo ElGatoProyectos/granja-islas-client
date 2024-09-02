@@ -37,17 +37,19 @@ export function useSyncSunat() {
         body: JSONdata,
       });
       const data = await res.json();
-
+      console.log(data);
       if (data.error) {
         toast({
           variant: "destructive",
-          title: "Uh oh! Ocurrio un error.",
-          description: data.message,
+          title: data.message,
         });
+        return;
       }
+
       toast({
         variant: "success",
-        title: data.message,
+        description:
+          "La sincronización ha comenzado. Recibirás una notificación cuando el proceso haya finalizado.",
       });
     } catch (error) {
       toast({

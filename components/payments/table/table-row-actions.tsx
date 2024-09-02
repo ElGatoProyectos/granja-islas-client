@@ -23,8 +23,12 @@ import Link from "next/link";
 import { paymentGeneralSchemaIN } from "@/lib/validations/payment";
 import { status_payment } from "@/constants/status-payment";
 import { translateStatus } from "@/utils/translate-states-payment";
-import { useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { usePayment } from "@/context/sections/payments-context";
+import { io, Socket } from "socket.io-client";
+import { backend_url } from "@/constants/config";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -36,9 +40,18 @@ export function DataTableRowActions<TData>({
   const payment = paymentGeneralSchemaIN.parse(row.original);
   const [currentState, setCurrentState] = useState<string>(payment.status);
   const { updateState } = usePayment();
+  const { company } = useCompanySession();
+  const { tokenBack } = useUserInfo();
+  const socket: MutableRefObject<Socket | undefined> = useRef();
   const handleStatus = async (value: string) => {
     setCurrentState(value);
     await updateState({ idVoucher: payment.id.toString(), statusNew: value });
+    if (!company) return;
+    socket.current = io(`${backend_url}`);
+    socket.current.emit("create-voucher", {
+      ruc: company?.ruc,
+      token: `Bearer ${tokenBack}`,
+    });
   };
 
   const id = payment.document.id;

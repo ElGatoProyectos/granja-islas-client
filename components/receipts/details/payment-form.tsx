@@ -35,7 +35,7 @@ import Link from "next/link";
 import { createPayment } from "@/lib/actions/payment.actions";
 import { useCompanySession } from "@/context/company-context";
 import { PEN } from "@/constants/currency";
-// import { io, Socket } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 interface Props {
   type: "create" | "edit";
@@ -65,7 +65,7 @@ export function PaymentForm({
   });
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  // const socket: MutableRefObject<Socket | undefined> = useRef();
+  const socket: MutableRefObject<Socket | undefined> = useRef();
   async function onSubmit(values: z.infer<typeof createPaymentSchema>) {
     setSubmitting(true);
 
@@ -97,11 +97,11 @@ export function PaymentForm({
           ruc: company?.ruc,
         });
 
-        // socket.current = io(`${backend_url}`);
-        // socket.current.emit("create-voucher", {
-        //   ruc: company?.ruc,
-        //   token: `Bearer ${tokenBack}`,
-        // });
+        socket.current = io(`${backend_url}`);
+        socket.current.emit("create-voucher", {
+          ruc: company?.ruc,
+          token: `Bearer ${tokenBack}`,
+        });
       }
       if (type === "edit") {
       }

@@ -3,6 +3,7 @@ import { ModeToggle } from "../dark-mode/mode-toggle";
 import { SheetMenu } from "./left-sidebar/sheet-menu";
 import { UserDropdown } from "./user-dropdown";
 import { getCompanies } from "@/lib/actions/company.actions";
+import { Notifications } from "../notifications";
 
 export async function TopBar() {
   const now = new Date();
@@ -21,7 +22,7 @@ export async function TopBar() {
           <span className="text-sm font-normal ">{formattedDate}</span>
         </div>
         <div className="flex gap-2">
-          {/* <Notifications /> */}
+          <Notifications />
           <ModeToggle />
           <div className="flex gap-x-2">
             <UserDropdown companies={companies} />
