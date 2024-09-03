@@ -59,7 +59,7 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
           className="gap-x-3 hover:bg-transparent p-0 focus-visible:ring-0"
         >
           <Avatar>
-            <AvatarImage src={avatarURL} />
+            <AvatarImage src={avatarURL} className="object-cover" />
             <AvatarFallback className="capitalize">
               {userInfo.name.substring(0, 1)}
             </AvatarFallback>

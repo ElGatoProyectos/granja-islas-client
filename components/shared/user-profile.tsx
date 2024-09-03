@@ -43,8 +43,8 @@ export function UserProfile() {
             </DialogHeader>
 
             <div className="w-full flex flex-col space-y-4">
-              <Avatar className="h-[100px] w-[100px]">
-                <AvatarImage src={avatarURL} />
+              <Avatar className="h-[100px] w-[100px] ">
+                <AvatarImage src={avatarURL} className="object-cover" />
                 <AvatarFallback className="text-3xl capitalize">
                   {userInfo.name.substring(0, 1)}
                 </AvatarFallback>

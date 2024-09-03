@@ -43,9 +43,15 @@ interface Props {
   type: "create" | "edit";
   supplier?: SupplierSchemaIN;
   getSuppliers: () => Promise<void>;
+  loadingSuppliers?: boolean;
 }
 
-export function SupplierForm({ type, supplier, getSuppliers }: Props) {
+export function SupplierForm({
+  type,
+  supplier,
+  getSuppliers,
+  loadingSuppliers,
+}: Props) {
   const form = useForm<z.infer<typeof createSupplierSchema>>({
     resolver: zodResolver(createSupplierSchema),
     defaultValues: {
@@ -176,7 +182,7 @@ export function SupplierForm({ type, supplier, getSuppliers }: Props) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {type === "create" ? (
-          <Button>
+          <Button disabled={loadingSuppliers}>
             <Plus className="h-4 w-4 mr-2" />
             Agregar Proveedor
           </Button>

@@ -47,6 +47,7 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                   <Avatar className="h-12 w-12">
                     <AvatarImage
                       src={`${backend_url}/api/companies/file/${company.id}`}
+                      className="object-cover"
                     />
                     <AvatarFallback>E</AvatarFallback>
                   </Avatar>
@@ -73,10 +74,10 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                 </DialogHeader>
 
                 <div className="w-full flex flex-col space-y-4">
-                  <Avatar>
+                  <Avatar className="h-24 w-24">
                     <AvatarImage
                       src={`${backend_url}/api/companies/file/${company.id}`}
-                      className="h-14 w-14"
+                      className="object-cover"
                     />
                     <AvatarFallback>E</AvatarFallback>
                   </Avatar>
