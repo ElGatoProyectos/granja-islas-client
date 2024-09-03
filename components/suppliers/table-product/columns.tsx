@@ -7,7 +7,8 @@ import { formatWithCommas } from "@/utils/format-number-comas";
 import { formatDate } from "@/utils/format-date";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { CirclePlus } from "lucide-react";
 
 export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
   {
@@ -17,7 +18,11 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
     ),
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
-      return <p className="capitalize max-w-[250px]">{title.toLowerCase()}</p>;
+      return (
+        <p className="capitalize max-w-[250px] line-clamp-2">
+          {title.toLowerCase()}
+        </p>
+      );
     },
     enableSorting: false,
   },
@@ -33,7 +38,7 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
     cell: ({ row }) => {
       const labels = row.original.DetailProductLabel;
       return (
-        <div className="w-[180px] flex flex-wrap gap-2">
+        <div className="w-[180px] flex flex-wrap gap-2 items-center">
           {labels.length ? (
             labels.map(({ label }) => (
               <Badge key={label} variant="secondary">
@@ -48,6 +53,11 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
               Etiquetar
             </Link>
           )}
+          {labels.length ? (
+            <Link href={`/dashboard/products/${row.original.id}`}>
+              <CirclePlus className="size-4 stroke-primary" />
+            </Link>
+          ) : null}
         </div>
       );
     },

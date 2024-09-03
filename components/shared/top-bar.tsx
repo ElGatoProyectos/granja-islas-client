@@ -17,9 +17,11 @@ export async function TopBar() {
     <Card className="w-full mb-6 flex-row justify-between border-0 lg:border">
       <CardHeader className="p-0 lg:p-8 lg:py-4 flex-row justify-between space-y-0 items-center">
         <SheetMenu />
-        <div className="hidden lg:flex gap-x-2 justify-center items-center">
+        <div className="hidden lg:flex gap-x-2 justify-center items-end">
           <span className="font-bold text-xl">Plan de hoy</span>
-          <span className="text-sm font-normal ">{formattedDate}</span>
+          <span className="text-sm font-normal leading-relaxed">
+            {formattedDate}
+          </span>
         </div>
         <div className="flex gap-2">
           <Notifications />
