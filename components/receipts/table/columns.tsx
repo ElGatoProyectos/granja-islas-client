@@ -34,26 +34,6 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: "created_status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Creación" />
-    ),
-    cell: ({ row }) => {
-      const created_status = row.getValue("created_status") as string;
-      return (
-        <span
-          className={cn(
-            "w-fit truncate",
-            created_status === "LOCAL" ? "text-teal-600" : ""
-          )}
-        >
-          {created_status}
-        </span>
-      );
-    },
-    enableSorting: false,
-  },
-  {
     accessorKey: "document_description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Tipo de documento" />
@@ -81,7 +61,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
           href={`/dashboard/suppliers/${id}`}
           className={`${buttonVariants({
             variant: "link",
-          })} "!w-[150px] capitalize text-balance font-medium !p-0 !h-auto"`}
+          })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
         >
           {business_name.toLowerCase()}
         </Link>
