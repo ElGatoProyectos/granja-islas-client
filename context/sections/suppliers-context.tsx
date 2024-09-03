@@ -162,6 +162,7 @@ export const SupplierProvider = ({
         variant: "success",
         title: `Se actualizaron los datos con exito`,
       });
+      getSuppliers();
     } catch (error) {
       toast({
         variant: "destructive",
@@ -171,7 +172,7 @@ export const SupplierProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, toast, tokenBack]);
+  }, [company, getSuppliers, toast, tokenBack]);
 
   const value = useMemo(
     () => ({
