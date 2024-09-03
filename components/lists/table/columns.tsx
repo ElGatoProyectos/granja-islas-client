@@ -15,10 +15,17 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Etiqueta de producto" />
     ),
     cell: ({ row }) => {
+      const label = row.getValue("label") as string;
+      const id = row.original.label_id;
       return (
-        <span className="w-fit truncate font-medium">
-          {row.getValue("label")}
-        </span>
+        <Link
+          href={`/dashboard/list/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+        >
+          {label.toLowerCase()}
+        </Link>
       );
     },
   },

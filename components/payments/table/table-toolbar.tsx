@@ -57,6 +57,7 @@ export function DataTableToolbar<TData>({
           year={year}
           month={month}
           getData={getPayments}
+          title="Fecha"
         />
         {table.getColumn("user_name") && (
           <DataTableFacetedFilter

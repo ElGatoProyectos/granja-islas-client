@@ -17,10 +17,16 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     ),
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
+      const id = row.original.id;
       return (
-        <p className="w-[200px] text-balance truncate capitalize">
+        <Link
+          href={`/dashboard/products/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+        >
           {title.toLowerCase()}
-        </p>
+        </Link>
       );
     },
   },

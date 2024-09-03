@@ -66,6 +66,7 @@ export function DataTableToolbar<TData>({
           year={year}
           month={month}
           getData={getReceipts}
+          title="Fecha"
         />
         {table.getColumn("business_name") && (
           <DataTableFacetedFilter
