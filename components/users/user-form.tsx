@@ -177,7 +177,10 @@ export function UserForm({ type, userInfo }: Props) {
                   {selectedImage ? (
                     <div className="md:max-w-[100px]">
                       <Avatar className={"h-[100px] w-[100px]"}>
-                        <AvatarImage src={URL.createObjectURL(selectedImage)} />
+                        <AvatarImage
+                          src={URL.createObjectURL(selectedImage)}
+                          className="object-cover"
+                        />
                         <AvatarFallback className="text-3xl capitalize">
                           I
                         </AvatarFallback>
@@ -188,6 +191,7 @@ export function UserForm({ type, userInfo }: Props) {
                       <Avatar className={"h-[100px] w-[100px]"}>
                         <AvatarImage
                           src={`${backend_url}/api/users/file/${userInfo?.id}`}
+                          className="object-cover"
                         />
                         <AvatarFallback className="text-3xl capitalize">
                           {userInfo.name.substring(0, 1)}
