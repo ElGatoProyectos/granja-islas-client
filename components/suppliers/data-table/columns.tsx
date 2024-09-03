@@ -6,6 +6,8 @@ import { DataTableRowActions } from "./table-row-actions";
 
 import { states } from "./supplier-filters";
 import { SupplierSchemaIN } from "@/lib/validations/supplier";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 export const columns: ColumnDef<SupplierSchemaIN>[] = [
   {
@@ -29,11 +31,17 @@ export const columns: ColumnDef<SupplierSchemaIN>[] = [
     ),
     cell: ({ row }) => {
       const business_name = row.getValue("business_name") as string;
+      const id = row.original.id;
 
       return (
-        <div className="flex w-[200px] items-center">
-          <span className="capitalize">{business_name.toLowerCase()}</span>
-        </div>
+        <Link
+          href={`/dashboard/suppliers/${id}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+        >
+          {business_name.toLowerCase()}
+        </Link>
       );
     },
   },
@@ -85,9 +93,12 @@ export const columns: ColumnDef<SupplierSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Dirección fiscal" />
     ),
     cell: ({ row }) => {
+      const business_direction = row.getValue("business_direction") as string;
       return (
-        <div className="max-w-[400px] flex items-center">
-          <p>{row.getValue("business_direction")}</p>
+        <div className="max-w-[300px] flex items-center ">
+          <p className="line-clamp-2 capitalize">
+            {business_direction.toLowerCase()}
+          </p>
         </div>
       );
     },
