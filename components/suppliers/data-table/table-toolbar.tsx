@@ -83,7 +83,11 @@ export function DataTableToolbar<TData>({
           <Download className="h-4 w-4 mr-2" />
           Excel
         </Button>
-        <SupplierForm type="create" getSuppliers={getSuppliers} />
+        <SupplierForm
+          type="create"
+          getSuppliers={getSuppliers}
+          loadingSuppliers={loadingSuppliers}
+        />
         <Button
           type="button"
           variant="secondary"
