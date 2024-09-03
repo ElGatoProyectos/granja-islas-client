@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { months } from "@/constants/dates";
+import { cn } from "@/lib/utils";
 import { Calendar, RotateCcw } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
@@ -24,9 +25,17 @@ interface Props {
   year: string;
   month: string;
   getData: () => void;
+  title?: string;
 }
 
-export function DatePicker({ setMonth, setYear, month, year, getData }: Props) {
+export function DatePicker({
+  setMonth,
+  setYear,
+  month,
+  year,
+  getData,
+  title,
+}: Props) {
   const currentYear = new Date().getFullYear();
   const years = [currentYear - 1, currentYear];
 
@@ -39,8 +48,9 @@ export function DatePicker({ setMonth, setYear, month, year, getData }: Props) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Calendar className="h-5 w-5" />
+        <Button variant="outline" size={title ? "default" : "icon"}>
+          <Calendar className={cn("h-5 w-5", title ? "mr-2" : "")} />
+          {title && <span>{title}</span>}
           <span className="sr-only">Escojer periodo</span>
         </Button>
       </PopoverTrigger>
