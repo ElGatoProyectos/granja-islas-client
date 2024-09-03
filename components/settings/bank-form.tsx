@@ -34,6 +34,7 @@ export function BankForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!inputValue || inputValue.trim() === "") return;
     await createBank({ title: inputValue, tokenBack, ruc: company?.ruc });
     setInputValue("");
     getBanks();
@@ -42,6 +43,7 @@ export function BankForm() {
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editBankId) {
+      if (editBankId.trim() === "") return;
       await updateBank({
         idBank: editBankId,
         title: editInputValue,

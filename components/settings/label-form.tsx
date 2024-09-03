@@ -38,7 +38,7 @@ export function LabelForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!inputValue) return;
+    if (!inputValue || inputValue.trim() === "") return;
     await createLabel({ ruc: company?.ruc, tokenBack, title: inputValue });
     setInputValue("");
     getLabels();
@@ -47,6 +47,7 @@ export function LabelForm() {
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editLabelId) {
+      if (editLabelId.trim() === "") return;
       await updateLabel({
         idLabel: editLabelId,
         title: editInputValue,
