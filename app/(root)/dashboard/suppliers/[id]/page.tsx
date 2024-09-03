@@ -11,8 +11,8 @@ export default function Page() {
   return (
     <section>
       <Card className="mb-4">
-        <CardHeader className="flex-row gap-8">
-          <CardTitle className="max-w-32 font-bold flex justify-center items-center">
+        <CardHeader className="flex-row gap-8 space-y-0">
+          <CardTitle className="max-w-32 font-bold flex justify-center">
             Detalles de proveedor
           </CardTitle>
           {supplier ? (
@@ -37,11 +37,16 @@ export default function Page() {
               </div>
               <div className="flex flex-col font-medium w-full">
                 <span>Dirección Fiscal</span>
-                <p className="text-foreground">{supplier.business_direction}</p>
+                <p className="text-foreground capitalize line-clamp-1">
+                  {supplier.business_direction.toLowerCase()}
+                </p>
               </div>
               <div className="flex flex-col font-medium w-full">
                 <span>Celular</span>
-                <p className="text-foreground">{supplier.phone}</p>
+                <p className="text-foreground">
+                  {supplier.country_code ? supplier.country_code : ""}{" "}
+                  {supplier.phone}
+                </p>
               </div>
             </div>
           ) : (
