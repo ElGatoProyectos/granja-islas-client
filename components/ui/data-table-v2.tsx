@@ -33,6 +33,7 @@ import { SupplierSchemaIN } from "@/lib/validations/supplier";
 import { BriefcaseBusiness, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Skeleton } from "./skeleton";
 
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,6 +45,7 @@ export interface DataTableProps<TData, TValue> {
   setPage: Dispatch<SetStateAction<number>>;
   setRowsPerPage: Dispatch<SetStateAction<number>>;
   totalElements: number;
+  loadingSuppliers?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -56,6 +58,7 @@ export function DataTable<TData, TValue>({
   setPage,
   setRowsPerPage,
   totalElements,
+  loadingSuppliers,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -95,6 +98,13 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       <DataTableToolbar table={table} />
       <TabsContent value="table">
+        {/* <div>
+          wtf
+          <Skeleton className="h-4 w-[250px]" />
+          {new Array(10).map((_, i) => (
+            <Skeleton key={i} className="h-4 w-[250px]" />
+          ))}
+        </div> */}
         <div className="rounded-md border">
           <Table>
             <TableHeader>

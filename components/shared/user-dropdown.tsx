@@ -93,7 +93,9 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
                 <AvatarImage src={`${backend_url}/api/companies/file/${id}`} />
                 <AvatarFallback>E</AvatarFallback>
               </Avatar>
-              <span className="text-xs">{business_name}</span>
+              <span className="text-xs capitalize">
+                {business_name.toLowerCase()}
+              </span>
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

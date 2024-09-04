@@ -12,6 +12,7 @@ export function SuppliersDataTable() {
     setPerPage,
     totalPages,
     totalElements,
+    loadingSuppliers,
   } = useSupplier();
 
   return (
@@ -27,6 +28,7 @@ export function SuppliersDataTable() {
           setRowsPerPage={setPerPage}
           pagesCount={totalPages}
           totalElements={totalElements}
+          loadingSuppliers={loadingSuppliers}
         />
       </div>
     </Tabs>
