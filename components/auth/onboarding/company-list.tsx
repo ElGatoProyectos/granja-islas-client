@@ -42,8 +42,8 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col justify-center">
-                <h3 className="font-semibold text-sm">
-                  {company.business_name}
+                <h3 className="font-semibold text-sm capitalize">
+                  {company.business_name.toLowerCase()}
                 </h3>
                 <p className="text-gray-500 text-sm">{company.ruc}</p>
               </div>
