@@ -38,7 +38,7 @@ export function useSyncSunat() {
         body: JSONdata,
       });
       const data = await res.json();
-      console.log(data);
+
       if (data.error) {
         toast({
           variant: "destructive",
@@ -63,24 +63,6 @@ export function useSyncSunat() {
     }
   }, [company, monthEnd, monthStart, toast, tokenBack, yearEnd, yearStart]);
 
-  const syncTypesSunat = useCallback(async () => {
-    if (!company) return;
-    if (!tokenBack) return;
-    const url = `${backend_url}/api/sunat/synchronize-types`;
-
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${tokenBack}`,
-        ruc: company?.ruc,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await res.json();
-    console.log(data);
-  }, [company, tokenBack]);
-
   return {
     syncSunatperMonth,
     loading,
@@ -92,6 +74,5 @@ export function useSyncSunat() {
     setMonthEnd,
     yearEnd,
     setYearEnd,
-    syncTypesSunat,
   };
 }

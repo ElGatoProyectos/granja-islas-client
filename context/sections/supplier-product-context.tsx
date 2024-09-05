@@ -19,7 +19,6 @@ import {
   responseSchema,
 } from "@/lib/validations/response";
 import { paginationSchema } from "@/lib/validations/pagination";
-import { userArraySchemaIN, UserSchemaIN } from "@/lib/validations/user";
 import { useParams } from "next/navigation";
 import {
   formatSupplierProducts,
@@ -141,7 +140,6 @@ export const SupplierProductsProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
-      console.log(data);
 
       const parseData = supplierProductsArraySchema.parse(data);
 
@@ -149,7 +147,6 @@ export const SupplierProductsProvider = ({
       const formData = supplierProductsArrayFormatSchema.parse(
         formatProductsOfSupplier
       );
-      console.log("wtf");
 
       setProductsOfSupplier(formData);
       setTotalPages(pageCount);

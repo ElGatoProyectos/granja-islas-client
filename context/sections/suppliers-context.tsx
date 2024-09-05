@@ -86,7 +86,6 @@ export const SupplierProvider = ({
       setPage(data.payload.page);
       setPerPage(data.payload.limit);
       setSuppliers(data.payload.data);
-      console.log(data);
     } catch (error) {
       throw new Error("Failed to fetch suppliers");
     } finally {
