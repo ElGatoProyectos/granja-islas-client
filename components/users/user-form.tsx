@@ -359,7 +359,9 @@ export function UserForm({ type, userInfo }: Props) {
               name="password"
               render={({ field }) => (
                 <FormItem className="relative">
-                  <FormLabel>Contraseña</FormLabel>
+                  <FormLabel>
+                    {type === "edit" ? "Nueva Contraseña" : "Contraseña"}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -387,7 +389,11 @@ export function UserForm({ type, userInfo }: Props) {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirmar contraseña</FormLabel>
+                  <FormLabel>
+                    {type === "edit"
+                      ? "Confirmar Nueva Contraseña"
+                      : "Confirmar contraseña"}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}

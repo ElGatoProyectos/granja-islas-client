@@ -247,7 +247,11 @@ export function EditUserFromAdmin({ type, userInfo }: Props) {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirmar contraseña</FormLabel>
+                  <FormLabel>
+                    {type === "edit"
+                      ? "Cambiar contraseña"
+                      : "Confirmar contraseña"}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
