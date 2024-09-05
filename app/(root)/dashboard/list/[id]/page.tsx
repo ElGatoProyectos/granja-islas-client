@@ -26,15 +26,15 @@ export default function Page() {
   return (
     <section>
       <Card>
-        <CardHeader className="flex-row gap-4 items-center space-y-0">
+        <CardHeader className="items-center">
           <CardTitle className="flex-row flex gap-2">
-            {filteredLabel?.title} <Tag />
+            <Tag />
+            {filteredLabel?.title}
           </CardTitle>
-          <CardDescription className="w-[75ch]">
+          <CardDescription className="w-[75ch] text-center">
             En esta sección, encontrarás una tabla detallada con todas las
             facturas relacionadas con la etiqueta de producto específico. La
-            tabla te permite revisar de manera organizada cada transacción,
-            facilitando el seguimiento y la gestión de tus compras.
+            tabla te permite revisar de manera organizada cada transacción.
           </CardDescription>
         </CardHeader>
       </Card>
