@@ -11,10 +11,12 @@ export function PaymentsDataTable() {
     totalElements,
     totalPages,
     payments,
+    loading,
   } = usePayment();
   return (
     <div className="mx-auto">
       <DataTable
+        loading={loading}
         columns={columns}
         data={payments}
         limit={limit}

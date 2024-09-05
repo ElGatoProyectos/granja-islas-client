@@ -11,10 +11,12 @@ export function ReceiptsOfLabel() {
     totalPages,
     totalElements,
     documents,
+    loading,
   } = useLabelDocuments();
   return (
     <div className="mx-auto mt-4">
       <DataTable
+        loading={loading}
         columns={columns}
         data={documents}
         limit={limit}

@@ -28,15 +28,11 @@ export function ProductDetails() {
     <section className="space-y-6">
       {productDetails ? (
         <>
-          <div className="ml-8 mb-6 flex">
-            <h1 className="text-3xl font-bold capitalize">
-              {productDetails.product.title.length > 33
-                ? `${productDetails.product.title
-                    .substring(0, 33)
-                    .toLowerCase()}...`
-                : productDetails.product.title.toLowerCase()}
+          <div className="ml-8 flex flex-col">
+            <h1 className="text-3xl font-bold capitalize line-clamp-1">
+              {productDetails.product.title.toLowerCase()}
             </h1>
-            <div className="flex justify-end items-end mb-[6px] ml-2 gap-2">
+            <div className="flex gap-2">
               {productDetails.labels.map(({ id, title }) => (
                 <Link key={id} href={`/dashboard/list/${id}`}>
                   <Badge className="cursor-pointer">{title}</Badge>
@@ -104,12 +100,14 @@ export function ProductDetails() {
                 <CardTitle>Detalles</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {productDetails.document.expiration_date ? (
+                {productDetails.document.expiration_date && (
                   <div className="flex justify-between">
                     <span>Fecha de vencimiento</span>
-                    <p className="text-muted-foreground">expiration_date</p>
+                    <p className="text-muted-foreground">
+                      {formatDate(productDetails.document.expiration_date)}
+                    </p>
                   </div>
-                ) : null}
+                )}
 
                 <div className="flex justify-between">
                   <span>Tipo de comprobante</span>
@@ -159,7 +157,7 @@ export function ProductDetails() {
                     href={`/dashboard/suppliers/${productDetails.supplier.id}`}
                     className={`${buttonVariants({
                       variant: "link",
-                    })} !p-0 !text-base !h-auto`}
+                    })} !p-0 !text-base !h-auto capitalize`}
                   >
                     {productDetails.supplier.business_name.toLowerCase()}
                   </Link>

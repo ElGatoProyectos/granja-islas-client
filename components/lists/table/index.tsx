@@ -11,11 +11,13 @@ export function ListsDataTable() {
     setCurrentPage,
     totalElements,
     totalPages,
+    loading,
   } = useList();
 
   return (
     <div className="mx-auto">
       <DataTable
+        loading={loading}
         columns={columns}
         data={lists}
         limit={limit}

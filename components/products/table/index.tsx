@@ -11,10 +11,12 @@ export function ProductsDataTable() {
     setCurrentPage,
     totalElements,
     totalPages,
+    loading,
   } = useProduct();
   return (
     <div className="mx-auto">
       <DataTable
+        loading={loading}
         columns={columns}
         data={products}
         limit={limit}
