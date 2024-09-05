@@ -24,6 +24,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
     }
     route.push("/dashboard");
   };
+
   return (
     <>
       {companies?.map((company) => (
@@ -35,7 +36,10 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
             <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
               <Avatar className={"h-10 w-10 mr-3"}>
                 <AvatarImage
-                  src={`${backend_url}/api/companies/file/${company.id}`}
+                  src={`${backend_url}/api/companies/file/${
+                    company.id
+                  }?t=${new Date().getTime()}`}
+                  className="object-cover"
                 />
                 <AvatarFallback>
                   {company.business_name.substring(0, 1)}

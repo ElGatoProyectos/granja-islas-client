@@ -43,8 +43,7 @@ import { backend_url } from "@/constants/config";
 import { useToast } from "@/components/ui/use-toast";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
-import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
-import { useCompanySession } from "@/context/company-context";
+import { ADMIN, SUPERADMIN } from "@/constants/roles";
 
 interface Props {
   type: "create" | "edit";
@@ -74,7 +73,6 @@ export function CompanyForm({ type, company, companyId }: Props) {
   });
 
   const { userInfo, tokenBack } = useUserInfo();
-  const { setCompanyURL } = useCompanySession();
 
   async function onSubmit(values: z.infer<typeof createCompanySchema>) {
     setSubmitting(true);
@@ -230,7 +228,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                     <img
                       src={URL.createObjectURL(selectedImage)}
                       alt="Selected"
-                      className="rounded-full aspect-square"
+                      className="rounded-full aspect-square object-cover"
                     />
                   </div>
                 ) : companyId ? (
@@ -238,7 +236,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                     <img
                       src={urlUpdate}
                       alt="Selected"
-                      className="rounded-full aspect-square"
+                      className="rounded-full aspect-square object-cover"
                     />
                   </div>
                 ) : (

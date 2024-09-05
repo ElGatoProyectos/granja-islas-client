@@ -14,8 +14,6 @@ import {
 interface CompanyContextType {
   company: CompanySchemaIN | null;
   setCompany: Dispatch<SetStateAction<CompanySchemaIN | null>>;
-  companyURL: string;
-  setCompanyURL: Dispatch<SetStateAction<string>>;
 }
 
 export const CompanyContext = createContext<CompanyContextType | null>(null);
@@ -26,7 +24,6 @@ export const CompanyProvider = ({
   children: React.ReactNode;
 }) => {
   const [company, setCompany] = useState<CompanySchemaIN | null>(null);
-  const [companyURL, setCompanyURL] = useState("");
 
   // const getCompanies = useCallback(async () => {
   //   try {
@@ -67,10 +64,7 @@ export const CompanyProvider = ({
     }
   }, [company]);
 
-  const value = useMemo(
-    () => ({ company, setCompany, companyURL, setCompanyURL }),
-    [company, companyURL]
-  );
+  const value = useMemo(() => ({ company, setCompany }), [company]);
   return (
     <CompanyContext.Provider value={value}>{children}</CompanyContext.Provider>
   );
