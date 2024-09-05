@@ -42,7 +42,6 @@ export const authOptions = {
 
           return { id, role, full_name, tokenBack: data.payload.token };
         } catch (error) {
-          console.error("->", error);
           return null;
         }
       },
