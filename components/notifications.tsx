@@ -77,7 +77,12 @@ export function Notifications() {
             </div>
             <div className="grid gap-3">
               {syncInfo ? (
-                <p className="text-sm border border-border p-4 rounded-md text-green-500 bg-green-300/20 dark:bg-green-900/20 ">
+                <p
+                  className="text-sm border border-border p-4 rounded-md text-green-500 bg-green-300/20 dark:bg-green-900/20 cursor-pointer"
+                  onClick={() => {
+                    setSyncInfo(null);
+                  }}
+                >
                   {syncInfo.message}
                 </p>
               ) : null}
