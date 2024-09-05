@@ -11,10 +11,12 @@ export function ReceiptsDataTable() {
     setCurrentPage,
     totalElements,
     totalPages,
+    loading,
   } = useReceipt();
   return (
     <div className="mx-auto">
       <DataTable
+        loading={loading}
         columns={columns}
         data={receipts}
         limit={limit}

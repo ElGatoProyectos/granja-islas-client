@@ -21,7 +21,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
 import { formatWithCommas } from "@/utils/format-number-comas";
-import { DataTableSkeleton } from "./table-skeleton";
+import { DataTableSkeletonTest } from "./table-skeleton";
 import { defaultDate } from "@/utils/default-date";
 import { months } from "@/constants/dates";
 import Link from "next/link";
@@ -124,7 +124,7 @@ export function ShoppingRecordTable({
         </Button>
       </div>
       {loading ? (
-        <DataTableSkeleton
+        <DataTableSkeletonTest
           columnCount={7}
           rowCount={5}
           withPagination={false}
