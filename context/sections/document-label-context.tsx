@@ -76,6 +76,7 @@ export const DocumentLabelProvider = ({
   const getDocumentsOfLabel = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
+    setloading(true);
 
     const queryParams = new URLSearchParams();
     if (currentPage) queryParams.append("page", currentPage.toString());
@@ -139,6 +140,8 @@ export const DocumentLabelProvider = ({
       setLimit(MaxLimit);
     } catch (error) {
       throw new Error("Failed to fetch documents of label");
+    } finally {
+      setloading(false);
     }
   }, [company, currentPage, id, idSupplier, limit, month, tokenBack, year]);
 
