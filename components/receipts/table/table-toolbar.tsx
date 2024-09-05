@@ -39,12 +39,18 @@ export function DataTableToolbar<TData>({
     exportExcel,
     setIdsTypeDocument,
     setCurrentPage,
+    setTypesPayment,
   } = useReceipt();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
     value: id.toString(),
     label: business_name.toLowerCase(),
   }));
+
+  const typesOfPayments = [
+    { value: "CONTADO", label: "Contado" },
+    { value: "CREDITO", label: "Credito" },
+  ];
 
   const { userInfo } = useUserInfo();
 
@@ -83,6 +89,15 @@ export function DataTableToolbar<TData>({
             title="Tipo de documento"
             options={arrayOfTypesDocument}
             setFilter={setIdsTypeDocument}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
+        {table.getColumn("bill_status_payment") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("bill_status_payment")}
+            title="Tipo de pago"
+            options={typesOfPayments}
+            setFilter={setTypesPayment}
             setCurrentPage={setCurrentPage}
           />
         )}

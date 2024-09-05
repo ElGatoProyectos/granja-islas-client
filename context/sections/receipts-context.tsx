@@ -51,6 +51,8 @@ interface ReceiptContextType {
   setIdsTypeDocument: Dispatch<SetStateAction<string>>;
   supplierFilter: SupplierSchemaFilter[];
   exportExcel: () => any;
+  typesPayment: string;
+  setTypesPayment: Dispatch<SetStateAction<string>>;
 }
 
 export const receiptContext = createContext<ReceiptContextType | null>(null);
@@ -77,6 +79,7 @@ export const ReceiptProvider = ({
     []
   );
   const [idsTypeDocument, setIdsTypeDocument] = useState("");
+  const [typesPayment, setTypesPayment] = useState("");
 
   const getFilters = useCallback(async () => {
     if (!company) return;
@@ -106,6 +109,7 @@ export const ReceiptProvider = ({
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idsTypeDocument) queryParams.append("document_type", idsTypeDocument);
+      if (typesPayment) queryParams.append("type_payment", typesPayment);
 
       const url = `${backend_url}/api/documents?${queryParams
         .toString()
@@ -163,6 +167,7 @@ export const ReceiptProvider = ({
     year,
     idSupplier,
     idsTypeDocument,
+    typesPayment,
   ]);
 
   useEffect(() => {
@@ -244,6 +249,8 @@ export const ReceiptProvider = ({
       exportExcel,
       idsTypeDocument,
       setIdsTypeDocument,
+      typesPayment,
+      setTypesPayment,
     }),
     [
       receipts,
@@ -260,6 +267,7 @@ export const ReceiptProvider = ({
       supplierFilter,
       exportExcel,
       idsTypeDocument,
+      typesPayment,
     ]
   );
   return (
