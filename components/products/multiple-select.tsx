@@ -41,11 +41,11 @@ export function MultipleSelect({
         (item1) => item1.label === item2.label && item1.value === item2.value
       )
   );
-
+  const [loading, setloading] = useState(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!value.length) return;
-
+    setloading(true);
     try {
       await assignLabelToProduct({ id_product, getProductDetails });
       toast({
@@ -58,6 +58,8 @@ export function MultipleSelect({
         variant: "destructive",
         title: `Ocurrio un error al asignar etiqueta`,
       });
+    } finally {
+      setloading(false);
     }
   };
 
@@ -69,6 +71,7 @@ export function MultipleSelect({
       >
         <MultipleSelector
           value={value}
+          disabled={loading}
           onChange={handleChange}
           onSearch={async (value) => {
             const filterOptions = filteredArray.filter((option) =>
@@ -91,7 +94,7 @@ export function MultipleSelect({
           }
           hidePlaceholderWhenSelected
         />
-        <Button>Agregar</Button>
+        <Button disabled={loading}>Agregar</Button>
       </form>
     </div>
   );
