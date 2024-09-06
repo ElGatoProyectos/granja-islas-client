@@ -21,6 +21,7 @@ interface UserContextType {
   tokenBack: string;
   avatarURL: string;
   setavatarURL: Dispatch<SetStateAction<string>>;
+  getUser: () => void;
 }
 
 interface DataUser {
@@ -90,8 +91,9 @@ export const UserInfoProvider = ({
       tokenBack: session?.user?.tokenBack,
       avatarURL,
       setavatarURL,
+      getUser,
     }),
-    [avatarURL, loading, session?.user?.tokenBack, userInfo]
+    [avatarURL, getUser, loading, session?.user?.tokenBack, userInfo]
   );
 
   return (
