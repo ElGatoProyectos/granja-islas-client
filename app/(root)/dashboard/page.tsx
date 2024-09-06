@@ -11,7 +11,7 @@ import { formatWithCommas } from "@/utils/format-number-comas";
 export default function Home() {
   const { receipts, setMonth, setYear, loading, cardsInfo } = useDashboard();
   return (
-    <LayerPage title="Registro de compras">
+    <LayerPage title="Registro de compras" className="pl-8">
       <ScrollArea className="w-[calc(100vw-3.75rem)] lg:w-full whitespace-nowrap rounded-md">
         {loading ? (
           <div className="flex w-max pb-6 lg:grid lg:grid-cols-2 xl:grid-cols-4 lg:w-full gap-4 justify-center items-center">

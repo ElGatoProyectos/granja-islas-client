@@ -10,6 +10,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { USD } from "@/constants/currency";
+import { CREDITO } from "@/constants/type-payments";
 
 export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {
@@ -183,11 +184,12 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Pagado" />
     ),
     cell: ({ row }) => {
-      return (
+      const type_payment = row.original.bill_status_payment;
+      return type_payment === CREDITO ? (
         <div className="flex items-center">
           <span>{formatWithCommas(row.getValue("amount_paid"))}</span>
         </div>
-      );
+      ) : null;
     },
     enableSorting: false,
   },
@@ -197,11 +199,12 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Pendiente" />
     ),
     cell: ({ row }) => {
-      return (
+      const type_payment = row.original.bill_status_payment;
+      return type_payment === CREDITO ? (
         <div className="flex items-center">
           <span>{formatWithCommas(row.getValue("amount_pending"))}</span>
         </div>
-      );
+      ) : null;
     },
     enableSorting: false,
   },

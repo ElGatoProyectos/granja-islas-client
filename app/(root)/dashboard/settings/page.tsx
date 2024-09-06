@@ -35,6 +35,10 @@ const years = [
     label: `${currentYear - 1}`,
     value: `${currentYear - 1}`,
   },
+  {
+    label: `${currentYear - 2}`,
+    value: `${currentYear - 2}`,
+  },
 ];
 
 export default function Page() {
@@ -104,7 +108,7 @@ export default function Page() {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Mes</SelectLabel>
-                          {months.map(({ label, value }) => (
+                          {months.map(({ label, value }, i) => (
                             <SelectItem key={value} value={value}>
                               {label}
                             </SelectItem>

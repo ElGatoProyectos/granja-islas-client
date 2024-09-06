@@ -55,7 +55,9 @@ export function FiscalConsumptionMeasureLinechart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-bold">Consumo fiscal de {label}</CardTitle>
+        <CardTitle className="font-bold">
+          Consumo fiscal de {label} en Medida
+        </CardTitle>
         <div className="flex gap-3 items-center">
           <CardDescription>{date}</CardDescription>
           <Select value={measureSelect} onValueChange={setMeasureSelect}>
