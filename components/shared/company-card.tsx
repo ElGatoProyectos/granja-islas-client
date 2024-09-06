@@ -82,8 +82,8 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                 </div>
                 <div className="flex flex-col text-sm">
                   <span className="font-semibold">Razón social</span>
-                  <p className="text-muted-foreground">
-                    {company.business_name}
+                  <p className="text-muted-foreground capitalize">
+                    {company.business_name.toLowerCase()}
                   </p>
                 </div>
                 <div className="flex flex-col text-sm">
@@ -94,14 +94,14 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
                 </div>
                 <div className="flex flex-col text-sm">
                   <span className="font-semibold">Estado</span>
-                  <p className="text-muted-foreground">
-                    {company.business_status}
+                  <p className="text-muted-foreground capitalize">
+                    {company.business_status.toLowerCase()}
                   </p>
                 </div>
                 <div className="flex flex-col text-sm">
                   <span className="font-semibold">Dirección Fiscal</span>
-                  <p className="text-muted-foreground">
-                    {company.business_direction_fiscal}
+                  <p className="text-muted-foreground capitalize">
+                    {company.business_direction_fiscal.toLowerCase()}
                   </p>
                 </div>
                 <div className="flex flex-col text-sm">
