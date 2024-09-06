@@ -23,10 +23,10 @@ export function useAnalyticsGeneral() {
   const { company } = useCompanySession();
   const [labelId, setLabelId] = useState("");
   /* suppliers */
-  const [radio, setRadio] = useState("1");
+  const [radio, setRadio] = useState("12");
   const [topSuppliers, setTopSuppliers] = useState<TopSuppliersSchemaIN[]>([]);
   /* exp */
-  const [monthRadio, setMonthRadio] = useState("1");
+  const [monthRadio, setMonthRadio] = useState("12");
   const [expComposition, setExpComposition] = useState<ExpCompositonSchemaIN[]>(
     []
   );
