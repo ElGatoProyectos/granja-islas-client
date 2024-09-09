@@ -35,10 +35,6 @@ const years = [
     label: `${currentYear - 1}`,
     value: `${currentYear - 1}`,
   },
-  {
-    label: `${currentYear - 2}`,
-    value: `${currentYear - 2}`,
-  },
 ];
 
 export default function Page() {
