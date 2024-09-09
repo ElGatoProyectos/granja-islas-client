@@ -50,6 +50,9 @@ export const companySchemaIN = z.object({
   status_deleted: z.boolean(),
   client_id: z.string(),
   client_secret: z.string(),
+  emisor_electronico_desde: z.date(),
+  fecha_inscripcion: z.date(),
+  fecha_inicio_actividades: z.date(),
   created_at: z.string(),
   updated_at: z.string(),
 });
