@@ -24,7 +24,11 @@ export function useBanks() {
       });
 
       const data = await res.json();
-      setBanks(data.payload.reverse());
+
+      if (data.error) {
+        throw new Error("Failed to fetch banks");
+      }
+      setBanks(data.payload);
     } catch (error) {
       throw new Error("Failed to fetch banks");
     } finally {
