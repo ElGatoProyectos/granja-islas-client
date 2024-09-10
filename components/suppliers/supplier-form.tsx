@@ -120,12 +120,14 @@ export function SupplierForm({
   const getRucData = async () => {
     const ruc = form.watch("ruc");
     if (!ruc) return;
+    if (!company) return;
     setloadingDataOfRuc(true);
     try {
-      const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
+      const res = await fetch(`${backend_url}/api/sunat/ruc/v1/${ruc}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
         },
       });
 
