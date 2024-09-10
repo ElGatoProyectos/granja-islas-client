@@ -7,19 +7,28 @@ import { useCallback, useState } from "react";
 export function useSyncSunat() {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const [monthStart, setMonthStart] = useState("");
-  const [yearStart, setYearStart] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [monthEnd, setMonthEnd] = useState("");
-  const [yearEnd, setYearEnd] = useState("");
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const [dateRange, setDateRange] = useState({
+    monthStart: "",
+    yearStart: "",
+    monthEnd: "",
+    yearEnd: "",
+  });
 
   const syncSunatperMonth = useCallback(async () => {
-    if (!company) return;
-    if (!tokenBack) return;
-    if (!monthStart || !yearStart || !yearEnd || !monthEnd) return;
+    const { monthStart, yearStart, monthEnd, yearEnd } = dateRange;
+    if (
+      !company ||
+      !tokenBack ||
+      !monthStart ||
+      !yearStart ||
+      !monthEnd ||
+      !yearEnd
+    )
+      return;
     setLoading(true);
-
     const url = `${backend_url}/api/sunat/synchronize`;
 
     const JSONdata = JSON.stringify({
@@ -61,18 +70,24 @@ export function useSyncSunat() {
     } finally {
       setLoading(false);
     }
-  }, [company, monthEnd, monthStart, toast, tokenBack, yearEnd, yearStart]);
+  }, [company, dateRange, toast, tokenBack]);
+
+  // Funciones para actualizar el rango de fechas
+  const setYearStart = (year: string) =>
+    setDateRange((prev) => ({ ...prev, yearStart: year }));
+  const setMonthStart = (month: string) =>
+    setDateRange((prev) => ({ ...prev, monthStart: month }));
+  const setYearEnd = (year: string) =>
+    setDateRange((prev) => ({ ...prev, yearEnd: year }));
+  const setMonthEnd = (month: string) =>
+    setDateRange((prev) => ({ ...prev, monthEnd: month }));
 
   return {
     syncSunatperMonth,
     loading,
     setYearStart,
-    yearStart,
     setMonthStart,
-    monthStart,
-    monthEnd,
     setMonthEnd,
-    yearEnd,
     setYearEnd,
   };
 }

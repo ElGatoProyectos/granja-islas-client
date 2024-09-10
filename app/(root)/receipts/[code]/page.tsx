@@ -29,8 +29,6 @@ export default function Page() {
     document_id: parts[0],
   });
 
-  console.log(receipt);
-
   const { receipt: receiptPayments, getReceiptPayments } = useReceiptPayment({
     document_code: parts[1],
     document_id: parts[0],

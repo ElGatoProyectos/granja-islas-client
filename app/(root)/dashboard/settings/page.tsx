@@ -1,9 +1,18 @@
 "use client";
 
-import { BankForm } from "@/components/settings/bank-form";
-import { LabelForm } from "@/components/settings/label-form";
+import { useDateRange } from "@/hooks/useDateRange";
+import { useSyncSunat } from "@/hooks/useSyncSunat";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,46 +20,73 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { months } from "@/constants/dates";
-import { useSyncSunat } from "@/hooks/useSyncSunat";
-import { Loader2 } from "lucide-react";
-
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-const years = [
-  {
-    label: `${currentYear}`,
-    value: `${currentYear}`,
-  },
-  {
-    label: `${currentYear - 1}`,
-    value: `${currentYear - 1}`,
-  },
-];
+import { useCompanySession } from "@/context/company-context";
+import { LabelForm } from "@/components/settings/label-form";
+import { BankForm } from "@/components/settings/bank-form";
 
 export default function Page() {
+  const { company } = useCompanySession();
+  const startYear = company?.emisor_electronico_desde
+    ? new Date(company.emisor_electronico_desde).getFullYear().toString()
+    : "";
+
   const {
-    setYearStart,
-    yearStart,
-    loading,
+    selectedYearStart,
+    selectedMonthStart,
+    selectedYearEnd,
+    selectedMonthEnd,
+    availableYears,
+    getAvailableMonths,
+    setSelectedYearStart,
+    setSelectedMonthStart,
+    setSelectedYearEnd,
+    setSelectedMonthEnd,
+  } = useDateRange(startYear);
+
+  const {
     syncSunatperMonth,
-    monthStart,
+    loading,
+    setYearStart,
     setMonthStart,
-    monthEnd,
-    setMonthEnd,
     setYearEnd,
-    yearEnd,
+    setMonthEnd,
   } = useSyncSunat();
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleYearStartChange = (year: string) => {
+    setSelectedYearStart(year);
+    setYearStart(year);
+    if (
+      year === new Date().getFullYear().toString() &&
+      parseInt(selectedMonthStart, 10) > new Date().getMonth() + 1
+    ) {
+      setSelectedMonthStart((new Date().getMonth() + 1).toString());
+      setMonthStart((new Date().getMonth() + 1).toString());
+    }
+  };
+
+  const handleMonthStartChange = (month: string) => {
+    setSelectedMonthStart(month);
+    setMonthStart(month);
+  };
+
+  const handleYearEndChange = (year: string) => {
+    setSelectedYearEnd(year);
+    setYearEnd(year);
+    if (
+      year === new Date().getFullYear().toString() &&
+      parseInt(selectedMonthEnd, 10) > new Date().getMonth() + 1
+    ) {
+      setSelectedMonthEnd((new Date().getMonth() + 1).toString());
+      setMonthEnd((new Date().getMonth() + 1).toString());
+    }
+  };
+
+  const handleMonthEndChange = (month: string) => {
+    setSelectedMonthEnd(month);
+    setMonthEnd(month);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await syncSunatperMonth();
   };
@@ -65,7 +101,7 @@ export default function Page() {
         </CardHeader>
         <CardContent className="flex flex-col">
           {loading ? (
-            <div className=" flex flex-col gap-2 justify-center items-center my-2">
+            <div className="flex flex-col gap-2 justify-center items-center my-2">
               <p className="text-muted-foreground w-[40ch] text-center">
                 Por favor, espere mientras se sincronizan los datos. No cierre
                 la ventana
@@ -81,34 +117,41 @@ export default function Page() {
                 <div className="w-full">
                   <p className="text-sm font-semibold">Inicio del periodo</p>
                   <div className="flex gap-2 mt-2">
-                    <Select value={yearStart} onValueChange={setYearStart}>
+                    <Select
+                      value={selectedYearStart}
+                      onValueChange={handleYearStartChange}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Seleccionar año" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Año</SelectLabel>
-                          {years.map(({ label, value }) => (
-                            <SelectItem key={value} value={value}>
-                              {label}
+                          {availableYears.map((year) => (
+                            <SelectItem key={year} value={year}>
+                              {year}
                             </SelectItem>
                           ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-
-                    <Select value={monthStart} onValueChange={setMonthStart}>
+                    <Select
+                      value={selectedMonthStart}
+                      onValueChange={handleMonthStartChange}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Seleccionar mes" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Mes</SelectLabel>
-                          {months.map(({ label, value }, i) => (
-                            <SelectItem key={value} value={value}>
-                              {label}
-                            </SelectItem>
-                          ))}
+                          {getAvailableMonths(selectedYearStart).map(
+                            (month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.label}
+                              </SelectItem>
+                            )
+                          )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -117,32 +160,37 @@ export default function Page() {
                 <div className="w-full">
                   <p className="text-sm font-semibold">Fin del periodo</p>
                   <div className="flex gap-2 mt-2">
-                    <Select value={yearEnd} onValueChange={setYearEnd}>
+                    <Select
+                      value={selectedYearEnd}
+                      onValueChange={handleYearEndChange}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Seleccionar año" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Año</SelectLabel>
-                          {years.map(({ label, value }) => (
-                            <SelectItem key={value} value={value}>
-                              {label}
+                          {availableYears.map((year) => (
+                            <SelectItem key={year} value={year}>
+                              {year}
                             </SelectItem>
                           ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-
-                    <Select value={monthEnd} onValueChange={setMonthEnd}>
+                    <Select
+                      value={selectedMonthEnd}
+                      onValueChange={handleMonthEndChange}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Seleccionar mes" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Mes</SelectLabel>
-                          {months.map(({ label, value }) => (
-                            <SelectItem key={value} value={value}>
-                              {label}
+                          {getAvailableMonths(selectedYearEnd).map((month) => (
+                            <SelectItem key={month.value} value={month.value}>
+                              {month.label}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -158,27 +206,24 @@ export default function Page() {
           )}
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle className="font-bold">Etiqueta de productos</CardTitle>
           <CardDescription>
             Asigna etiquetas para facilitar la búsqueda y organización de tus
-            productos en las facturas. Agrega términos que describan la
-            categoría para crear filtros personalizados.
+            productos en las facturas.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <LabelForm />
         </CardContent>
       </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="font-bold">Bancos</CardTitle>
           <CardDescription>
-            Gestiona y visualiza información sobre tus bancos asociados. Agrega
-            nuevas etiquetas para clasificar y organizar tus datos de manera
-            eficiente
+            Gestiona y visualiza información sobre tus bancos asociados.
           </CardDescription>
         </CardHeader>
         <CardContent>

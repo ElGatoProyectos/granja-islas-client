@@ -41,7 +41,7 @@ export function useReceiptDetail({
       }
 
       const parsedReceipt = receiptSchemaUniqueIN.parse(payload);
-      console.log(parsedReceipt);
+
       setReceipt(parsedReceipt);
     } catch (error) {
       throw new Error("Failed to fetch receipt detail");
