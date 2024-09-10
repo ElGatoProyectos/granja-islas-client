@@ -34,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EyeIcon, EyeOffIcon, Pencil, Plus } from "lucide-react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useToggle } from "@/hooks/use-toggle";
 import { ADMIN, USER } from "@/constants/roles";
 import { useState } from "react";
@@ -63,7 +63,7 @@ export function EditUserFromAdmin({ type, userInfo }: Props) {
       confirmPassword: "",
     },
   });
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
   const { tokenBack } = useUserInfo();
@@ -198,7 +198,7 @@ export function EditUserFromAdmin({ type, userInfo }: Props) {
                 <FormItem>
                   <FormLabel>Celular</FormLabel>
                   <div className="flex">
-                    <CodeCountry form={form} />
+                    <CodeCountry form={form} disabled={submitting} />
                     <FormControl className="ml-2">
                       <Input
                         {...field}

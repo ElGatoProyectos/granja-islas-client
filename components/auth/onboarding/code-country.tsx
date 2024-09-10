@@ -27,7 +27,13 @@ import {
 import { useState } from "react";
 import { countryCodes } from "@/constants/country-code";
 
-export function CodeCountry({ form }: { form: any }) {
+export function CodeCountry({
+  form,
+  disabled,
+}: {
+  form: any;
+  disabled: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,6 +50,7 @@ export function CodeCountry({ form }: { form: any }) {
                   role="combobox"
                   aria-expanded={open}
                   className={"justify-between"}
+                  disabled={disabled}
                 >
                   {field.value
                     ? `${

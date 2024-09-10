@@ -317,7 +317,10 @@ export function SupplierForm({
                 <FormItem>
                   <FormLabel>Celular</FormLabel>
                   <div className="flex">
-                    <CodeCountry form={form} />
+                    <CodeCountry
+                      form={form}
+                      disabled={submitting || loadingDataOfRuc}
+                    />
                     <FormControl className="ml-2">
                       <Input
                         {...field}

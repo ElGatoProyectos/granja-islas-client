@@ -203,7 +203,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] h-full overflow-y-scroll overflow-x-hidden gap-0">
+      <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold">
             {type === "create" ? "Nueva" : "Editar"} Empresa
@@ -289,222 +289,226 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 )}
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="ruc"
-              render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel>RUC</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Numero de RUC"
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="ruc"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormLabel>RUC</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Numero de RUC"
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="absolute top-6 right-0"
                       disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    className="absolute top-6 right-0"
-                    disabled={submitting || loadingDataOfRuc}
-                    onClick={getRucData}
-                  >
-                    {loadingDataOfRuc ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      <Search className="shrink-0 stroke-primary" />
-                    )}
-                    <span className="sr-only">Buscar por ruc</span>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="business_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Razón social</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="business_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="EIRL, SAC, SA, etc."
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="business_status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Estado</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="business_direction_fiscal"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dirección fiscal</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Celular</FormLabel>
-                  <div className="flex">
-                    <CodeCountry form={form} />
-                    <FormControl className="ml-2">
+                      onClick={getRucData}
+                    >
+                      {loadingDataOfRuc ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Search className="shrink-0 stroke-primary" />
+                      )}
+                      <span className="sr-only">Buscar por ruc</span>
+                    </Button>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="business_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Razón social</FormLabel>
+                    <FormControl>
                       <Input
                         {...field}
                         disabled={submitting || loadingDataOfRuc}
                       />
                     </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="business_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="EIRL, SAC, SA, etc."
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="business_status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Estado</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="user"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Usuario{" "}
-                    <span className="text-gray-400 text-xs">(SUNAT)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="business_direction_fiscal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dirección fiscal</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="key"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Clave SOL{" "}
-                    <span className="text-gray-400 text-xs">(SUNAT)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Celular</FormLabel>
+                    <div className="flex">
+                      <CodeCountry
+                        form={form}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                      <FormControl className="ml-2">
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="client_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Id{" "}
-                    <span className="text-gray-400 text-xs">(API SUNAT)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="client_secret"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Secret{" "}
-                    <span className="text-gray-400 text-xs">(API SUNAT)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={submitting || loadingDataOfRuc}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="user"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Usuario{" "}
+                      <span className="text-gray-400 text-xs">(SUNAT)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <DialogFooter className="!mt-3 !justify-between gap-2">
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => form.reset()}
-                >
-                  Cancelar
+              <FormField
+                control={form.control}
+                name="key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Clave SOL{" "}
+                      <span className="text-gray-400 text-xs">(SUNAT)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="client_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Id{" "}
+                      <span className="text-gray-400 text-xs">(API SUNAT)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="client_secret"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Secret{" "}
+                      <span className="text-gray-400 text-xs">(API SUNAT)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={submitting || loadingDataOfRuc}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="!mt-3 !justify-between gap-2">
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => form.reset()}
+                  >
+                    Cancelar
+                  </Button>
+                </DialogClose>
+
+                <Button type="submit" disabled={submitting || loadingDataOfRuc}>
+                  {submitting
+                    ? `${type === "create" ? "Creando" : "Actualizando"}`
+                    : `${type === "create" ? "Crear" : "Actualizar"}`}
                 </Button>
-              </DialogClose>
-
-              <Button type="submit" disabled={submitting || loadingDataOfRuc}>
-                {submitting
-                  ? `${type === "create" ? "Creando" : "Actualizando"}`
-                  : `${type === "create" ? "Crear" : "Actualizar"}`}
-              </Button>
-            </DialogFooter>
+              </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>

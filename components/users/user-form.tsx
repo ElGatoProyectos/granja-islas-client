@@ -47,7 +47,6 @@ import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
-import { useRouter } from "next/navigation";
 import { createUser, updateUser } from "@/lib/actions/users.actions";
 import { backend_url } from "@/constants/config";
 import { Label } from "../ui/label";
@@ -311,7 +310,7 @@ export function UserForm({ type, userInfo }: Props) {
                 <FormItem>
                   <FormLabel>Celular</FormLabel>
                   <div className="flex">
-                    <CodeCountry form={form} />
+                    <CodeCountry form={form} disabled={submitting} />
                     <FormControl className="ml-2">
                       <Input
                         {...field}
