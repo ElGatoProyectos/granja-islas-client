@@ -134,7 +134,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     if (!ruc) return;
     setLoadingDataOfRuc(true);
     try {
-      const res = await fetch(`${backend_url}/api/sunat/ruc/${ruc}`, {
+      const res = await fetch(`${backend_url}/api/sunat/ruc/v2/${ruc}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${tokenBack}` },
       });
