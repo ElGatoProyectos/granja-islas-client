@@ -25,6 +25,8 @@ export const CompanyProvider = ({
 }) => {
   const [company, setCompany] = useState<CompanySchemaIN | null>(null);
 
+  console.log(company);
+
   // const getCompanies = useCallback(async () => {
   //   try {
   //     const res = await fetch(`${backend_url}/api/companies`, {

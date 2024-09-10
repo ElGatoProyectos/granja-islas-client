@@ -3,6 +3,7 @@
 import { LayerPage } from "@/components/layer-page";
 import { PaymentForm } from "@/components/receipts/details/payment-form";
 import { PaymentsTable } from "@/components/receipts/details/payments-table";
+import { ProductsOfReceipt } from "@/components/receipts/details/table-products-of-receipt/products-of-receipt";
 import {
   Card,
   CardContent,
@@ -13,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PEN } from "@/constants/currency";
-import { CONTADO } from "@/constants/type-payments";
+import { CONTADO, CREDITO } from "@/constants/type-payments";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";
@@ -27,6 +28,8 @@ export default function Page() {
     document_code: parts[1],
     document_id: parts[0],
   });
+
+  console.log(receipt);
 
   const { receipt: receiptPayments, getReceiptPayments } = useReceiptPayment({
     document_code: parts[1],
@@ -107,22 +110,78 @@ export default function Page() {
                     {formatWithCommas(receipt.total)}
                   </p>
                 </div>
-                {CONTADO === receipt.bill_status_payment ? null : (
+
+                {CREDITO === receipt.bill_status_payment &&
+                receipt.credit_payments ? (
                   <>
-                    <div className="flex justify-between">
-                      <span>Pagado</span>
-                      <p className="text-muted-foreground">
-                        {receipt.amount_paid}
-                      </p>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Pendiente</span>
-                      <p className="text-muted-foreground">
-                        {receipt.amount_pending}
-                      </p>
-                    </div>
+                    <Separator />
+                    {receipt.credit_payments.map(
+                      ({
+                        fecPlazoPago,
+                        mtoPagoPendiente,
+                        numCuotas,
+                        numCuotasList,
+                      }) => (
+                        <div
+                          key={fecPlazoPago + mtoPagoPendiente}
+                          className="space-y-2"
+                        >
+                          <div className="flex justify-between">
+                            <span>Pago pendiente</span>
+                            <p className="text-muted-foreground">
+                              {formatWithCommas(mtoPagoPendiente)}
+                            </p>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Fecha de plazo a pagar</span>
+                            <p className="text-muted-foreground">
+                              {fecPlazoPago}
+                            </p>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Número de cuotas</span>
+                            <p className="text-muted-foreground">{numCuotas}</p>
+                          </div>
+                          <Separator />
+                          <div className="flex flex-col justify-center text-center">
+                            <span className="text-muted-foreground">
+                              Lista de cuotas
+                            </span>
+                            <div>
+                              {numCuotasList.map(
+                                ({ fecVencimiento, mtoCuota, numcuota }) => (
+                                  <div
+                                    key={fecVencimiento + mtoCuota}
+                                    className="space-y-1"
+                                  >
+                                    <div className="flex justify-between text-muted-foreground">
+                                      <span>Nro. de cuota</span>
+                                      <p className="text-muted-foreground">
+                                        {numcuota}
+                                      </p>
+                                    </div>
+                                    <div className="flex justify-between text-muted-foreground">
+                                      <span>Mnto. de cuota</span>
+                                      <p className="text-muted-foreground">
+                                        {mtoCuota}
+                                      </p>
+                                    </div>
+                                    <div className="flex justify-between text-muted-foreground">
+                                      <span>Vncto. de cuota</span>
+                                      <p className="text-muted-foreground">
+                                        {fecVencimiento}
+                                      </p>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    )}
                   </>
-                )}
+                ) : null}
               </CardContent>
             </Card>
             <Card className="w-full">
@@ -164,7 +223,7 @@ export default function Page() {
         </div>
       )}
 
-      <footer className="mt-6 flex gap-6">
+      <div className="mt-6 flex gap-6">
         <Card className="w-2/4">
           <CardHeader>
             <CardTitle>Cargar pago</CardTitle>
@@ -196,7 +255,21 @@ export default function Page() {
             <PaymentsTable receiptPayments={receiptPayments} />
           </CardContent>
         </Card>
-      </footer>
+      </div>
+      {receipt && receipt.products.length ? (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Productos</CardTitle>
+            <CardDescription>
+              En esta sección, puedes ver todos los productos asociados al
+              documento.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProductsOfReceipt products={receipt.products} />
+          </CardContent>
+        </Card>
+      ) : null}
     </LayerPage>
   );
 }

@@ -1,7 +1,10 @@
 import { backend_url } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
-import { ReceiptSchemaIN, receiptSchemaIN } from "@/lib/validations/receipt";
+import {
+  receiptSchemaUniqueIN,
+  ReceiptSchemaUniqueIN,
+} from "@/lib/validations/receipt";
 import { responseSchema } from "@/lib/validations/response";
 import { useCallback, useEffect, useState } from "react";
 export function useReceiptDetail({
@@ -13,7 +16,7 @@ export function useReceiptDetail({
 }) {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const [receipt, setReceipt] = useState<ReceiptSchemaIN>();
+  const [receipt, setReceipt] = useState<ReceiptSchemaUniqueIN>();
 
   const getReceiptDetail = useCallback(async () => {
     if (!company) return;
@@ -36,9 +39,9 @@ export function useReceiptDetail({
       if (error) {
         throw new Error("Failed to fetch receipt detail");
       }
-      console.log(payload);
 
-      const parsedReceipt = receiptSchemaIN.parse(payload);
+      const parsedReceipt = receiptSchemaUniqueIN.parse(payload);
+      console.log(parsedReceipt);
       setReceipt(parsedReceipt);
     } catch (error) {
       throw new Error("Failed to fetch receipt detail");
