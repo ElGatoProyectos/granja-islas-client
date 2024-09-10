@@ -2,13 +2,11 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { backend_url } from "@/constants/config";
 import { useUserInfo } from "@/context/user-context";
 import { User } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";

@@ -111,9 +111,9 @@ export function UserForm({ type, userInfo }: Props) {
           formData,
           tokenBack,
         });
-        if (image) {
-          setavatarURL(`${URL.createObjectURL(image[0])}`);
-        }
+        // if (image) {
+        //   setavatarURL(`${URL.createObjectURL(image[0])}`);
+        // }
         getUser();
       }
 

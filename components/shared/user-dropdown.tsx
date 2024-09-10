@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { SUPERADMIN } from "@/constants/roles";
+import { ADMIN, SUPERADMIN } from "@/constants/roles";
 import Link from "next/link";
 import { backend_url } from "@/constants/config";
 import { UserProfile } from "./user-profile";
@@ -68,8 +68,10 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
             <p className="text-sm font-bold">{userInfo.name}</p>
             <span className="text-sm text-muted-foreground ">
               {userInfo.role === SUPERADMIN
-                ? "Super Administrador"
-                : userInfo.role}
+                ? "Super Admin."
+                : userInfo.role === ADMIN
+                ? "Administrador"
+                : "Usuario"}
             </span>
           </div>
         </Button>

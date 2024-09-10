@@ -69,7 +69,11 @@ export const UserInfoProvider = ({
       }
 
       setUserInfo(data.payload);
-      setavatarURL(`${backend_url}/api/users/file/${data.payload.id}`);
+      setavatarURL(
+        `${backend_url}/api/users/file/${
+          data.payload.id
+        }?t=${new Date().getTime()}`
+      );
     } catch (error) {
       console.error("Error fetching user", error);
     } finally {
