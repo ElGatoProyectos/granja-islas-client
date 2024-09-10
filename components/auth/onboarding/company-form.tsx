@@ -491,7 +491,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                 )}
               />
 
-              <DialogFooter className="!mt-3 !justify-between gap-2">
+              <DialogFooter className="!mt-3 !justify-between gap-2 col-span-2">
                 <DialogClose asChild>
                   <Button
                     type="button"
@@ -504,8 +504,16 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
                 <Button type="submit" disabled={submitting || loadingDataOfRuc}>
                   {submitting
-                    ? `${type === "create" ? "Creando" : "Actualizando"}`
-                    : `${type === "create" ? "Crear" : "Actualizar"}`}
+                    ? `${
+                        type === "create"
+                          ? "Creando Empresa"
+                          : "Actualizando Empresa"
+                      }`
+                    : `${
+                        type === "create"
+                          ? "Crear Empresa"
+                          : "Actualizar Empresa"
+                      }`}
                 </Button>
               </DialogFooter>
             </div>
