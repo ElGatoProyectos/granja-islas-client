@@ -146,6 +146,7 @@ export const ReceiptProvider = ({
         }
         return document;
       });
+      console.log(updatedDocuments);
 
       setReceipts(updatedDocuments);
       setTotalPages(pageCount);

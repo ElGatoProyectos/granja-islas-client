@@ -7,10 +7,11 @@ import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { USD } from "@/constants/currency";
 import { CREDITO } from "@/constants/type-payments";
+import { Download } from "lucide-react";
 
 export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {

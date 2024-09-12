@@ -14,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PEN } from "@/constants/currency";
-import { CONTADO, CREDITO } from "@/constants/type-payments";
+import { CREDITO } from "@/constants/type-payments";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";
@@ -24,6 +24,7 @@ import { useParams } from "next/navigation";
 export default function Page() {
   const { code } = useParams();
   const parts = code.toString().split("-");
+  console.log(parts);
   const { receipt } = useReceiptDetail({
     document_code: parts[1],
     document_id: parts[0],
@@ -215,7 +216,7 @@ export default function Page() {
             <Skeleton className="w-full h-20" />
           </div>
           <main className="mt-6 flex gap-6">
-            <Skeleton className="w-full h-[210px]" />
+            <Skeleton className="w-2/4 h-[210px]" />
             <Skeleton className="w-full h-[210px]" />
           </main>
         </div>
