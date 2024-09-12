@@ -2,6 +2,7 @@ import { backend_url } from "@/constants/config";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_URL,
   providers: [
     CredentialsProvider({
       name: "Credentials",
