@@ -80,9 +80,16 @@ export async function deleteCompany({
       password,
     }),
   });
+
   if (!res.ok) {
     throw new Error("Failed to delete company");
   }
+
+  const data = await res.json();
+  if (data.error) {
+    throw new Error("Failed to delete company");
+  }
+
   revalidatePath("/onboarding");
 
   return true;
@@ -104,7 +111,12 @@ export async function createCompany({
   });
 
   revalidatePath("/onboarding");
+
   if (!res.ok) {
+    throw new Error("Failed to post companies");
+  }
+  const data = await res.json();
+  if (data.error) {
     throw new Error("Failed to post companies");
   }
 }

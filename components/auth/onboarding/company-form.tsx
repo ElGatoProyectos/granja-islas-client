@@ -78,6 +78,15 @@ export function CompanyForm({ type, company, companyId }: Props) {
     setSubmitting(true);
     const { image, ...company } = values;
 
+    const trimmedCompany = {
+      ...company,
+      ruc: company.ruc.trim(),
+      business_name: company.business_name.trimStart(),
+      user: company.user.trim(),
+      key: company.key.trim(),
+      client_id: company.client_id.trim(),
+      client_secret: company.client_secret.trim(),
+    };
     const formData = new FormData();
 
     if (image) {
@@ -85,9 +94,9 @@ export function CompanyForm({ type, company, companyId }: Props) {
     }
 
     type CompanyWithoutKey = Omit<CreateCompanySchema, "image">;
-    for (const key in company) {
-      if (company.hasOwnProperty(key)) {
-        formData.append(key, company[key as keyof CompanyWithoutKey]);
+    for (const key in trimmedCompany) {
+      if (trimmedCompany.hasOwnProperty(key)) {
+        formData.append(key, trimmedCompany[key as keyof CompanyWithoutKey]);
       }
     }
 
@@ -133,11 +142,15 @@ export function CompanyForm({ type, company, companyId }: Props) {
     const ruc = form.watch("ruc");
     if (!ruc) return;
     setLoadingDataOfRuc(true);
+    console.log(ruc);
     try {
-      const res = await fetch(`${backend_url}/api/sunat/ruc/v2/${ruc}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${tokenBack}` },
-      });
+      const res = await fetch(
+        `${backend_url}/api/sunat/ruc/v2/${ruc.trimStart()}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${tokenBack}` },
+        }
+      );
 
       if (!res.ok) {
         toast({

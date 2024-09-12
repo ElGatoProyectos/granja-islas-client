@@ -26,6 +26,7 @@ import { BankForm } from "@/components/settings/bank-form";
 
 export default function Page() {
   const { company } = useCompanySession();
+
   const startYear = company?.emisor_electronico_desde
     ? new Date(company.emisor_electronico_desde).getFullYear().toString()
     : "";
