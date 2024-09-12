@@ -24,7 +24,7 @@ import { useParams } from "next/navigation";
 export default function Page() {
   const { code } = useParams();
   const parts = code.toString().split("-");
-  console.log(parts);
+
   const { receipt } = useReceiptDetail({
     document_code: parts[1],
     document_id: parts[0],

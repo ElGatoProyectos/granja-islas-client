@@ -142,7 +142,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     const ruc = form.watch("ruc");
     if (!ruc) return;
     setLoadingDataOfRuc(true);
-    console.log(ruc);
+
     try {
       const res = await fetch(
         `${backend_url}/api/sunat/ruc/v2/${ruc.trimStart()}`,

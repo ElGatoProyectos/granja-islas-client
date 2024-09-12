@@ -23,7 +23,7 @@ export function useReceiptDetail({
     if (!tokenBack) return;
 
     const url = `${backend_url}/api/documents/detail/?document_code=${document_code}&document_id=${document_id}`;
-    console.log(url);
+
     try {
       const res = await fetch(url, {
         method: "GET",
@@ -36,13 +36,10 @@ export function useReceiptDetail({
 
       const data = await res.json();
 
-      console.log(data);
       const { error, payload } = responseSchema.parse(data);
       if (error) {
         throw new Error("Failed to fetch receipt detail");
       }
-
-      console.log(payload);
 
       const parsedReceipt = receiptSchemaUniqueIN.parse(payload);
 
