@@ -35,28 +35,51 @@ export function LabelForm() {
   const { tokenBack } = useUserInfo();
   const { labels, loadingLabel, getLabels } = useLabels();
   const { toast } = useToast();
+  const [loading, setloading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!inputValue || inputValue.trim() === "") return;
-    await createLabel({ ruc: company?.ruc, tokenBack, title: inputValue });
-    setInputValue("");
-    getLabels();
+    setloading(true);
+    try {
+      await createLabel({ ruc: company?.ruc, tokenBack, title: inputValue });
+      setInputValue("");
+      getLabels();
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Ocurrio un error al crear la etiqueta",
+      });
+    } finally {
+      setloading(false);
+    }
   };
 
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (editLabelId) {
       if (editLabelId.trim() === "") return;
-      await updateLabel({
-        idLabel: editLabelId,
-        title: editInputValue,
-        tokenBack,
-        ruc: company?.ruc,
-      });
-      setEditLabelId(null);
-      setEditInputValue("");
-      getLabels();
+
+      try {
+        setloading(true);
+        await updateLabel({
+          idLabel: editLabelId,
+          title: editInputValue,
+          tokenBack,
+          ruc: company?.ruc,
+        });
+        setEditLabelId(null);
+        setEditInputValue("");
+        getLabels();
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Ocurrio un error al editar la etiqueta",
+        });
+      } finally {
+        setloading(false);
+      }
     }
   };
 
@@ -67,6 +90,7 @@ export function LabelForm() {
 
   const handleDelete = async (id: string) => {
     try {
+      setloading(true);
       await deleteLabel({ idLabel: id, tokenBack, ruc: company?.ruc });
       getLabels();
       toast({
@@ -85,6 +109,8 @@ export function LabelForm() {
         variant: "destructive",
         title: "Ocurrio un error al eliminar la etiqueta",
       });
+    } finally {
+      setloading(false);
     }
   };
 
@@ -102,7 +128,9 @@ export function LabelForm() {
             setInputValue(e.currentTarget.value);
           }}
         />
-        <Button type="submit">Agregar</Button>
+        <Button type="submit" disabled={loading || loadingLabel}>
+          Agregar
+        </Button>
       </form>
 
       <ScrollArea className="h-72 w-full mt-4">

@@ -31,28 +31,49 @@ export function BankForm() {
   const { banks, getBanks, loadingBanks } = useBanks();
   const { tokenBack } = useUserInfo();
   const { toast } = useToast();
+  const [loading, setloading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!inputValue || inputValue.trim() === "") return;
-    await createBank({ title: inputValue, tokenBack, ruc: company?.ruc });
-    setInputValue("");
-    getBanks();
+    setloading(true);
+    try {
+      await createBank({ title: inputValue, tokenBack, ruc: company?.ruc });
+      setInputValue("");
+      getBanks();
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Ocurrio un error al crear el banco",
+      });
+    } finally {
+      setloading(false);
+    }
   };
 
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editBankId) {
       if (editBankId.trim() === "") return;
-      await updateBank({
-        idBank: editBankId,
-        title: editInputValue,
-        tokenBack,
-        ruc: company?.ruc,
-      });
-      setEditBankId(null);
-      setEditInputValue("");
-      getBanks();
+      try {
+        setloading(true);
+        await updateBank({
+          idBank: editBankId,
+          title: editInputValue,
+          tokenBack,
+          ruc: company?.ruc,
+        });
+        setEditBankId(null);
+        setEditInputValue("");
+        getBanks();
+      } catch (e) {
+        toast({
+          variant: "destructive",
+          title: "Ocurrio un error al editar el banco",
+        });
+      } finally {
+        setloading(false);
+      }
     }
   };
 
@@ -63,17 +84,27 @@ export function BankForm() {
 
   const handleDelete = async (id: string) => {
     try {
+      setloading(true);
       await deleteBank({ idBank: id, tokenBack, ruc: company?.ruc });
       getBanks();
       toast({
         variant: "success",
         title: "Se elimino el banco correctamente",
       });
-    } catch (e) {
+    } catch (e: any) {
+      if (e.message) {
+        toast({
+          variant: "destructive",
+          title: e.message,
+        });
+        return;
+      }
       toast({
         variant: "destructive",
-        title: "Ocurrio un error al eliminar el banco",
+        title: "Ocurrio un error al eliminar la etiqueta",
       });
+    } finally {
+      setloading(false);
     }
   };
 
@@ -91,7 +122,9 @@ export function BankForm() {
             setInputValue(e.currentTarget.value);
           }}
         />
-        <Button type="submit">Agregar</Button>
+        <Button type="submit" disabled={loading || loadingBanks}>
+          Agregar
+        </Button>
       </form>
       <ScrollArea className="h-72 w-full mt-2">
         {loadingBanks ? (
