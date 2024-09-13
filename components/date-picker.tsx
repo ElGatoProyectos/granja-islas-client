@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/select";
 import { months } from "@/constants/dates";
 import { cn } from "@/lib/utils";
-import { Calendar, RotateCcw } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Calendar, RotateCcw, X } from "lucide-react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface Props {
   setMonth: Dispatch<SetStateAction<string>>;
@@ -44,9 +44,10 @@ export function DatePicker({
     setYear("");
     getData();
   };
+  const [open, setOpen] = useState(false);
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button variant="outline" size={title ? "default" : "icon"}>
           <Calendar className={cn("h-5 w-5", title ? "mr-2" : "")} />
@@ -58,9 +59,9 @@ export function DatePicker({
         <div className="grid gap-2">
           <div className="flex justify-between items-center">
             <span>Periodo</span>
-            <Button variant="ghost" size="icon" onClick={resetValues}>
-              <RotateCcw className="h-5 w-5" />
-              <span className="sr-only">Resetear valores</span>
+            <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
+              <X className="h-5 w-5" />
+              <span className="sr-only">Cerrar modal</span>
             </Button>
           </div>
           <Select value={year} onValueChange={setYear}>
@@ -91,6 +92,10 @@ export function DatePicker({
               </SelectGroup>
             </SelectContent>
           </Select>
+          <Button variant="secondary" onClick={resetValues}>
+            <RotateCcw className="h-5 w-5 mr-2" />
+            Restablecer
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

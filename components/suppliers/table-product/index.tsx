@@ -11,10 +11,12 @@ export function SupplierProductsDataTable() {
     setCurrentPage,
     totalPages,
     totalElements,
+    loading,
   } = useSupplierProducts();
   return (
     <div className="mx-auto">
       <DataTable
+        loading={loading}
         columns={columns}
         data={productsOfSupplier}
         limit={limit}

@@ -85,6 +85,7 @@ export const ReceiptProvider = ({
     if (!company) return;
     if (!tokenBack) return;
     const suppliers = await getSuppliers({ ruc: company.ruc, tokenBack });
+
     const formatFilterSupplier = supplierArraySchemaFilter.parse(
       suppliers.payload
     );

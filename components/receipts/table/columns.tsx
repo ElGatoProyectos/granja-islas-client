@@ -179,37 +179,36 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     },
     enableSorting: false,
   },
-  {
-    accessorKey: "amount_paid",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pagado" />
-    ),
-    cell: ({ row }) => {
-      const type_payment = row.original.bill_status_payment;
-      return type_payment === CREDITO ? (
-        <div className="flex items-center">
-          <span>{formatWithCommas(row.getValue("amount_paid"))}</span>
-        </div>
-      ) : null;
-    },
-    enableSorting: false,
-  },
-  {
-    accessorKey: "amount_pending",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Pendiente" />
-    ),
-    cell: ({ row }) => {
-      const type_payment = row.original.bill_status_payment;
-      return type_payment === CREDITO ? (
-        <div className="flex items-center">
-          <span>{formatWithCommas(row.getValue("amount_pending"))}</span>
-        </div>
-      ) : null;
-    },
-    enableSorting: false,
-  },
-
+  // {
+  //   accessorKey: "amount_paid",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Pagado" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const type_payment = row.original.bill_status_payment;
+  //     return type_payment === CREDITO ? (
+  //       <div className="flex items-center">
+  //         <span>{formatWithCommas(row.getValue("amount_paid"))}</span>
+  //       </div>
+  //     ) : null;
+  //   },
+  //   enableSorting: false,
+  // },
+  // {
+  //   accessorKey: "amount_pending",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Pendiente" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const type_payment = row.original.bill_status_payment;
+  //     return type_payment === CREDITO ? (
+  //       <div className="flex items-center">
+  //         <span>{formatWithCommas(row.getValue("amount_pending"))}</span>
+  //       </div>
+  //     ) : null;
+  //   },
+  //   enableSorting: false,
+  // },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

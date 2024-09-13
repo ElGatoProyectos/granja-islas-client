@@ -43,10 +43,10 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/dashboard/suppliers",
-          label: "Proveedores",
-          active: pathname.includes("/dashboard/suppliers"),
-          icon: Users,
+          href: "/receipts",
+          label: "Comprobantes",
+          active: pathname.includes("/receipts"),
+          icon: Receipt,
           submenus: [],
         },
         {
@@ -68,10 +68,10 @@ export function getMenuList(pathname: string): Group[] {
           ],
         },
         {
-          href: "/receipts",
-          label: "Comprobantes",
-          active: pathname.includes("/receipts"),
-          icon: Receipt,
+          href: "/dashboard/suppliers",
+          label: "Proveedores",
+          active: pathname.includes("/dashboard/suppliers"),
+          icon: Users,
           submenus: [],
         },
         {
