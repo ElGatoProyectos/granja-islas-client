@@ -57,7 +57,7 @@ export const receiptSchemaUniqueIN = z.object({
   pagos: z
     .union([
       // Manejar el caso donde recibes un string '""'
-      z.literal('""').transform(() => []),
+      z.literal("").transform(() => []),
 
       // Manejar el caso donde recibes un JSON string válido
       z
