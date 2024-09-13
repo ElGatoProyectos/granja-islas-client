@@ -54,23 +54,46 @@ export const receiptSchemaUniqueIN = z.object({
   document_code: z.string(),
   document_description: z.string(),
   created_status: z.string(),
-  Supplier: supplierSchemaIN,
-  credit_payments: z
-    .array(
-      z.object({
-        mtoPagoPendiente: z.number(),
-        fecPlazoPago: z.string(),
-        numCuotas: z.number(),
-        numCuotasList: z.array(
+  pagos: z
+    .union([
+      // Manejar el caso donde recibes un string '""'
+      z.literal('""').transform(() => []),
+
+      // Manejar el caso donde recibes un JSON string válido
+      z
+        .string()
+        .transform((val) => {
+          try {
+            // Intentar convertir el string en JSON
+            return JSON.parse(val);
+          } catch (error) {
+            throw new Error("Invalid JSON format");
+          }
+        })
+        .refine((val) => Array.isArray(val), {
+          message: "Debe ser un array JSON o un string vacío",
+        }),
+    ])
+    .transform((val) => {
+      // Si ya es un array, aplicar validación a los objetos dentro del array
+      return z
+        .array(
           z.object({
-            numcuota: z.number(),
-            mtoCuota: z.number(),
-            fecVencimiento: z.string(),
+            mtoPagoPendiente: z.number(),
+            fecPlazoPago: z.string(),
+            numCuotas: z.number(),
+            numCuotasList: z.array(
+              z.object({
+                numcuota: z.number(),
+                mtoCuota: z.number(),
+                fecVencimiento: z.string(),
+              })
+            ),
           })
-        ),
-      })
-    )
-    .optional(),
+        )
+        .parse(val);
+    }),
+  Supplier: supplierSchemaIN,
   products: z.array(
     z.object({
       id: z.number(),

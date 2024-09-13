@@ -110,11 +110,10 @@ export default function Page() {
                   </p>
                 </div>
 
-                {CREDITO === receipt.bill_status_payment &&
-                receipt.credit_payments ? (
+                {CREDITO === receipt.bill_status_payment && receipt.pagos ? (
                   <>
                     <Separator />
-                    {receipt.credit_payments.map(
+                    {receipt.pagos.map(
                       ({
                         fecPlazoPago,
                         mtoPagoPendiente,
@@ -221,40 +220,45 @@ export default function Page() {
           </main>
         </div>
       )}
+      {receipt
+        ? CREDITO === receipt.bill_status_payment &&
+          receipt.pagos && (
+            <div className="mt-6 flex gap-6">
+              <Card className="w-2/4">
+                <CardHeader>
+                  <CardTitle>Cargar pago</CardTitle>
+                  <CardDescription>
+                    Utiliza esta sección para registrar un nuevo pago. Asegúrate
+                    de que la información sea precisa para mantener un registro
+                    exacto de tus pagos.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <PaymentForm
+                    type="create"
+                    document_code={parts[1]}
+                    document_id={parts[0]}
+                    getReceiptPayments={getReceiptPayments}
+                  />
+                </CardContent>
+              </Card>
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle>Pagos</CardTitle>
+                  <CardDescription>
+                    En esta sección, puedes visualizar todos los pagos que has
+                    registrado. Aquí encontrarás el monto de cada pago y una
+                    foto del comprobante (voucher) correspondiente.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <PaymentsTable receiptPayments={receiptPayments} />
+                </CardContent>
+              </Card>
+            </div>
+          )
+        : null}
 
-      <div className="mt-6 flex gap-6">
-        <Card className="w-2/4">
-          <CardHeader>
-            <CardTitle>Cargar pago</CardTitle>
-            <CardDescription>
-              Utiliza esta sección para registrar un nuevo pago. Asegúrate de
-              que la información sea precisa para mantener un registro exacto de
-              tus pagos.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <PaymentForm
-              type="create"
-              document_code={parts[1]}
-              document_id={parts[0]}
-              getReceiptPayments={getReceiptPayments}
-            />
-          </CardContent>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Pagos</CardTitle>
-            <CardDescription>
-              En esta sección, puedes visualizar todos los pagos que has
-              registrado. Aquí encontrarás el monto de cada pago y una foto del
-              comprobante (voucher) correspondiente.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <PaymentsTable receiptPayments={receiptPayments} />
-          </CardContent>
-        </Card>
-      </div>
       {receipt && receipt.products.length ? (
         <Card className="mt-6">
           <CardHeader>
