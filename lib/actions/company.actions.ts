@@ -39,7 +39,7 @@ export const getCompanies = async (): Promise<
   CompanySchemaIN[] | undefined
 > => {
   const session = await getServerSession(authOptions);
-  console.log(backend_url);
+
   try {
     const res = await fetch(`${backend_url}/api/companies`, {
       method: "GET",
