@@ -1,25 +1,16 @@
 "use client";
 
 import { Row } from "@tanstack/react-table";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Download, Ellipsis, Loader2 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Download, Loader2 } from "lucide-react";
 import { receiptSchemaIN } from "@/lib/validations/receipt";
-import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
 import { backend_url } from "@/constants/config";
+import { typesSpanishFormat } from "@/constants/type-document";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
-import { typesSpanishFormat } from "@/constants/type-document";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { formatDate } from "@/utils/format-date";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -42,6 +33,7 @@ export function DataTableRowActions<TData>({
   const getPdf = async () => {
     if (!company) return;
     setLoading(true);
+
     const queryParams = new URLSearchParams();
     queryParams.append("document_id", receipt.id.toString());
     queryParams.append(
@@ -50,6 +42,7 @@ export function DataTableRowActions<TData>({
     );
 
     const url = `${backend_url}/api/documents/pdf?${queryParams}`;
+
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -63,8 +56,20 @@ export function DataTableRowActions<TData>({
         // Crear una URL para el Blob
         const blobUrl = URL.createObjectURL(blob);
 
-        // Abrir el PDF en una nueva pestaña
-        window.open(blobUrl, "_blank");
+        // Crear un enlace temporal para descargar el archivo
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `documento-${receipt.code}-fecha-${formatDate(
+          receipt.issue_date
+        )}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+
+        // Eliminar el enlace temporal después de la descarga
+        document.body.removeChild(link);
+
+        // Revocar la URL del Blob para liberar memoria
+        URL.revokeObjectURL(blobUrl);
       } else {
         console.error("Error al obtener el PDF:", response.statusText);
       }

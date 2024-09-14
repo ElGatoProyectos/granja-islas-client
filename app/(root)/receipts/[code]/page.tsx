@@ -4,6 +4,7 @@ import { LayerPage } from "@/components/layer-page";
 import { PaymentForm } from "@/components/receipts/details/payment-form";
 import { PaymentsTable } from "@/components/receipts/details/payments-table";
 import { ProductsOfReceipt } from "@/components/receipts/details/table-products-of-receipt/products-of-receipt";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,13 +14,20 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
+import { backend_url } from "@/constants/config";
 import { PEN } from "@/constants/currency";
+import { typesSpanishFormat } from "@/constants/type-document";
 import { CREDITO } from "@/constants/type-payments";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
 import { useReceiptDetail } from "@/hooks/useReceiptDetails";
 import { useReceiptPayment } from "@/hooks/useReceiptPayment";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
+import { Download, Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 
 export default function Page() {
   const { code } = useParams();
@@ -35,6 +43,71 @@ export default function Page() {
     document_id: parts[0],
   });
 
+  const [Loading, setLoading] = useState(false);
+  const { tokenBack } = useUserInfo();
+  const { company } = useCompanySession();
+  const { toast } = useToast();
+
+  function getValueFromLabel(label: string) {
+    const found = typesSpanishFormat.find(
+      (item) => item.label.toLowerCase() === label.toLowerCase()
+    );
+    return found ? found.value : "";
+  }
+
+  const getPdf = async () => {
+    if (!receipt || !company) return;
+    setLoading(true);
+
+    const queryParams = new URLSearchParams();
+    queryParams.append("document_id", receipt.id.toString());
+    queryParams.append(
+      "type_document",
+      getValueFromLabel(receipt.document_description)
+    );
+
+    const url = `${backend_url}/api/documents/pdf?${queryParams}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${tokenBack}`, ruc: company?.ruc },
+      });
+
+      if (response.ok) {
+        // Obtener el contenido como un Blob
+        const blob = await response.blob();
+
+        // Crear una URL para el Blob
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Crear un enlace temporal para descargar el archivo
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `documento-${receipt.code}-fecha-${formatDate(
+          receipt.issue_date
+        )}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+
+        // Eliminar el enlace temporal después de la descarga
+        document.body.removeChild(link);
+
+        // Revocar la URL del Blob para liberar memoria
+        URL.revokeObjectURL(blobUrl);
+      } else {
+        console.error("Error al obtener el PDF:", response.statusText);
+      }
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: `Ocurrio un error al crear el pdf del documento`,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <LayerPage title="Comprobante">
       {receipt ? (
@@ -47,6 +120,21 @@ export default function Page() {
                 <p className="text-muted-foreground capitalize">
                   {receipt.document_description.toLowerCase()}
                 </p>
+                <Button
+                  onClick={getPdf}
+                  variant="secondary"
+                  size="sm"
+                  disabled={Loading}
+                >
+                  {Loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      <span className="sr-only">Descargar documento</span>
+                    </>
+                  )}
+                </Button>
               </div>
               <div className="flex gap-x-3 h-12 md:text-base items-center">
                 <span>Número</span>
@@ -272,7 +360,9 @@ export default function Page() {
             <ProductsOfReceipt products={receipt.products} />
           </CardContent>
         </Card>
-      ) : null}
+      ) : (
+        <Skeleton className="w-full h-[450px] mt-6" />
+      )}
     </LayerPage>
   );
 }
