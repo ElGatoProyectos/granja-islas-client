@@ -53,7 +53,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
               </div>
             </CardHeader>
           </Card>
-          {userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
+          {userInfo?.role === SUPERADMIN && (
             <div className="absolute top-0 -right-10 flex flex-col justify-center group-hover:opacity-100 opacity-0 transition-opacity">
               <CompanyForm
                 type="edit"
@@ -67,7 +67,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
                 companyId={company.id}
               />
             </div>
-          ) : null}
+          )}
         </div>
       ))}
     </>

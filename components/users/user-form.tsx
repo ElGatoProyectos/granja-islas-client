@@ -74,12 +74,7 @@ export function UserForm({ type, userInfo }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
-  const {
-    tokenBack,
-    userInfo: currentUser,
-    setavatarURL,
-    getUser,
-  } = useUserInfo();
+  const { tokenBack, userInfo: currentUser, getUser } = useUserInfo();
 
   async function onSubmit(values: z.infer<typeof userSchema>) {
     setSubmitting(true);
@@ -104,26 +99,20 @@ export function UserForm({ type, userInfo }: Props) {
       if (type === "create") {
         await createUser({ userFormInfo, tokenBack });
       }
-
       if (type === "edit") {
         await updateUser({
           userId: userInfo?.id,
           formData,
           tokenBack,
         });
-        // if (image) {
-        //   setavatarURL(`${URL.createObjectURL(image[0])}`);
-        // }
         getUser();
       }
-
       toast({
         variant: "success",
         title: `Se ${
           type === "create" ? "creó" : "editó"
         } correctamente el usuario`,
       });
-
       setOpen(false);
       form.reset();
     } catch (e) {

@@ -39,7 +39,7 @@ export function SignIn() {
         password: values.password,
         redirect: false,
       });
-      console.log(res);
+
       if (!res?.ok) {
         toast({
           variant: "destructive",

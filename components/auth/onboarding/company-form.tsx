@@ -201,338 +201,349 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
   const [open, setOpen] = useState(false);
 
-  return userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {type === "create" ? (
-          <Button variant="ghost" className="hover:text-primary mt-2">
-            <Plus className="h-5 w-5 mr-2" />
-            Nueva Empresa
-          </Button>
-        ) : (
-          <Button variant="ghost" size="icon">
-            <Pencil className="stroke-primary" />
-            <span className="sr-only">Editar empresa</span>
-          </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px]">
-        <DialogHeader>
-          <DialogTitle className="text-3xl font-bold">
-            {type === "create" ? "Nueva" : "Editar"} Empresa
-          </DialogTitle>
-          <DialogDescription>
-            Esto te permitirá gestionar todas las empresas asociadas de manera
-            ordenada y eficiente.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-2"
-            autoComplete="off"
-          >
-            <div className="flex items-center justify-center">
-              <div
-                className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row`}
-              >
-                {selectedImage ? (
-                  <div className="md:max-w-[100px]">
-                    <img
-                      src={URL.createObjectURL(selectedImage)}
-                      alt="Selected"
-                      className="rounded-full aspect-square object-cover"
-                    />
-                  </div>
-                ) : companyId ? (
-                  <div className="md:max-w-[100px]">
-                    <img
-                      src={urlUpdate}
-                      alt="Selected"
-                      className="rounded-full aspect-square object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="inline-flex items-center justify-between">
-                    <div className="p-7 bg-muted justify-center items-center flex rounded-full">
-                      <AddImage className="stroke-foreground" />
+  return (
+    userInfo?.role === SUPERADMIN && (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          {type === "create" ? (
+            <Button variant="ghost" className="hover:text-primary mt-2">
+              <Plus className="h-5 w-5 mr-2" />
+              Nueva Empresa
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon">
+              <Pencil className="stroke-primary" />
+              <span className="sr-only">Editar empresa</span>
+            </Button>
+          )}
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[800px]">
+          <DialogHeader>
+            <DialogTitle className="text-3xl font-bold">
+              {type === "create" ? "Nueva" : "Editar"} Empresa
+            </DialogTitle>
+            <DialogDescription>
+              Esto te permitirá gestionar todas las empresas asociadas de manera
+              ordenada y eficiente.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-2"
+              autoComplete="off"
+            >
+              <div className="flex items-center justify-center">
+                <div
+                  className={`flex h-[fit-content] md:p-4 md:justify-between md:flex-row`}
+                >
+                  {selectedImage ? (
+                    <div className="md:max-w-[100px]">
+                      <img
+                        src={URL.createObjectURL(selectedImage)}
+                        alt="Selected"
+                        className="rounded-full aspect-square object-cover"
+                      />
                     </div>
-                  </div>
-                )}
-              </div>
+                  ) : companyId ? (
+                    <div className="md:max-w-[100px]">
+                      <img
+                        src={urlUpdate}
+                        alt="Selected"
+                        className="rounded-full aspect-square object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center justify-between">
+                      <div className="p-7 bg-muted justify-center items-center flex rounded-full">
+                        <AddImage className="stroke-foreground" />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div
-                        className={
-                          "grid w-full max-w-sm items-center gap-1.5 p-3 rounded-lg"
-                        }
-                      >
-                        <Label
-                          htmlFor="fileInput"
-                          className={"inline-flex items-center cursor-pointer"}
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div
+                          className={
+                            "grid w-full max-w-sm items-center gap-1.5 p-3 rounded-lg"
+                          }
                         >
-                          <Upload className="h-4 w-4 mr-2 stroke-foreground" />
-                          <span className="whitespace-nowrap">
-                            Elija la imagen
-                          </span>
-                        </Label>
+                          <Label
+                            htmlFor="fileInput"
+                            className={
+                              "inline-flex items-center cursor-pointer"
+                            }
+                          >
+                            <Upload className="h-4 w-4 mr-2 stroke-foreground" />
+                            <span className="whitespace-nowrap">
+                              Elija la imagen
+                            </span>
+                          </Label>
+                          <Input
+                            type="file"
+                            className="hidden"
+                            id="fileInput"
+                            accept="image/*"
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            onChange={(e) => {
+                              field.onChange(e.target.files);
+                              setSelectedImage(e.target.files?.[0] || null);
+                            }}
+                            ref={field.ref}
+                            disabled={submitting || loadingDataOfRuc}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ruc"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormLabel>RUC</FormLabel>
+                      <FormControl>
                         <Input
-                          type="file"
-                          className="hidden"
-                          id="fileInput"
-                          accept="image/*"
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          onChange={(e) => {
-                            field.onChange(e.target.files);
-                            setSelectedImage(e.target.files?.[0] || null);
-                          }}
-                          ref={field.ref}
+                          {...field}
+                          placeholder="Numero de RUC"
                           disabled={submitting || loadingDataOfRuc}
                         />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="ruc"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel>RUC</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Numero de RUC"
+                      </FormControl>
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="absolute top-6 right-0"
                         disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      className="absolute top-6 right-0"
-                      disabled={submitting || loadingDataOfRuc}
-                      onClick={getRucData}
-                    >
-                      {loadingDataOfRuc ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                      ) : (
-                        <Search className="shrink-0 stroke-primary" />
-                      )}
-                      <span className="sr-only">Buscar por ruc</span>
-                    </Button>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="business_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Razón social</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="business_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="EIRL, SAC, SA, etc."
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="business_status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Estado</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="business_direction_fiscal"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Dirección fiscal</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Celular</FormLabel>
-                    <div className="flex">
-                      <CodeCountry
-                        form={form}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                      <FormControl className="ml-2">
+                        onClick={getRucData}
+                      >
+                        {loadingDataOfRuc ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          <Search className="shrink-0 stroke-primary" />
+                        )}
+                        <span className="sr-only">Buscar por ruc</span>
+                      </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Razón social</FormLabel>
+                      <FormControl>
                         <Input
                           {...field}
                           disabled={submitting || loadingDataOfRuc}
                         />
                       </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="EIRL, SAC, SA, etc."
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Estado</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="user"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Usuario{" "}
-                      <span className="text-gray-400 text-xs">(SUNAT)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="business_direction_fiscal"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dirección fiscal</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="key"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Clave SOL{" "}
-                      <span className="text-gray-400 text-xs">(SUNAT)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Celular</FormLabel>
+                      <div className="flex">
+                        <CodeCountry
+                          form={form}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                        <FormControl className="ml-2">
+                          <Input
+                            {...field}
+                            disabled={submitting || loadingDataOfRuc}
+                          />
+                        </FormControl>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="client_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Id{" "}
-                      <span className="text-gray-400 text-xs">(API SUNAT)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="client_secret"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Secret{" "}
-                      <span className="text-gray-400 text-xs">(API SUNAT)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={submitting || loadingDataOfRuc}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="user"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Usuario{" "}
+                        <span className="text-gray-400 text-xs">(SUNAT)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <DialogFooter className="!mt-3 !justify-between gap-2 col-span-2">
-                <DialogClose asChild>
+                <FormField
+                  control={form.control}
+                  name="key"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Clave SOL{" "}
+                        <span className="text-gray-400 text-xs">(SUNAT)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="client_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Id{" "}
+                        <span className="text-gray-400 text-xs">
+                          (API SUNAT)
+                        </span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="client_secret"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Secret{" "}
+                        <span className="text-gray-400 text-xs">
+                          (API SUNAT)
+                        </span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={submitting || loadingDataOfRuc}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <DialogFooter className="!mt-3 !justify-between gap-2 col-span-2">
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => form.reset()}
+                    >
+                      Cancelar
+                    </Button>
+                  </DialogClose>
+
                   <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => form.reset()}
+                    type="submit"
+                    disabled={submitting || loadingDataOfRuc}
                   >
-                    Cancelar
+                    {submitting
+                      ? `${
+                          type === "create"
+                            ? "Creando Empresa"
+                            : "Actualizando Empresa"
+                        }`
+                      : `${
+                          type === "create"
+                            ? "Crear Empresa"
+                            : "Actualizar Empresa"
+                        }`}
                   </Button>
-                </DialogClose>
-
-                <Button type="submit" disabled={submitting || loadingDataOfRuc}>
-                  {submitting
-                    ? `${
-                        type === "create"
-                          ? "Creando Empresa"
-                          : "Actualizando Empresa"
-                      }`
-                    : `${
-                        type === "create"
-                          ? "Crear Empresa"
-                          : "Actualizar Empresa"
-                      }`}
-                </Button>
-              </DialogFooter>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  ) : null;
+                </DialogFooter>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    )
+  );
 }
