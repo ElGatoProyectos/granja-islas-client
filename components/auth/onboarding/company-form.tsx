@@ -31,6 +31,8 @@ import {
 import { useState } from "react";
 import {
   Image as AddImage,
+  EyeIcon,
+  EyeOffIcon,
   Loader2,
   Pencil,
   Plus,
@@ -44,6 +46,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
+import { useToggle } from "@/hooks/use-toggle";
 
 interface Props {
   type: "create" | "edit";
@@ -200,6 +203,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
   };
 
   const [open, setOpen] = useState(false);
+  const [showPassword, togglePassword] = useToggle();
 
   return (
     userInfo?.role === SUPERADMIN && (
@@ -452,7 +456,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
                   control={form.control}
                   name="key"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative">
                       <FormLabel>
                         Clave SOL{" "}
                         <span className="text-gray-400 text-xs">(SUNAT)</span>
@@ -461,8 +465,23 @@ export function CompanyForm({ type, company, companyId }: Props) {
                         <Input
                           {...field}
                           disabled={submitting || loadingDataOfRuc}
+                          type={showPassword ? "text" : "password"}
                         />
                       </FormControl>
+                      <Button
+                        type="button"
+                        size={"icon"}
+                        variant={"ghost"}
+                        className="absolute right-0 top-6"
+                        onClick={togglePassword}
+                      >
+                        <span className="sr-only">Show password</span>
+                        {showPassword ? (
+                          <EyeOffIcon className="stroke-neutral-500" />
+                        ) : (
+                          <EyeIcon className="stroke-neutral-500" />
+                        )}
+                      </Button>
                       <FormMessage />
                     </FormItem>
                   )}
