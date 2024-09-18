@@ -68,19 +68,19 @@ export function productsViewTable(key: string) {
 }
 
 const receiptTranslationView: TranslationDict = {
-  code: "Número",
+  num_serie: "Serie",
+  num_cpe: "Nro.",
   document_description: "Tipo de documento",
   ruc: "RUC",
   business_name: "Proveedor",
-  issue_date: "Fecha",
+  issue_date: "Emisión",
   currency_code: "Moneda",
   amount_base: "Monto",
   igv: "IGV",
   total: "Importe Total",
-  bill_status_payment: "Tipo de comprobante",
+  bill_status_payment: "Tipo de pago",
   bill_status: "Estado",
-  amount_paid: "Pagado",
-  amount_pending: "Pendiente",
+  base_igv: "%IGV",
 };
 
 export function receiptViewTable(key: string) {

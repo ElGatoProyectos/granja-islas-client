@@ -7,17 +7,15 @@ import { DataTableRowActions } from "./table-row-actions";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { USD } from "@/constants/currency";
-import { CREDITO } from "@/constants/type-payments";
-import { Download } from "lucide-react";
 
 export const columns: ColumnDef<ReceiptSchemaIN>[] = [
   {
-    accessorKey: "code",
+    accessorKey: "num_serie",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Número" />
+      <DataTableColumnHeader column={column} title="Serie" />
     ),
     cell: ({ row }) => {
       const id = row.original.id;
@@ -29,7 +27,28 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
             variant: "link",
           })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
         >
-          {row.getValue("code")}
+          {row.getValue("num_serie")}
+        </Link>
+      );
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "num_cpe",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nro." />
+    ),
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const document_code = row.original.document_code;
+      return (
+        <Link
+          href={`/receipts/${id}-${document_code}`}
+          className={`${buttonVariants({
+            variant: "link",
+          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+        >
+          {row.getValue("num_cpe")}
         </Link>
       );
     },
@@ -76,11 +95,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Emisión" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{formatDate(row.getValue("issue_date"))}</span>
-        </div>
-      );
+      return <span>{formatDate(row.getValue("issue_date"))}</span>;
     },
     enableSorting: false,
   },
@@ -111,25 +126,30 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex items-center">
-          <span>{formatWithCommas(row.getValue("amount_base"))}</span>
-        </div>
+        <span className="text-right">
+          {formatWithCommas(row.getValue("amount_base"))}
+        </span>
       );
     },
     enableSorting: false,
   },
-
   {
     accessorKey: "igv",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="IGV" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{formatWithCommas(row.getValue("igv"))}</span>
-        </div>
-      );
+      return <span>{formatWithCommas(row.getValue("igv"))}</span>;
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "base_igv",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="%IGV" />
+    ),
+    cell: ({ row }) => {
+      return <span>{row.getValue("base_igv")}%</span>;
     },
     enableSorting: false,
   },
@@ -139,11 +159,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
       <DataTableColumnHeader column={column} title="Importe Total" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{formatWithCommas(row.getValue("total"))}</span>
-        </div>
-      );
+      return <span>{formatWithCommas(row.getValue("total"))}</span>;
     },
     enableSorting: false,
   },
@@ -155,11 +171,7 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     cell: ({ row }) => {
       const bill_status_payment = row.getValue("bill_status_payment") as string;
       return (
-        <div className="flex items-center">
-          <span className="capitalize">
-            {bill_status_payment.toLowerCase()}
-          </span>
-        </div>
+        <span className="capitalize">{bill_status_payment.toLowerCase()}</span>
       );
     },
     enableSorting: false,
@@ -171,44 +183,10 @@ export const columns: ColumnDef<ReceiptSchemaIN>[] = [
     ),
     cell: ({ row }) => {
       const bill_status = row.getValue("bill_status") as string;
-      return (
-        <div className="flex items-center">
-          <span className="capitalize">{bill_status.toLowerCase()}</span>
-        </div>
-      );
+      return <span className="capitalize">{bill_status.toLowerCase()}</span>;
     },
     enableSorting: false,
   },
-  // {
-  //   accessorKey: "amount_paid",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Pagado" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const type_payment = row.original.bill_status_payment;
-  //     return type_payment === CREDITO ? (
-  //       <div className="flex items-center">
-  //         <span>{formatWithCommas(row.getValue("amount_paid"))}</span>
-  //       </div>
-  //     ) : null;
-  //   },
-  //   enableSorting: false,
-  // },
-  // {
-  //   accessorKey: "amount_pending",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Pendiente" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const type_payment = row.original.bill_status_payment;
-  //     return type_payment === CREDITO ? (
-  //       <div className="flex items-center">
-  //         <span>{formatWithCommas(row.getValue("amount_pending"))}</span>
-  //       </div>
-  //     ) : null;
-  //   },
-  //   enableSorting: false,
-  // },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

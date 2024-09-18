@@ -24,6 +24,7 @@ export const receiptSchemaIN = z.object({
   document_code: z.string(),
   document_description: z.string(),
   created_status: z.string(),
+  base_igv:z.number(),
   Supplier: supplierSchemaIN,
 });
 

@@ -116,6 +116,8 @@ export const ReceiptProvider = ({
         .toString()
         .replace(/%2C/g, ",")}`;
 
+      console.log(url);
+
       const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -137,6 +139,7 @@ export const ReceiptProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
+
       const formatdata = receiptArraySchemaIN.parse(data);
       const updatedDocuments = formatdata.map((document) => {
         const foundType = typesSpanishFormat.find(
@@ -145,9 +148,11 @@ export const ReceiptProvider = ({
         if (foundType) {
           document.document_description = foundType.label;
         }
+        document.base_igv = document.base_igv * 100;
         return document;
       });
 
+      console.log(updatedDocuments);
       setReceipts(updatedDocuments);
       setTotalPages(pageCount);
       setTotalElements(total);
@@ -182,7 +187,7 @@ export const ReceiptProvider = ({
 
     try {
       const queryParams = new URLSearchParams();
-      if (currentPage) queryParams.append("page", currentPage.toString());
+      queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
@@ -206,26 +211,30 @@ export const ReceiptProvider = ({
       if (error) {
         throw new Error("Failed to fetch receipts");
       }
+
       const { data } = paginationSchema.parse(payload);
+      console.log(data);
       const formatdata = receiptArraySchemaIN.parse(data);
       const formatNumbersAndDates = formatdata.map((data) => ({
         ...data,
+        base_igv: `${data.base_igv * 100}%`,
         issue_date: formatDate(data.issue_date),
         ruc: data.Supplier.ruc,
         business_name: data.Supplier.business_name,
-        igv: formatWithCommas(data.igv),
-        total: formatWithCommas(data.total),
-        amount_base: formatWithCommas(data.amount_base),
-        amount_paid: formatWithCommas(data.amount_paid),
-        amount_pending: formatWithCommas(data.amount_pending),
+        igv: data.igv,
+        total: data.total,
+        amount_base: data.amount_base,
+        amount_paid: data.amount_paid,
+        amount_pending: data.amount_pending,
       }));
+
       return formatNumbersAndDates;
     } catch (error) {
       throw new Error("Failed to fetch receipts");
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, currentPage, input, month, year, idSupplier]);
+  }, [company, tokenBack, input, month, year, idSupplier]);
 
   const value = useMemo(
     () => ({

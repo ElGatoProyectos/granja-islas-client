@@ -10,7 +10,7 @@ import { receiptViewTable, transformData } from "@/utils/change-name";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DatePicker } from "@/components/date-picker";
-import { exportToExcel } from "@/utils/export-excel";
+import { exportToExcel, exportToExcel2 } from "@/utils/export-excel";
 import { arrayOfTypesDocument } from "@/constants/type-document";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 import { useUserInfo } from "@/context/user-context";
@@ -122,9 +122,24 @@ export function DataTableToolbar<TData>({
               onClick={async () => {
                 const products = await exportExcel();
                 const currentDate = new Date().toISOString().split("T")[0];
-                exportToExcel({
+                exportToExcel2({
                   data: transformData(products, receiptViewTable),
                   filename: `Comprobantes ${currentDate}`,
+                  columnOrder: [
+                    "Serie",
+                    "Nro.",
+                    "Tipo de documento",
+                    "Proveedor",
+                    "RUC",
+                    "Emisión",
+                    "Moneda",
+                    "Monto",
+                    "IGV",
+                    "%IGV",
+                    "Importe Total",
+                    "Tipo de pago",
+                    "Estado",
+                  ],
                 });
               }}
             >
