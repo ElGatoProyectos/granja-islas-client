@@ -1,21 +1,22 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
-import { UserSchemaIN } from "@/lib/validations/user";
-import { useSession } from "next-auth/react";
 import {
   createContext,
   Dispatch,
   SetStateAction,
-  useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
 } from "react";
+import { useCompanySession } from "./company-context";
+import { useDatePeriod } from "@/hooks/useDateRange";
 
 interface DatesFilterContextType {
-  loading: boolean;
+  availableYears: string[];
+  getAvailableMonths: (year: number) => { value: string; label: string }[];
+  selectedMonth: number;
+  selectedYear: number;
+  setSelectedMonth: Dispatch<SetStateAction<number>>;
+  setSelectedYear: Dispatch<SetStateAction<number>>;
 }
 
 export const datesFilterContext = createContext<DatesFilterContextType | null>(
@@ -27,13 +28,41 @@ export const DatesFilterProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [loading, setLoading] = useState(false);
+  const { company } = useCompanySession();
+  const initialYear = company?.emisor_electronico_desde
+    ? new Date(company.emisor_electronico_desde).getFullYear()
+    : new Date().getFullYear();
+
+  const initialMonth = company?.emisor_electronico_desde
+    ? new Date(company.emisor_electronico_desde).getMonth() + 1
+    : new Date().getMonth() + 1;
+
+  const {
+    availableYears,
+    getAvailableMonths,
+    selectedMonth,
+    selectedYear,
+    setSelectedMonth,
+    setSelectedYear,
+  } = useDatePeriod({ initialMonth, initialYear });
 
   const value = useMemo(
     () => ({
-      loading,
+      availableYears,
+      getAvailableMonths,
+      selectedMonth,
+      selectedYear,
+      setSelectedMonth,
+      setSelectedYear,
     }),
-    [loading]
+    [
+      availableYears,
+      getAvailableMonths,
+      selectedMonth,
+      selectedYear,
+      setSelectedMonth,
+      setSelectedYear,
+    ]
   );
 
   return (

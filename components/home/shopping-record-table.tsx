@@ -18,87 +18,80 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Dispatch, SetStateAction } from "react";
 import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { DataTableSkeletonTest } from "./table-skeleton";
-import { defaultDate } from "@/utils/default-date";
-import { months } from "@/constants/dates";
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { exportToExcel } from "@/utils/export-excel";
 import { homeViewTable, transformData } from "@/utils/change-name";
-
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-const years = [
-  {
-    label: `${currentYear}`,
-    value: `${currentYear}`,
-  },
-  {
-    label: `${currentYear - 1}`,
-    value: `${currentYear - 1}`,
-  },
-];
+import { useDatesFilter } from "@/context/dates-filter-context";
 
 interface Props {
-  setYear: Dispatch<SetStateAction<string>>;
-  setMonth: Dispatch<SetStateAction<string>>;
   receipts: FormatedTotalAmountReceipts[];
   loading: boolean;
   totalAmountofAll: number;
 }
 
 export function ShoppingRecordTable({
-  setMonth,
-  setYear,
   receipts,
   loading,
   totalAmountofAll,
 }: Props) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formShopping = Object.fromEntries(new FormData(e.currentTarget));
-    const { year, month } = formShopping;
-    setMonth(month as string);
-    setYear(year as string);
-  };
-
-  const { adjustedYear, previousMonth } = defaultDate();
+  const {
+    availableYears,
+    getAvailableMonths,
+    selectedYear,
+    selectedMonth,
+    setSelectedMonth,
+    setSelectedYear,
+  } = useDatesFilter();
 
   return (
     <main className="flex flex-col">
       <div className="flex justify-between">
-        <form
-          className="flex items-center gap-x-2 mb-4"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex items-center gap-x-2 mb-4">
           <span className="text-sm ml-4 font-semibold">Periodo</span>
-          <Select name="year" defaultValue={adjustedYear}>
+          <Select
+            name="year"
+            value={
+              selectedYear.toString() === "0" ? "" : selectedYear.toString()
+            }
+            onValueChange={(value: string) =>
+              setSelectedYear(parseInt(value, 10))
+            }
+          >
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Seleccionar año" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Año</SelectLabel>
-                {years.map(({ label, value }) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
+                {availableYears.map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
                   </SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
           </Select>
 
-          <Select name="month" defaultValue={previousMonth}>
+          <Select
+            name="month"
+            value={
+              selectedMonth.toString() === "0" ? "" : selectedMonth.toString()
+            }
+            onValueChange={(value: string) =>
+              setSelectedMonth(parseInt(value, 10))
+            }
+          >
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Seleccionar mes" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Mes</SelectLabel>
-                {months.map(({ label, value }) => (
+                {getAvailableMonths(selectedYear).map(({ label, value }) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>
@@ -106,7 +99,6 @@ export function ShoppingRecordTable({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button>Buscar</Button>
         </form>
         <Button
           variant="outline"

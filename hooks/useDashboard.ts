@@ -1,9 +1,9 @@
 import { backend_url } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
+import { useDatesFilter } from "@/context/dates-filter-context";
 import { useUserInfo } from "@/context/user-context";
 import { ReceiptSchemaIN } from "@/lib/validations/receipt";
 import { calculateTotalCards, calculateTotals } from "@/utils/calculateTotals";
-import { defaultDate } from "@/utils/default-date";
 import { useCallback, useEffect, useState } from "react";
 
 interface Props {
@@ -42,11 +42,9 @@ export function useDashboard() {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [receipts, setReceipts] = useState<FormatedTotalAmountReceipts[]>([]);
-  const { adjustedYear, previousMonth } = defaultDate();
   const [loading, setLoading] = useState(false);
-  const [month, setMonth] = useState(previousMonth);
-  const [year, setYear] = useState(adjustedYear);
   const [cardsInfo, setCardsInfo] = useState<CardsInfoType[]>([]);
+  const { selectedMonth, selectedYear } = useDatesFilter();
 
   const getData = useCallback(async () => {
     if (!company) return;
@@ -54,8 +52,8 @@ export function useDashboard() {
     setLoading(true);
 
     const queryParams = new URLSearchParams();
-    if (year) queryParams.append("year", year.toString());
-    if (month) queryParams.append("month", month.toString());
+    if (selectedYear) queryParams.append("year", selectedYear.toString());
+    if (selectedMonth) queryParams.append("month", selectedMonth.toString());
     const url = `${backend_url}/api/documents/report-1?${queryParams}`;
 
     try {
@@ -67,8 +65,7 @@ export function useDashboard() {
       });
 
       if (!res.ok) {
-        console.error("Fetch error:", res.statusText);
-        return;
+        throw new Error("Error al traer los datos");
       }
 
       const data: Props = await res.json();
@@ -122,15 +119,15 @@ export function useDashboard() {
       ]);
       setReceipts(formatedReceipts);
     } catch (error) {
-      console.error("Fetch error:", error);
+      throw new Error("Error al traer los datos");
     } finally {
       setLoading(false);
     }
-  }, [company, month, tokenBack, year]);
+  }, [company, selectedMonth, selectedYear, tokenBack]);
 
   useEffect(() => {
     getData();
   }, [getData]);
 
-  return { receipts, setMonth, setYear, loading, cardsInfo };
+  return { receipts, loading, cardsInfo };
 }

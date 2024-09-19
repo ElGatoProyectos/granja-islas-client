@@ -27,7 +27,7 @@ import { paginationSchema } from "@/lib/validations/pagination";
 import { typesSpanishFormat } from "@/constants/type-document";
 import { getSuppliers } from "@/service/suppliers";
 import { formatDate } from "@/utils/format-date";
-import { formatWithCommas } from "@/utils/format-number-comas";
+import { useDatesFilter } from "../dates-filter-context";
 
 interface ReceiptContextType {
   receipts: ReceiptSchemaIN[];
@@ -41,10 +41,14 @@ interface ReceiptContextType {
   setCurrentPage: Dispatch<SetStateAction<number>>;
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
-  month: string;
-  setMonth: Dispatch<SetStateAction<string>>;
-  year: string;
-  setYear: Dispatch<SetStateAction<string>>;
+
+  availableYears: string[];
+  getAvailableMonths: (year: number) => { value: string; label: string }[];
+  selectedMonth: number;
+  selectedYear: number;
+  setSelectedMonth: Dispatch<SetStateAction<number>>;
+  setSelectedYear: Dispatch<SetStateAction<number>>;
+
   idSupplier: string;
   setIdSupplier: Dispatch<SetStateAction<string>>;
   idsTypeDocument: string;
@@ -72,20 +76,25 @@ export const ReceiptProvider = ({
   const [totalElements, setTotalElements] = useState(0);
   const [search, setSearch] = useState("");
   const input = useDebounce(search);
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
   const [idSupplier, setIdSupplier] = useState("");
   const [supplierFilter, setsupplierFilter] = useState<SupplierSchemaFilter[]>(
     []
   );
   const [idsTypeDocument, setIdsTypeDocument] = useState("");
   const [typesPayment, setTypesPayment] = useState("");
+  const {
+    selectedMonth,
+    selectedYear,
+    availableYears,
+    getAvailableMonths,
+    setSelectedMonth,
+    setSelectedYear,
+  } = useDatesFilter();
 
   const getFilters = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
     const suppliers = await getSuppliers({ ruc: company.ruc, tokenBack });
-
     const formatFilterSupplier = supplierArraySchemaFilter.parse(
       suppliers.payload
     );
@@ -106,8 +115,8 @@ export const ReceiptProvider = ({
       if (currentPage) queryParams.append("page", currentPage.toString());
       if (limit) queryParams.append("limit", limit.toString());
       if (input) queryParams.append("filter", input);
-      if (month) queryParams.append("month", month);
-      if (year) queryParams.append("year", year);
+      if (selectedMonth) queryParams.append("month", selectedMonth.toString());
+      if (selectedYear) queryParams.append("year", selectedYear.toString());
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idsTypeDocument) queryParams.append("document_type", idsTypeDocument);
       if (typesPayment) queryParams.append("type_payment", typesPayment);
@@ -115,8 +124,6 @@ export const ReceiptProvider = ({
       const url = `${backend_url}/api/documents?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
-
-      console.log(url);
 
       const res = await fetch(url, {
         method: "GET",
@@ -152,7 +159,6 @@ export const ReceiptProvider = ({
         return document;
       });
 
-      console.log(updatedDocuments);
       setReceipts(updatedDocuments);
       setTotalPages(pageCount);
       setTotalElements(total);
@@ -169,8 +175,8 @@ export const ReceiptProvider = ({
     currentPage,
     limit,
     input,
-    month,
-    year,
+    selectedMonth,
+    selectedYear,
     idSupplier,
     idsTypeDocument,
     typesPayment,
@@ -190,8 +196,8 @@ export const ReceiptProvider = ({
       queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
-      if (month) queryParams.append("month", month);
-      if (year) queryParams.append("year", year);
+      if (selectedMonth) queryParams.append("month", selectedMonth.toString());
+      if (selectedYear) queryParams.append("year", selectedYear.toString());
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
       const url = `${backend_url}/api/documents?${queryParams
@@ -213,7 +219,6 @@ export const ReceiptProvider = ({
       }
 
       const { data } = paginationSchema.parse(payload);
-      console.log(data);
       const formatdata = receiptArraySchemaIN.parse(data);
       const formatNumbersAndDates = formatdata.map((data) => ({
         ...data,
@@ -234,7 +239,7 @@ export const ReceiptProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, input, month, year, idSupplier]);
+  }, [company, tokenBack, input, selectedMonth, selectedYear, idSupplier]);
 
   const value = useMemo(
     () => ({
@@ -249,10 +254,14 @@ export const ReceiptProvider = ({
       totalElements,
       setSearch,
       search,
-      setMonth,
-      month,
-      setYear,
-      year,
+
+      selectedMonth,
+      selectedYear,
+      availableYears,
+      getAvailableMonths,
+      setSelectedMonth,
+      setSelectedYear,
+
       setIdSupplier,
       idSupplier,
       supplierFilter,
@@ -271,8 +280,12 @@ export const ReceiptProvider = ({
       totalPages,
       totalElements,
       search,
-      month,
-      year,
+      selectedMonth,
+      selectedYear,
+      availableYears,
+      getAvailableMonths,
+      setSelectedMonth,
+      setSelectedYear,
       idSupplier,
       supplierFilter,
       exportExcel,

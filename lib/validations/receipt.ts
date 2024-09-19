@@ -24,7 +24,7 @@ export const receiptSchemaIN = z.object({
   document_code: z.string(),
   document_description: z.string(),
   created_status: z.string(),
-  base_igv:z.number(),
+  base_igv: z.number(),
   Supplier: supplierSchemaIN,
 });
 
@@ -95,26 +95,28 @@ export const receiptSchemaUniqueIN = z.object({
         .parse(val);
     }),
   Supplier: supplierSchemaIN,
-  products: z.array(
-    z.object({
-      id: z.number(),
-      title: z.string(),
-      description: z.string().nullable(),
-      amount: z.number(),
-      price: z.number(),
-      igv: z.number(),
-      total: z.number(),
-      slug: z.string(),
-      unit_measure: z.string(),
-      supplier_id: z.number(),
-      document_type: z.string(),
-      document_id: z.number(),
-      status_deleted: z.boolean(),
-      issue_date: z.string(),
-      created_at: z.string(),
-      updated_at: z.string(),
-    })
-  ),
+  products: z
+    .array(
+      z.object({
+        id: z.number(),
+        title: z.string(),
+        description: z.string().nullable(),
+        amount: z.number(),
+        price: z.number(),
+        igv: z.number(),
+        total: z.number(),
+        slug: z.string(),
+        unit_measure: z.string(),
+        supplier_id: z.number(),
+        document_type: z.string(),
+        document_id: z.number(),
+        status_deleted: z.boolean(),
+        issue_date: z.string(),
+        created_at: z.string(),
+        updated_at: z.string(),
+      })
+    )
+    .optional(),
 });
 
 export type ReceiptSchemaUniqueIN = z.infer<typeof receiptSchemaUniqueIN>;

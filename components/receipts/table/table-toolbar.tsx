@@ -15,6 +15,7 @@ import { arrayOfTypesDocument } from "@/constants/type-document";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
+import { DatePickerNumber } from "@/components/date-picker-number";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -30,16 +31,19 @@ export function DataTableToolbar<TData>({
     search,
     supplierFilter,
     setIdSupplier,
-    setMonth,
-    setYear,
-    year,
-    month,
     getReceipts,
     loading,
     exportExcel,
     setIdsTypeDocument,
     setCurrentPage,
     setTypesPayment,
+
+    selectedMonth,
+    selectedYear,
+    availableYears,
+    getAvailableMonths,
+    setSelectedMonth,
+    setSelectedYear,
   } = useReceipt();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
@@ -66,11 +70,13 @@ export function DataTableToolbar<TData>({
           }}
           className="w-[150px] lg:w-[250px]"
         />
-        <DatePicker
-          setMonth={setMonth}
-          setYear={setYear}
-          year={year}
-          month={month}
+        <DatePickerNumber
+          setSelectedMonth={setSelectedMonth}
+          setSelectedYear={setSelectedYear}
+          selectedYear={selectedYear}
+          selectedMonth={selectedMonth}
+          availableYears={availableYears}
+          getAvailableMonths={getAvailableMonths}
           getData={getReceipts}
           title="Fecha"
         />

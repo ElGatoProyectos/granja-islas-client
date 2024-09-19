@@ -35,13 +35,16 @@ export function useReceiptDetail({
       });
 
       const data = await res.json();
+      console.log(data);
 
       const { error, payload } = responseSchema.parse(data);
       if (error) {
         throw new Error("Failed to fetch receipt detail");
       }
+      console.log(payload);
 
       const parsedReceipt = receiptSchemaUniqueIN.parse(payload);
+      console.log(parsedReceipt);
 
       setReceipt(parsedReceipt);
     } catch (error) {
