@@ -52,6 +52,7 @@ export default function Page() {
     specificChart2,
     specificChart3,
   } = useAnalyticsSpecific({ label: labels[0] });
+
   const [labelSelected] = labels.filter(
     (selected) => selected.id.toString() === labelId
   );

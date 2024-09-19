@@ -309,8 +309,7 @@ export default function Page() {
         </div>
       )}
       {receipt
-        ? CREDITO === receipt.bill_status_payment &&
-          receipt.pagos && (
+        ? receipt.pagos && (
             <div className="mt-6 flex gap-6">
               <Card className="w-2/4">
                 <CardHeader>
@@ -347,7 +346,7 @@ export default function Page() {
           )
         : null}
 
-      {receipt && receipt.products.length ? (
+      {receipt && receipt.products && receipt.products.length ? (
         <Card className="mt-6">
           <CardHeader>
             <CardTitle>Productos</CardTitle>

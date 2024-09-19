@@ -9,7 +9,8 @@ import { useDashboard } from "@/hooks/useDashboard";
 import { formatWithCommas } from "@/utils/format-number-comas";
 
 export default function Home() {
-  const { receipts, setMonth, setYear, loading, cardsInfo } = useDashboard();
+  const { receipts, loading, cardsInfo } = useDashboard();
+
   return (
     <LayerPage title="Registro de compras" className="pl-8">
       <ScrollArea className="w-[calc(100vw-3.75rem)] lg:w-full whitespace-nowrap rounded-md">
@@ -39,8 +40,6 @@ export default function Home() {
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
       <ShoppingRecordTable
-        setMonth={setMonth}
-        setYear={setYear}
         receipts={receipts}
         loading={loading}
         totalAmountofAll={cardsInfo.length ? cardsInfo[3].value : 0}
