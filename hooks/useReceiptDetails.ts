@@ -17,11 +17,12 @@ export function useReceiptDetail({
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [receipt, setReceipt] = useState<ReceiptSchemaUniqueIN>();
+  const [loading, setloading] = useState(false);
 
   const getReceiptDetail = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
-
+    setloading(true);
     const url = `${backend_url}/api/documents/detail/?document_code=${document_code}&document_id=${document_id}`;
 
     try {
@@ -35,20 +36,17 @@ export function useReceiptDetail({
       });
 
       const data = await res.json();
-      console.log(data);
-
       const { error, payload } = responseSchema.parse(data);
       if (error) {
         throw new Error("Failed to fetch receipt detail");
       }
-      console.log(payload);
 
       const parsedReceipt = receiptSchemaUniqueIN.parse(payload);
-      console.log(parsedReceipt);
-
       setReceipt(parsedReceipt);
     } catch (error) {
       throw new Error("Failed to fetch receipt detail");
+    } finally {
+      setloading(false);
     }
   }, [company, tokenBack, document_code, document_id]);
 
@@ -56,5 +54,5 @@ export function useReceiptDetail({
     getReceiptDetail();
   }, [getReceiptDetail]);
 
-  return { receipt };
+  return { receipt, loading };
 }

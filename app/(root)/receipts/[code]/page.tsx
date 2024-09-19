@@ -33,7 +33,7 @@ export default function Page() {
   const { code } = useParams();
   const parts = code.toString().split("-");
 
-  const { receipt } = useReceiptDetail({
+  const { receipt, loading } = useReceiptDetail({
     document_code: parts[1],
     document_id: parts[0],
   });
@@ -118,7 +118,9 @@ export default function Page() {
                 <span>Tipo</span>
                 <Separator orientation="vertical" className="h-4" />
                 <p className="text-muted-foreground capitalize">
-                  {receipt.document_description.toLowerCase()}
+                  {receipt.document_description.toLowerCase() === "nota_credito"
+                    ? "Nota de crédito"
+                    : receipt.document_description.toLowerCase()}
                 </p>
                 <Button
                   onClick={getPdf}
@@ -345,8 +347,23 @@ export default function Page() {
             </div>
           )
         : null}
-
-      {receipt && receipt.products && receipt.products.length ? (
+      {loading ? (
+        <Skeleton className="w-full h-[450px] mt-6" />
+      ) : receipt && receipt.products ? (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Productos</CardTitle>
+            <CardDescription>
+              En esta sección, puedes ver todos los productos asociados al
+              documento.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProductsOfReceipt products={receipt.products} />
+          </CardContent>
+        </Card>
+      ) : null}
+      {/* {receipt && receipt.products && receipt.products.length ? (
         <Card className="mt-6">
           <CardHeader>
             <CardTitle>Productos</CardTitle>
@@ -361,7 +378,7 @@ export default function Page() {
         </Card>
       ) : (
         <Skeleton className="w-full h-[450px] mt-6" />
-      )}
+      )} */}
     </LayerPage>
   );
 }
