@@ -154,7 +154,7 @@ export const DocumentLabelProvider = ({
     if (!tokenBack) return;
     setloading(true);
     const queryParams = new URLSearchParams();
-    if (currentPage) queryParams.append("page", currentPage.toString());
+    queryParams.append("page", "1");
     queryParams.append("limit", "10000");
     if (month) queryParams.append("month", month);
     if (year) queryParams.append("year", year);
@@ -189,7 +189,7 @@ export const DocumentLabelProvider = ({
     } finally {
       setloading(false);
     }
-  }, [company, currentPage, id, idSupplier, month, tokenBack, year]);
+  }, [company, id, idSupplier, month, tokenBack, year]);
 
   const value = useMemo(
     () => ({

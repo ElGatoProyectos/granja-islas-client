@@ -172,7 +172,7 @@ export const SupplierProductsProvider = ({
 
     try {
       const queryParams = new URLSearchParams();
-      if (currentPage) queryParams.append("page", currentPage.toString());
+      queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
@@ -218,7 +218,7 @@ export const SupplierProductsProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, id, currentPage, input, month, year, labelId]);
+  }, [company, tokenBack, id, input, month, year, labelId]);
 
   const value = useMemo(
     () => ({

@@ -161,7 +161,7 @@ export const PaymentProvider = ({
 
     try {
       const queryParams = new URLSearchParams();
-      if (currentPage) queryParams.append("page", currentPage.toString());
+      queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
       if (month) queryParams.append("month", month);
@@ -211,7 +211,7 @@ export const PaymentProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, currentPage, input, month, year, userId]);
+  }, [company, tokenBack, input, month, year, userId]);
 
   const updateState = useCallback(
     async ({

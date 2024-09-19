@@ -104,7 +104,7 @@ export const SupplierProvider = ({
 
     try {
       const queryParams = new URLSearchParams();
-      if (page) queryParams.append("page", page.toString());
+      queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("name", input);
       if (statusSupp) queryParams.append("status_group", statusSupp);
@@ -131,7 +131,7 @@ export const SupplierProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, input, page, statusSupp, tokenBack]);
+  }, [company, input, statusSupp, tokenBack]);
 
   const syncSuppliersData = useCallback(async () => {
     if (!company) return;
