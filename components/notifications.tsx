@@ -25,7 +25,6 @@ import Link from "next/link";
 import { Card } from "./ui/card";
 
 export function Notifications() {
-  /* socket */
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const socket: MutableRefObject<Socket | null> = useRef(null);
