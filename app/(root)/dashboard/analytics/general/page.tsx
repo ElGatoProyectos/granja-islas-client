@@ -49,7 +49,7 @@ export default function Page() {
                   onClick={() => {
                     setLabelId(id.toString());
                   }}
-                  className="hover:bg-background/30"
+                  className="hover:bg-background/30 w-fit "
                 >
                   {title}
                 </TabsTrigger>

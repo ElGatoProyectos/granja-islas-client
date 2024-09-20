@@ -19,9 +19,14 @@ export const columns: ColumnDef<SupplierProductsFormatSchema>[] = [
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
       return (
-        <p className="capitalize max-w-[250px] line-clamp-2">
+        <Link
+          className={`${buttonVariants({
+            variant: "link",
+          })} max-w-[180px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+          href={`/dashboard/products/${row.original.id}`}
+        >
           {title.toLowerCase()}
-        </p>
+        </Link>
       );
     },
     enableSorting: false,

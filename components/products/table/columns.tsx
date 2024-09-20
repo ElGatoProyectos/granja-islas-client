@@ -63,17 +63,17 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     },
     enableSorting: false,
   },
-  {
-    accessorKey: "ruc",
-    accessorFn: (row) => `${row.Supplier.ruc}`,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="RUC" />
-    ),
-    cell: ({ row }) => {
-      return <span className="w-fit truncate">{row.getValue("ruc")}</span>;
-    },
-    enableSorting: false,
-  },
+  // {
+  //   accessorKey: "ruc",
+  //   accessorFn: (row) => `${row.Supplier.ruc}`,
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="RUC" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     return <span className="w-fit truncate">{row.getValue("ruc")}</span>;
+  //   },
+  //   enableSorting: false,
+  // },
   {
     accessorKey: "business_name",
     accessorFn: (row) => `${row.Supplier.business_name}`,
@@ -163,9 +163,8 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     },
     enableSorting: false,
   },
-
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <DataTableRowActions row={row} />,
+  // },
 ];
