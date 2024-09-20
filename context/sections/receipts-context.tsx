@@ -115,8 +115,17 @@ export const ReceiptProvider = ({
       if (currentPage) queryParams.append("page", currentPage.toString());
       if (limit) queryParams.append("limit", limit.toString());
       if (input) queryParams.append("filter", input);
-      if (selectedMonth) queryParams.append("month", selectedMonth.toString());
-      if (selectedYear) queryParams.append("year", selectedYear.toString());
+      if (selectedMonth)
+        queryParams.append(
+          "month",
+          selectedMonth === 0 ? "" : selectedMonth.toString()
+        );
+
+      if (selectedYear)
+        queryParams.append(
+          "year",
+          selectedYear === 0 ? "" : selectedYear.toString()
+        );
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idsTypeDocument) queryParams.append("document_type", idsTypeDocument);
       if (typesPayment) queryParams.append("type_payment", typesPayment);

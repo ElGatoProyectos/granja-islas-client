@@ -27,7 +27,6 @@ interface Props {
   selectedYear: number;
   setSelectedMonth: Dispatch<SetStateAction<number>>;
   setSelectedYear: Dispatch<SetStateAction<number>>;
-  getData: () => void;
   title: string;
 }
 
@@ -38,13 +37,11 @@ export function DatePickerNumber({
   selectedYear,
   setSelectedMonth,
   setSelectedYear,
-  getData,
   title,
 }: Props) {
   const resetValues = () => {
     setSelectedMonth(0);
     setSelectedYear(0);
-    getData();
   };
 
   const [open, setOpen] = useState(false);

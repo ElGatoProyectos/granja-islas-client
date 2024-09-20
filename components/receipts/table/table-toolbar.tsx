@@ -9,13 +9,13 @@ import { useReceipt } from "@/context/sections/receipts-context";
 import { receiptViewTable, transformData } from "@/utils/change-name";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DatePicker } from "@/components/date-picker";
-import { exportToExcel, exportToExcel2 } from "@/utils/export-excel";
+import { exportToExcel2 } from "@/utils/export-excel";
 import { arrayOfTypesDocument } from "@/constants/type-document";
 import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
 import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
 import { DatePickerNumber } from "@/components/date-picker-number";
+import { useToast } from "@/components/ui/use-toast";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -31,7 +31,6 @@ export function DataTableToolbar<TData>({
     search,
     supplierFilter,
     setIdSupplier,
-    getReceipts,
     loading,
     exportExcel,
     setIdsTypeDocument,
@@ -45,6 +44,8 @@ export function DataTableToolbar<TData>({
     setSelectedMonth,
     setSelectedYear,
   } = useReceipt();
+
+  const { toast } = useToast();
 
   const options = supplierFilter.map(({ id, business_name }) => ({
     value: id.toString(),
@@ -77,7 +78,6 @@ export function DataTableToolbar<TData>({
           selectedMonth={selectedMonth}
           availableYears={availableYears}
           getAvailableMonths={getAvailableMonths}
-          getData={getReceipts}
           title="Fecha"
         />
         {table.getColumn("business_name") && (
@@ -126,27 +126,34 @@ export function DataTableToolbar<TData>({
               type="button"
               disabled={loading}
               onClick={async () => {
-                const products = await exportExcel();
-                const currentDate = new Date().toISOString().split("T")[0];
-                exportToExcel2({
-                  data: transformData(products, receiptViewTable),
-                  filename: `Comprobantes ${currentDate}`,
-                  columnOrder: [
-                    "Serie",
-                    "Nro.",
-                    "Tipo de documento",
-                    "Proveedor",
-                    "RUC",
-                    "Emisión",
-                    "Moneda",
-                    "Monto",
-                    "IGV",
-                    "%IGV",
-                    "Importe Total",
-                    "Tipo de pago",
-                    "Estado",
-                  ],
-                });
+                try {
+                  const products = await exportExcel();
+                  const currentDate = new Date().toISOString().split("T")[0];
+                  exportToExcel2({
+                    data: transformData(products, receiptViewTable),
+                    filename: `Comprobantes ${currentDate}`,
+                    columnOrder: [
+                      "Serie",
+                      "Nro.",
+                      "Tipo de documento",
+                      "Proveedor",
+                      "RUC",
+                      "Emisión",
+                      "Moneda",
+                      "Monto",
+                      "IGV",
+                      "%IGV",
+                      "Importe Total",
+                      "Tipo de pago",
+                      "Estado",
+                    ],
+                  });
+                } catch (e) {
+                  toast({
+                    variant: "destructive",
+                    title: `Ocurrio un error al descargar el pdf, intente otra vez.`,
+                  });
+                }
               }}
             >
               <Download className="h-4 w-4 mr-2" />
