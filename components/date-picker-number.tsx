@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar, RotateCcw, X } from "lucide-react";
+import { Calendar, X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
