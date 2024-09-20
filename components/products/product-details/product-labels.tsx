@@ -81,7 +81,7 @@ export function ProductLabels({
     }
   };
   return (
-    <div className="mb-4 flex gap-2">
+    <div className="mb-4 flex gap-2 flex-wrap">
       {productDetails.labels.map(({ id, title }) => (
         <Badge key={id} className="text-sm" variant="secondary">
           {title}

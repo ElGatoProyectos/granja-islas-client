@@ -37,67 +37,8 @@ export default function Page() {
 
   const currentYear = format(new Date(), "yyyy");
   return (
-    <LayerPage title="Análisis por etiqueta">
-      <Tabs className="w-full mt-6 h-full" value={labelId}>
-        {labels.length ? (
-          <ScrollArea className="w-[calc(100vw-4rem)] lg:w-[calc(100vw-20rem)] whitespace-nowrap rounded-md pb-3">
-            <TabsList className="flex w-max">
-              {labels.map(({ id, title }) => (
-                <TabsTrigger
-                  key={id}
-                  value={id.toString()}
-                  onClick={() => {
-                    setLabelId(id.toString());
-                  }}
-                  className="hover:bg-background/30 w-fit "
-                >
-                  {title}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        ) : (
-          <Link
-            href="/dashboard/settings"
-            className={buttonVariants({ variant: "link" })}
-          >
-            Crea una etiqueta para comenzar
-          </Link>
-        )}
-
-        <TabsContent value={labelId ?? ""}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-bold">
-                  Principales proveedores
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SuppliersTable
-                  suppliers={generalAnalytics?.principalSuppliers}
-                />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-bold">
-                  Compras por mes de {currentYear}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex justify-center">
-                <PurchasesPerMoth buyforMonth={generalAnalytics?.buyForMonth} />
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+    <LayerPage title="Detalles generales">
       <div className="mt-6 w-full flex flex-col">
-        <h1 className="text-2xl md:text-3xl font-bold ml-8 mb-6">
-          Detalles generales
-        </h1>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <SuppliersBarchart
             setRadio={setRadio}
@@ -110,6 +51,70 @@ export default function Page() {
             expComposition={expComposition}
           />
         </div>
+      </div>
+
+      <div className="mt-8 w-full flex flex-col">
+        <h2 className="text-2xl md:text-3xl font-bold ml-8 mb-6">
+          Análisis por etiqueta
+        </h2>
+
+        <Tabs className="w-full h-full" value={labelId}>
+          {labels.length ? (
+            <ScrollArea className="w-[calc(100vw-4rem)] lg:w-[calc(100vw-20rem)] whitespace-nowrap rounded-md pb-3">
+              <TabsList className="flex w-max">
+                {labels.map(({ id, title }) => (
+                  <TabsTrigger
+                    key={id}
+                    value={id.toString()}
+                    onClick={() => {
+                      setLabelId(id.toString());
+                    }}
+                    className="hover:bg-background/30 w-fit "
+                  >
+                    {title}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          ) : (
+            <Link
+              href="/dashboard/settings"
+              className={buttonVariants({ variant: "link" })}
+            >
+              Crea una etiqueta para comenzar
+            </Link>
+          )}
+
+          <TabsContent value={labelId ?? ""}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-bold">
+                    Principales proveedores
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SuppliersTable
+                    suppliers={generalAnalytics?.principalSuppliers}
+                  />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-bold">
+                    Compras por mes de {currentYear}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-center">
+                  <PurchasesPerMoth
+                    buyforMonth={generalAnalytics?.buyForMonth}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </LayerPage>
   );

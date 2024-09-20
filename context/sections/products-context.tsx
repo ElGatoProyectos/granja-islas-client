@@ -139,6 +139,7 @@ export const ProductProvider = ({
       if (error) {
         throw new Error("Failed to fetch companies");
       }
+
       const {
         data,
         limit: MaxLimit,

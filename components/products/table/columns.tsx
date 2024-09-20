@@ -8,6 +8,8 @@ import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CirclePlus } from "lucide-react";
 
 export const columns: ColumnDef<ProductSchemaINFormated>[] = [
   {
@@ -29,6 +31,47 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
         </Link>
       );
     },
+  },
+  {
+    accessorKey: "labels",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Etiquetas"
+        href="/dashboard/settings"
+      />
+    ),
+    cell: ({ row }) => {
+      const labels = row.original.labels;
+
+      return (
+        <div className="w-[150px] flex flex-wrap gap-2 items-center">
+          {!labels.length ? (
+            <Link
+              href={`/dashboard/products/${row.original.id}`}
+              className={`${buttonVariants({ variant: "link" })} !p-0`}
+            >
+              Etiquetar
+            </Link>
+          ) : (
+            <>
+              {labels.slice(0, 2).map(({ id, title }) => (
+                <Badge key={id} variant="secondary">
+                  <p className="max-w-[130px] truncate leading-snug">{title}</p>
+                </Badge>
+              ))}
+              {labels.length > 3 && (
+                <Badge variant="outline">+ {labels.length}</Badge>
+              )}
+              <Link href={`/dashboard/products/${row.original.id}`}>
+                <CirclePlus className="size-4 stroke-primary" />
+              </Link>
+            </>
+          )}
+        </div>
+      );
+    },
+    enableSorting: false,
   },
   {
     accessorKey: "code",

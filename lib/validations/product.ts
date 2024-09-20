@@ -26,6 +26,17 @@ export const productSchemaIN = z.object({
 export const productTableReport = z.object({
   document: receiptSchemaIN.omit({ Supplier: true }),
   product: productSchemaIN,
+  labels: z.array(
+    z.object({
+      id: z.number(),
+      company_id: z.number(),
+      user_created_id: z.number(),
+      title: z.string(),
+      slug: z.string(),
+      description: z.string().nullable(),
+      status_deleted: z.boolean(),
+    })
+  ),
 });
 export type ProductTableReport = z.infer<typeof productTableReport>;
 
@@ -36,11 +47,12 @@ export type ProductSchemaIN = z.infer<typeof productSchemaIN>;
 
 /* falta terminar */
 export function formatProductTable(data: ProductTableReport[]) {
-  return data.map(({ document, product }) => {
+  return data.map(({ document, product, labels }) => {
     return {
       document_code: document.document_code,
       code: document.code,
       ...product,
+      labels,
     };
   });
 }
@@ -48,6 +60,17 @@ export function formatProductTable(data: ProductTableReport[]) {
 export const productSchemaINFormated = productSchemaIN.extend({
   document_code: z.string(),
   code: z.string(),
+  labels: z.array(
+    z.object({
+      id: z.number(),
+      company_id: z.number(),
+      user_created_id: z.number(),
+      title: z.string(),
+      slug: z.string(),
+      description: z.string().nullable(),
+      status_deleted: z.boolean(),
+    })
+  ),
 });
 
 export const productSchemaArrayINFormated = z.array(productSchemaINFormated);

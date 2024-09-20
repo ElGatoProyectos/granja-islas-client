@@ -32,7 +32,7 @@ export function ProductDetails() {
             <h1 className="text-3xl font-bold capitalize line-clamp-1">
               {productDetails.product.title.toLowerCase()}
             </h1>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {productDetails.labels.map(({ id, title }) => (
                 <Link key={id} href={`/dashboard/list/${id}`}>
                   <Badge className="cursor-pointer">{title}</Badge>
