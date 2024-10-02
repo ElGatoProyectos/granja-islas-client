@@ -54,7 +54,8 @@ interface PaymentContextType {
     idVoucher: string;
     statusNew: string;
   }) => Promise<void>;
-  exportExcel: () => any;
+  exportExcel: () => void;
+  deleteVoucher: (idVoucher: number) => void;
 }
 
 export const PaymentContext = createContext<PaymentContextType | null>(null);
@@ -242,6 +243,32 @@ export const PaymentProvider = ({
     [company, getPayments, tokenBack]
   );
 
+  const deleteVoucher = useCallback(
+    async (idVoucher: number) => {
+      if (!company) return;
+      if (!tokenBack) return;
+
+      const url = `${backend_url}/api/vouchers/${idVoucher}`;
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${tokenBack}`,
+          ruc: company.ruc,
+        },
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        if (data.error) {
+          throw new Error("Error deleting voucher");
+        }
+      }
+
+      await getPayments();
+    },
+    [company, getPayments, tokenBack]
+  );
+
   const value = useMemo(
     () => ({
       payments,
@@ -263,6 +290,7 @@ export const PaymentProvider = ({
       setUserId,
       updateState,
       exportExcel,
+      deleteVoucher,
     }),
     [
       payments,
@@ -276,9 +304,9 @@ export const PaymentProvider = ({
       month,
       year,
       usersFilters,
-      setUserId,
       updateState,
       exportExcel,
+      deleteVoucher,
     ]
   );
   return (
