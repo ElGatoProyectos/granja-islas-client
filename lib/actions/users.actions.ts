@@ -1,7 +1,7 @@
 "use server";
 
 import { authOptions } from "@/app/api/auth-options";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { getServerSession } from "next-auth";
 import { UserSchemaIN } from "../validations/user";
 import { revalidatePath } from "next/cache";
@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 export async function getUsers(): Promise<UserSchemaIN[]> {
   const session = await getServerSession(authOptions);
   try {
-    const res = await fetch(`${backend_url}/api/users`, {
+    const res = await fetch(`${BACKEND_URL}/api/users`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${session.user.tokenBack}`,
@@ -37,7 +37,7 @@ export async function createUser({
   tokenBack: string;
   userFormInfo: any;
 }) {
-  const res = await fetch(`${backend_url}/api/users`, {
+  const res = await fetch(`${BACKEND_URL}/api/users`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${tokenBack}`,
@@ -65,7 +65,7 @@ export async function updateUser({
   if (!userId) throw new Error("No id for update user");
 
   try {
-    const res = await fetch(`${backend_url}/api/users/${userId}`, {
+    const res = await fetch(`${BACKEND_URL}/api/users/${userId}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -91,7 +91,7 @@ export async function deleteUser({
   userId: number;
 }) {
   try {
-    const res = await fetch(`${backend_url}/api/users/${userId}`, {
+    const res = await fetch(`${BACKEND_URL}/api/users/${userId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${tokenBack}`,

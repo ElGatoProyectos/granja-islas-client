@@ -48,7 +48,7 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
 import { createUser, updateUser } from "@/lib/actions/users.actions";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { Label } from "../ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
@@ -184,7 +184,7 @@ export function UserForm({ type, userInfo }: Props) {
                     <div className="md:max-w-[100px]">
                       <Avatar className={"h-[100px] w-[100px]"}>
                         <AvatarImage
-                          src={`${backend_url}/api/users/file/${userInfo?.id}`}
+                          src={`${BACKEND_URL}/api/users/file/${userInfo?.id}`}
                           className="object-cover"
                         />
                         <AvatarFallback className="text-3xl capitalize">

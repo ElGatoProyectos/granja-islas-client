@@ -1,5 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { useCallback, useState } from "react";
@@ -29,7 +29,7 @@ export function useSyncSunat() {
     )
       return;
     setLoading(true);
-    const url = `${backend_url}/api/sunat/synchronize`;
+    const url = `${BACKEND_URL}/api/sunat/synchronize`;
 
     const JSONdata = JSON.stringify({
       start: `${yearStart}-${monthStart}`,

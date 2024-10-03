@@ -16,7 +16,7 @@ import {
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { PEN } from "@/constants/currency";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ export function Notifications() {
 
   useEffect(() => {
     if (company && tokenBack) {
-      socket.current = io(`${backend_url}`);
+      socket.current = io(`${BACKEND_URL}`);
       socket.current.on("notification", (data: NotificationsSchemaIN) => {
         setNotifications(data.payload);
       });

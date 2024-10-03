@@ -1,7 +1,7 @@
 "use server";
 
 import { authOptions } from "@/app/api/auth-options";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { getServerSession } from "next-auth";
 import { CompanySchemaIN } from "../validations/auth/company";
 import { revalidatePath } from "next/cache";
@@ -14,7 +14,7 @@ export async function getCompany({
   const session = await getServerSession(authOptions);
 
   try {
-    const res = await fetch(`${backend_url}/api/companies/${idCompany}`, {
+    const res = await fetch(`${BACKEND_URL}/api/companies/${idCompany}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${session.user.tokenBack}`,
@@ -41,7 +41,7 @@ export const getCompanies = async (): Promise<
   const session = await getServerSession(authOptions);
 
   try {
-    const res = await fetch(`${backend_url}/api/companies`, {
+    const res = await fetch(`${BACKEND_URL}/api/companies`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${session.user.tokenBack}`,
@@ -70,7 +70,7 @@ export async function deleteCompany({
   tokenBack: string;
   password: string;
 }) {
-  const res = await fetch(`${backend_url}/api/companies/delete/${companyId}`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies/delete/${companyId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${tokenBack}`,
@@ -102,7 +102,7 @@ export async function createCompany({
   tokenBack: string;
   formData: FormData;
 }) {
-  const res = await fetch(`${backend_url}/api/companies`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${tokenBack}`,
@@ -131,7 +131,7 @@ export async function updateCompany({
   formData: FormData;
 }) {
   if (!companyId) return;
-  const res = await fetch(`${backend_url}/api/companies/${companyId}`, {
+  const res = await fetch(`${BACKEND_URL}/api/companies/${companyId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${tokenBack}`,

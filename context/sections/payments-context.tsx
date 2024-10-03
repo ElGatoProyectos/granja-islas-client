@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import {
   createContext,
   Dispatch,
@@ -112,7 +112,7 @@ export const PaymentProvider = ({
       if (year) queryParams.append("year", year);
       if (userId) queryParams.append("user_group_id", userId);
 
-      const url = `${backend_url}/api/vouchers/report?${queryParams
+      const url = `${BACKEND_URL}/api/vouchers/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -169,7 +169,7 @@ export const PaymentProvider = ({
       if (year) queryParams.append("year", year);
       if (userId) queryParams.append("user_group_id", userId);
 
-      const url = `${backend_url}/api/vouchers/report?${queryParams
+      const url = `${BACKEND_URL}/api/vouchers/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -225,7 +225,7 @@ export const PaymentProvider = ({
       if (!company) return;
       if (!tokenBack) return;
 
-      const url = `${backend_url}/api/vouchers/${idVoucher}?status=${statusNew}`;
+      const url = `${BACKEND_URL}/api/vouchers/${idVoucher}?status=${statusNew}`;
       const res = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -248,7 +248,7 @@ export const PaymentProvider = ({
       if (!company) return;
       if (!tokenBack) return;
 
-      const url = `${backend_url}/api/vouchers/${idVoucher}`;
+      const url = `${BACKEND_URL}/api/vouchers/${idVoucher}`;
       const res = await fetch(url, {
         method: "DELETE",
         headers: {

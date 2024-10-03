@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { responseSchema } from "@/lib/validations/response";
@@ -16,7 +16,7 @@ export function useMeasure() {
     if (!tokenBack) return;
     setLoading(true);
     try {
-      const res = await fetch(`${backend_url}/api/products/units`, {
+      const res = await fetch(`${BACKEND_URL}/api/products/units`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,

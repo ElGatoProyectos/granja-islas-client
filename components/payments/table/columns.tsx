@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { USD } from "@/constants/currency";
 import Link from "next/link";
@@ -150,7 +150,7 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
         <Dialog>
           <DialogTrigger asChild>
             <img
-              src={`${backend_url}/api/vouchers/${id}/image`}
+              src={`${BACKEND_URL}/api/vouchers/${id}/image`}
               alt="voucher"
               className="w-10 h-10 rounded-full cursor-pointer  object-contain"
             />
@@ -158,7 +158,7 @@ export const columns: ColumnDef<PaymentGeneralSchemaIN>[] = [
           <DialogContent className="max-w-5xl border-0 bg-transparent p-0">
             <DialogTitle></DialogTitle>
             <img
-              src={`${backend_url}/api/vouchers/${id}/image`}
+              src={`${BACKEND_URL}/api/vouchers/${id}/image`}
               alt="voucher"
               className="h-full w-full object-contain"
             />

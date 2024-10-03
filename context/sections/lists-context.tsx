@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import {
   supplierArraySchemaFilter,
   SupplierSchemaFilter,
@@ -82,7 +82,7 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
-      const url = `${backend_url}/api/labels/report?${queryParams
+      const url = `${BACKEND_URL}/api/labels/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -95,7 +95,7 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       /* filter suppliers */
-      const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
+      const urlSuppliers = `${BACKEND_URL}/api/suppliers/no-pagination`;
       const resSuppliers = await fetch(urlSuppliers, {
         method: "GET",
         headers: {
@@ -154,7 +154,7 @@ export const ListProvider = ({ children }: { children: React.ReactNode }) => {
       if (year) queryParams.append("year", year);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
-      const url = `${backend_url}/api/labels/report?${queryParams
+      const url = `${BACKEND_URL}/api/labels/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import {
   supplierArraySchemaFilter,
   SupplierSchemaFilter,
@@ -87,7 +87,7 @@ export const DocumentLabelProvider = ({
     try {
       /* suppliers filter */
       const resSuppliers = await fetch(
-        `${backend_url}/api/suppliers/no-pagination`,
+        `${BACKEND_URL}/api/suppliers/no-pagination`,
         {
           method: "GET",
           headers: {
@@ -105,7 +105,7 @@ export const DocumentLabelProvider = ({
       /* suppliers filter */
 
       const res = await fetch(
-        `${backend_url}/api/labels/${id as string}/documents?${queryParams
+        `${BACKEND_URL}/api/labels/${id as string}/documents?${queryParams
           .toString()
           .replace(/%2C/g, ",")}`,
         {
@@ -161,7 +161,7 @@ export const DocumentLabelProvider = ({
     if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
     try {
       const res = await fetch(
-        `${backend_url}/api/labels/${id as string}/documents?${queryParams
+        `${BACKEND_URL}/api/labels/${id as string}/documents?${queryParams
           .toString()
           .replace(/%2C/g, ",")}`,
         {

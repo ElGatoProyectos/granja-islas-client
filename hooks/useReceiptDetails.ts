@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import {
@@ -23,7 +23,7 @@ export function useReceiptDetail({
     if (!company) return;
     if (!tokenBack) return;
     setloading(true);
-    const url = `${backend_url}/api/documents/detail/?document_code=${document_code}&document_id=${document_id}`;
+    const url = `${BACKEND_URL}/api/documents/detail/?document_code=${document_code}&document_id=${document_id}`;
 
     try {
       const res = await fetch(url, {

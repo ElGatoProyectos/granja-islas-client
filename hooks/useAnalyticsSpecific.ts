@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import {
@@ -40,7 +40,7 @@ export function useAnalyticsSpecific({ label }: { label: LabelSchemaIN }) {
   const getMeasureSpecific2 = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
-    const res = await fetch(`${backend_url}/api/products/units`, {
+    const res = await fetch(`${BACKEND_URL}/api/products/units`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -72,13 +72,14 @@ export function useAnalyticsSpecific({ label }: { label: LabelSchemaIN }) {
     const queryParams = new URLSearchParams();
     if (filterMonth) queryParams.append("filter_month", filterMonth);
     if (labelId) queryParams.append("label_id", labelId);
-
+    console.log(filterMonth);
+    console.log(labelId);
     try {
-      const url1 = `${backend_url}/api/reports/specific-analysis-1?${queryParams}`;
-      const url2 = `${backend_url}/api/reports/specific-analysis-2?${queryParams}${
+      const url1 = `${BACKEND_URL}/api/reports/specific-analysis-1?${queryParams}`;
+      const url2 = `${BACKEND_URL}/api/reports/specific-analysis-2?${queryParams}${
         measureSelect ? `&filter_unit=${measureSelect}` : ""
       }`;
-      const url3 = `${backend_url}/api/reports/specific-analysis-3?${queryParams}`;
+      const url3 = `${BACKEND_URL}/api/reports/specific-analysis-3?${queryParams}`;
 
       const fetchReport = async (url: string) => {
         const res = await fetch(url, {
@@ -96,6 +97,9 @@ export function useAnalyticsSpecific({ label }: { label: LabelSchemaIN }) {
         fetchReport(url2),
         fetchReport(url3),
       ]);
+
+      console.log(resJSON1);
+      console.log(resJSON2);
 
       const parse1 = responseArraySchema.parse(resJSON1);
       const parse2 = responseArraySchema.parse(resJSON2);

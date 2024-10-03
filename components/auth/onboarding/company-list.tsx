@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardHeader } from "@/components/ui/card";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { CompanyForm } from "./company-form";
 import { CompanyDelete } from "./company-delete";
 import { useCompanySession } from "@/context/company-context";
@@ -36,7 +36,7 @@ export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
             <CardHeader className="flex-row justify-start items-center space-y-0 p-0 h-[82px]">
               <Avatar className={"h-10 w-10 mr-3"}>
                 <AvatarImage
-                  src={`${backend_url}/api/companies/file/${
+                  src={`${BACKEND_URL}/api/companies/file/${
                     company.id
                   }?t=${new Date().getTime()}`}
                   className="object-cover"

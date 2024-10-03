@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import {
   supplierArraySchemaFilter,
   SupplierSchemaFilter,
@@ -122,7 +122,7 @@ export const ProductProvider = ({
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idLabel) queryParams.append("label_group_id", idLabel);
 
-      const url = `${backend_url}/api/products/report?${queryParams
+      const url = `${BACKEND_URL}/api/products/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -191,7 +191,7 @@ export const ProductProvider = ({
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idLabel) queryParams.append("label_group_id", idLabel);
 
-      const url = `${backend_url}/api/products/report?${queryParams
+      const url = `${BACKEND_URL}/api/products/report?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 

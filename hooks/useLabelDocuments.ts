@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import {
@@ -38,7 +38,7 @@ export function useLabelDocuments({ labelId }: { labelId: string }) {
     if (year) queryParams.append("year", year);
     try {
       const res = await fetch(
-        `${backend_url}/api/labels/${labelId}/documents`,
+        `${BACKEND_URL}/api/labels/${labelId}/documents`,
         {
           method: "GET",
           headers: {

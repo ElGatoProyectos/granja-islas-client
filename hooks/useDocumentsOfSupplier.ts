@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { typesSpanishFormat } from "@/constants/type-document";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
@@ -29,7 +29,7 @@ export function useDocumentsOfSupplier() {
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       queryParams.append("document_type", "BILL");
 
-      const url = `${backend_url}/api/documents?${queryParams
+      const url = `${BACKEND_URL}/api/documents?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 

@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { ScrollArea } from "@/components/ui/scroll-area";

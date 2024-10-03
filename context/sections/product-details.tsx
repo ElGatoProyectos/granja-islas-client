@@ -14,7 +14,7 @@ import {
 } from "react";
 import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { responseSchema } from "@/lib/validations/response";
 import { useParams } from "next/navigation";
 
@@ -44,7 +44,7 @@ export const ProductDetailsProvider = ({
     if (!tokenBack) return;
 
     try {
-      const res = await fetch(`${backend_url}/api/products/${id_product}`, {
+      const res = await fetch(`${BACKEND_URL}/api/products/${id_product}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,
@@ -72,7 +72,7 @@ export const ProductDetailsProvider = ({
       if (!company) return;
       if (!tokenBack) return;
       const res = await fetch(
-        `${backend_url}/api//products/${id_product}/labels/${label_id}`,
+        `${BACKEND_URL}/api//products/${id_product}/labels/${label_id}`,
         {
           method: "DELETE",
           headers: {

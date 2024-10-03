@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import {
   createContext,
   Dispatch,
@@ -96,7 +96,7 @@ export const SupplierProductsProvider = ({
       if (year) queryParams.append("year", year);
       if (labelId) queryParams.append("label_group_id", labelId);
 
-      const url = `${backend_url}/api/suppliers/${id}/products?${queryParams
+      const url = `${BACKEND_URL}/api/suppliers/${id}/products?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -109,7 +109,7 @@ export const SupplierProductsProvider = ({
       });
 
       /* filterUsers */
-      const resUsers = await fetch(`${backend_url}/api/labels`, {
+      const resUsers = await fetch(`${BACKEND_URL}/api/labels`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,
@@ -179,7 +179,7 @@ export const SupplierProductsProvider = ({
       if (year) queryParams.append("year", year);
       if (labelId) queryParams.append("label_group_id", labelId);
 
-      const url = `${backend_url}/api/suppliers/${id}/products?${queryParams
+      const url = `${BACKEND_URL}/api/suppliers/${id}/products?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 

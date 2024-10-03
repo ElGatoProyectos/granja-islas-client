@@ -1,5 +1,5 @@
 "use server";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { BillSchemaCreate } from "../validations/receipt-forms/bill";
 
 export async function createBill({
@@ -32,7 +32,7 @@ export async function createBill({
   };
 
   try {
-    const res = await fetch(`${backend_url}/api/bills/create`, {
+    const res = await fetch(`${BACKEND_URL}/api/bills/create`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -81,7 +81,7 @@ export async function createCreditNote({
   };
 
   try {
-    const res = await fetch(`${backend_url}/api/bills/create`, {
+    const res = await fetch(`${BACKEND_URL}/api/bills/create`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenBack}`,

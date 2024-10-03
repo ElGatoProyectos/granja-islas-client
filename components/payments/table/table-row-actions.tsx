@@ -26,7 +26,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { status_payment } from "@/constants/status-payment";
 import { useCompanySession } from "@/context/company-context";
 import { usePayment } from "@/context/sections/payments-context";
@@ -56,7 +56,7 @@ export function DataTableRowActions<TData>({
     setCurrentState(value);
     await updateState({ idVoucher: payment.id.toString(), statusNew: value });
     if (!company) return;
-    socket.current = io(`${backend_url}`);
+    socket.current = io(`${BACKEND_URL}`);
     socket.current.emit("create-voucher", {
       ruc: company?.ruc,
       token: `Bearer ${tokenBack}`,

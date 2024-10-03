@@ -1,6 +1,6 @@
 "use server";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 
 export async function createPayment({
   ruc,
@@ -14,7 +14,7 @@ export async function createPayment({
   if (!ruc) throw new Error("Failed needs ruc");
 
   try {
-    const res = await fetch(`${backend_url}/api/vouchers`, {
+    const res = await fetch(`${BACKEND_URL}/api/vouchers`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenBack}`,

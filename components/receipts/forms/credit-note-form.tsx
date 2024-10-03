@@ -44,7 +44,7 @@ import { PEN, USD } from "@/constants/currency";
 import { useAllSuppliers } from "@/hooks/useAllSuppliers";
 import { es } from "date-fns/locale";
 import { CONTADO } from "@/constants/type-payments";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useMeasure } from "@/hooks/useMeause";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
@@ -100,7 +100,7 @@ export function CreditNoteForm() {
 
   const getTC = async () => {
     try {
-      const res = await fetch(`${backend_url}/api/sunat/currency-rate-dollar`, {
+      const res = await fetch(`${BACKEND_URL}/api/sunat/currency-rate-dollar`, {
         method: "GET",
       });
       const data = await res.json();

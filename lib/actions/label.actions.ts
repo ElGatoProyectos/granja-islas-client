@@ -1,6 +1,11 @@
 "use server";
 
-import { backend_url } from "@/constants/config";
+import { authOptions } from "@/app/api/auth-options";
+import { BACKEND_URL } from "@/constants/config";
+import { TypeResponseApi } from "@/types/api-response";
+import { TypeLabel } from "@/types/label";
+import axios, { AxiosResponse } from "axios";
+import { getServerSession } from "next-auth";
 
 export async function createLabel({
   ruc,
@@ -13,7 +18,7 @@ export async function createLabel({
 }) {
   if (!ruc) return;
   try {
-    const res = await fetch(`${backend_url}/api/labels`, {
+    const res = await fetch(`${BACKEND_URL}/api/labels`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -47,7 +52,7 @@ export async function deleteLabel({
 }) {
   if (!ruc) return;
   try {
-    const res = await fetch(`${backend_url}/api/labels/${idLabel}`, {
+    const res = await fetch(`${BACKEND_URL}/api/labels/${idLabel}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -81,7 +86,7 @@ export async function updateLabel({
 }) {
   if (!ruc) return;
   try {
-    const res = await fetch(`${backend_url}/api/labels/${idLabel}`, {
+    const res = await fetch(`${BACKEND_URL}/api/labels/${idLabel}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -97,5 +102,20 @@ export async function updateLabel({
     }
   } catch (error) {
     throw new Error("Failed to update label");
+  }
+}
+
+export async function getLabels({ company_ruc }: { company_ruc: string }) {
+  const session = await getServerSession(authOptions);
+  try {
+    const { data }: AxiosResponse<TypeResponseApi<TypeLabel[]>> =
+      await axios.get(`${BACKEND_URL}/api/labels`, {
+        headers: { Authorization: `Bearer ${session.tokenBack}` },
+        params: { ruc: company_ruc },
+      });
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw new Error("Failed to get labels");
   }
 }

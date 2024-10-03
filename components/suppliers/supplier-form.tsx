@@ -36,7 +36,7 @@ import { useUserInfo } from "@/context/user-context";
 import { useCompanySession } from "@/context/company-context";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 
 interface Props {
@@ -123,7 +123,7 @@ export function SupplierForm({
     if (!company) return;
     setloadingDataOfRuc(true);
     try {
-      const res = await fetch(`${backend_url}/api/sunat/ruc/v1/${ruc}`, {
+      const res = await fetch(`${BACKEND_URL}/api/sunat/ruc/v1/${ruc}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,

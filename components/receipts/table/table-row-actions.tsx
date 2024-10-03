@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { receiptSchemaIN } from "@/lib/validations/receipt";
 import { useToast } from "@/components/ui/use-toast";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { typesSpanishFormat } from "@/constants/type-document";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
@@ -41,7 +41,7 @@ export function DataTableRowActions<TData>({
       getValueFromLabel(receipt.document_description)
     );
 
-    const url = `${backend_url}/api/documents/pdf?${queryParams}`;
+    const url = `${BACKEND_URL}/api/documents/pdf?${queryParams}`;
 
     try {
       const response = await fetch(url, {

@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { responseSchema } from "@/lib/validations/response";
@@ -17,7 +17,7 @@ export function useInfoSupplier() {
     if (!company) return;
     if (!tokenBack) return;
     if (!id) return;
-    const url = `${backend_url}/api/suppliers/${id}`;
+    const url = `${BACKEND_URL}/api/suppliers/${id}`;
 
     const res = await fetch(url, {
       method: "GET",

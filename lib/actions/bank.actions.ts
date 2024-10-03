@@ -1,6 +1,6 @@
 "use server";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 
 export async function createBank({
   ruc,
@@ -13,7 +13,7 @@ export async function createBank({
 }) {
   if (!ruc) return;
   try {
-    const res = await fetch(`${backend_url}/api/banks`, {
+    const res = await fetch(`${BACKEND_URL}/api/banks`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -47,7 +47,7 @@ export async function deleteBank({
 }) {
   if (!ruc) return;
   try {
-    const res = await fetch(`${backend_url}/api/banks/${idBank}`, {
+    const res = await fetch(`${BACKEND_URL}/api/banks/${idBank}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -77,7 +77,7 @@ export async function updateBank({
 }) {
   if (!ruc) return;
   try {
-    const res = await fetch(`${backend_url}/api/banks/${idBank}`, {
+    const res = await fetch(`${BACKEND_URL}/api/banks/${idBank}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${tokenBack}`,

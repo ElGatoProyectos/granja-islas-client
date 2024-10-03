@@ -1,6 +1,6 @@
 "use server";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { CreateSupplierSchema } from "../validations/supplier";
 
 export async function createSupplier({
@@ -15,7 +15,7 @@ export async function createSupplier({
   if (!ruc) return;
 
   try {
-    const res = await fetch(`${backend_url}/api/suppliers`, {
+    const res = await fetch(`${BACKEND_URL}/api/suppliers`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${tokenBack}`,
@@ -53,7 +53,7 @@ export async function updateSupplier({
   if (!ruc) throw new Error("Need ruc for update");
   if (!supplierID) throw new Error("Need id for update");
   try {
-    const res = await fetch(`${backend_url}/api/suppliers/${supplierID}`, {
+    const res = await fetch(`${BACKEND_URL}/api/suppliers/${supplierID}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${tokenBack}`,

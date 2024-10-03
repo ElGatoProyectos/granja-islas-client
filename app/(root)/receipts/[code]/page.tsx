@@ -15,7 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { PEN } from "@/constants/currency";
 import { typesSpanishFormat } from "@/constants/type-document";
 import { CREDITO } from "@/constants/type-payments";
@@ -66,7 +66,7 @@ export default function Page() {
       getValueFromLabel(receipt.document_description)
     );
 
-    const url = `${backend_url}/api/documents/pdf?${queryParams}`;
+    const url = `${BACKEND_URL}/api/documents/pdf?${queryParams}`;
 
     try {
       const response = await fetch(url, {

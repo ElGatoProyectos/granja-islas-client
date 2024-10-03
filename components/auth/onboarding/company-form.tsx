@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CodeCountry } from "./code-country";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useToast } from "@/components/ui/use-toast";
 import { createCompany, updateCompany } from "@/lib/actions/company.actions";
 import { useUserInfo } from "@/context/user-context";
@@ -138,7 +138,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
     }
   }
 
-  const urlUpdate = `${backend_url}/api/companies/file/${companyId}`;
+  const urlUpdate = `${BACKEND_URL}/api/companies/file/${companyId}`;
   const [loadingDataOfRuc, setLoadingDataOfRuc] = useState(false);
 
   const getRucData = async () => {
@@ -148,7 +148,7 @@ export function CompanyForm({ type, company, companyId }: Props) {
 
     try {
       const res = await fetch(
-        `${backend_url}/api/sunat/ruc/v2/${ruc.trimStart()}`,
+        `${BACKEND_URL}/api/sunat/ruc/v2/${ruc.trimStart()}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${tokenBack}` },

@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import {
   supplierArraySchemaFilter,
   SupplierSchemaFilter,
@@ -130,7 +130,7 @@ export const ReceiptProvider = ({
       if (idsTypeDocument) queryParams.append("document_type", idsTypeDocument);
       if (typesPayment) queryParams.append("type_payment", typesPayment);
 
-      const url = `${backend_url}/api/documents?${queryParams
+      const url = `${BACKEND_URL}/api/documents?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 
@@ -209,7 +209,7 @@ export const ReceiptProvider = ({
       if (selectedYear) queryParams.append("year", selectedYear.toString());
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
-      const url = `${backend_url}/api/documents?${queryParams
+      const url = `${BACKEND_URL}/api/documents?${queryParams
         .toString()
         .replace(/%2C/g, ",")}`;
 

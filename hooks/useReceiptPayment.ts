@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import {
@@ -26,7 +26,7 @@ export function useReceiptPayment({
     const queryParams = new URLSearchParams();
     queryParams.append("document_code", document_code);
     queryParams.append("document_id", document_id);
-    const url = `${backend_url}/api/vouchers?${queryParams}`;
+    const url = `${BACKEND_URL}/api/vouchers?${queryParams}`;
 
     try {
       const res = await fetch(url, {

@@ -14,7 +14,7 @@ import { CopyButtom } from "../copy-button";
 import { cn } from "@/lib/utils";
 import { useCompanySession } from "@/context/company-context";
 import { Skeleton } from "../ui/skeleton";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
@@ -40,7 +40,7 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
               >
                 <Avatar className="h-12 w-12">
                   <AvatarImage
-                    src={`${backend_url}/api/companies/file/${company.id}`}
+                    src={`${BACKEND_URL}/api/companies/file/${company.id}`}
                     className="object-cover"
                   />
                   <AvatarFallback>E</AvatarFallback>
@@ -70,7 +70,7 @@ export function CompanyCard({ isOpen }: { isOpen: boolean | undefined }) {
               <div className="w-full flex flex-col space-y-4">
                 <Avatar className="h-24 w-24">
                   <AvatarImage
-                    src={`${backend_url}/api/companies/file/${company.id}`}
+                    src={`${BACKEND_URL}/api/companies/file/${company.id}`}
                     className="object-cover"
                   />
                   <AvatarFallback>E</AvatarFallback>

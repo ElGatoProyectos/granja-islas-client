@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import {
@@ -17,7 +17,7 @@ export function useAllSuppliers() {
   const getAllSuppliers = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
-    const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
+    const urlSuppliers = `${BACKEND_URL}/api/suppliers/no-pagination`;
     const resSuppliers = await fetch(urlSuppliers, {
       method: "GET",
       headers: {

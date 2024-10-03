@@ -20,7 +20,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { Image as AddImage, Search, Upload } from "lucide-react";
 import {
   Select,
@@ -97,7 +97,7 @@ export function PaymentForm({
           ruc: company?.ruc,
         });
 
-        socket.current = io(`${backend_url}`);
+        socket.current = io(`${BACKEND_URL}`);
         socket.current.emit("create-voucher", {
           ruc: company?.ruc,
           token: `Bearer ${tokenBack}`,
@@ -129,7 +129,7 @@ export function PaymentForm({
   const { banks } = useBanks();
   const getTC = async () => {
     try {
-      const res = await fetch(`${backend_url}/api/sunat/currency-rate-dollar`, {
+      const res = await fetch(`${BACKEND_URL}/api/sunat/currency-rate-dollar`, {
         method: "GET",
       });
       const data = await res.json();

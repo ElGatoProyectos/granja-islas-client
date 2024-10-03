@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useDatesFilter } from "@/context/dates-filter-context";
 import { useUserInfo } from "@/context/user-context";
@@ -54,7 +54,7 @@ export function useDashboard() {
     const queryParams = new URLSearchParams();
     if (selectedYear) queryParams.append("year", selectedYear.toString());
     if (selectedMonth) queryParams.append("month", selectedMonth.toString());
-    const url = `${backend_url}/api/documents/report-1?${queryParams}`;
+    const url = `${BACKEND_URL}/api/documents/report-1?${queryParams}`;
 
     try {
       const res = await fetch(url, {

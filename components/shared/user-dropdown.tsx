@@ -16,7 +16,7 @@ import {
 import { signOut } from "next-auth/react";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
 import Link from "next/link";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { UserProfile } from "./user-profile";
 import { Skeleton } from "../ui/skeleton";
 import { useUserInfo } from "@/context/user-context";
@@ -92,7 +92,7 @@ export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
               value={id.toString()}
             >
               <Avatar className={"mr-2 h-8 w-8"}>
-                <AvatarImage src={`${backend_url}/api/companies/file/${id}`} />
+                <AvatarImage src={`${BACKEND_URL}/api/companies/file/${id}`} />
                 <AvatarFallback>E</AvatarFallback>
               </Avatar>
               <span className="text-xs capitalize">

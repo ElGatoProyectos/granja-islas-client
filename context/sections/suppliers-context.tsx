@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { SupplierSchemaIN } from "@/lib/validations/supplier";
 import {
   createContext,
@@ -65,7 +65,7 @@ export const SupplierProvider = ({
       if (input) queryParams.append("name", input);
       if (statusSupp) queryParams.append("status_group", statusSupp);
 
-      const url = `${backend_url}/api/suppliers?${queryParams.toString()}`;
+      const url = `${BACKEND_URL}/api/suppliers?${queryParams.toString()}`;
 
       const res = await fetch(url, {
         method: "GET",
@@ -109,7 +109,7 @@ export const SupplierProvider = ({
       if (input) queryParams.append("name", input);
       if (statusSupp) queryParams.append("status_group", statusSupp);
 
-      const url = `${backend_url}/api/suppliers?${queryParams.toString()}`;
+      const url = `${BACKEND_URL}/api/suppliers?${queryParams.toString()}`;
 
       const res = await fetch(url, {
         method: "GET",
@@ -139,7 +139,7 @@ export const SupplierProvider = ({
     setLoading(true);
 
     try {
-      const url = `${backend_url}/api/sunat/synchronize-suppliers`;
+      const url = `${BACKEND_URL}/api/sunat/synchronize-suppliers`;
 
       const res = await fetch(url, {
         method: "GET",

@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { labelArraySchemaIN, LabelSchemaIN } from "@/lib/validations/label";
@@ -16,7 +16,7 @@ export function useLabels() {
     if (!tokenBack) return;
     setLoading(true);
     try {
-      const res = await fetch(`${backend_url}/api/labels`, {
+      const res = await fetch(`${BACKEND_URL}/api/labels`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenBack}`,
@@ -50,7 +50,7 @@ export function useLabels() {
   }) => {
     if (!company) return;
     const res = await fetch(
-      `${backend_url}/api/products/${id_product}/labels`,
+      `${BACKEND_URL}/api/products/${id_product}/labels`,
       {
         method: "POST",
         headers: {

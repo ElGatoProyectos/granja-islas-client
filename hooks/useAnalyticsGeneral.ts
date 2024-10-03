@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { useCallback, useEffect, useState } from "react";
@@ -38,7 +38,7 @@ export function useAnalyticsGeneral() {
     setLoading(true);
 
     try {
-      const url = `${backend_url}/api/reports/general-analysis-basic/${labelId}`;
+      const url = `${BACKEND_URL}/api/reports/general-analysis-basic/${labelId}`;
       const res = await fetch(url, {
         method: "GET",
         headers: {
@@ -70,7 +70,7 @@ export function useAnalyticsGeneral() {
   const getTopSuppliers = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
-    const url = `${backend_url}/api/reports/general-analysis-detail-supplier?filter_month=${radio}`;
+    const url = `${BACKEND_URL}/api/reports/general-analysis-detail-supplier?filter_month=${radio}`;
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -95,7 +95,7 @@ export function useAnalyticsGeneral() {
   const getExpenditureComposition = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
-    const url = `${backend_url}/api/reports/general-analysis-detail-expenditure-composition?filter_month=${monthRadio}`;
+    const url = `${BACKEND_URL}/api/reports/general-analysis-detail-expenditure-composition?filter_month=${monthRadio}`;
     const res = await fetch(url, {
       method: "GET",
       headers: {

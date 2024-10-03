@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 
 export async function getSuppliers({
   tokenBack,
@@ -7,7 +7,7 @@ export async function getSuppliers({
   ruc: string;
   tokenBack: string;
 }) {
-  const urlSuppliers = `${backend_url}/api/suppliers/no-pagination`;
+  const urlSuppliers = `${BACKEND_URL}/api/suppliers/no-pagination`;
   const resSuppliers = await fetch(urlSuppliers, {
     method: "GET",
     headers: {

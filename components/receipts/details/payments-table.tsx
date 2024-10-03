@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { PaymentReceiptSchemaIN } from "@/lib/validations/payment";
@@ -69,7 +69,7 @@ export function PaymentsTable({ receiptPayments }: Props) {
                     <Dialog>
                       <DialogTrigger asChild>
                         <img
-                          src={`${backend_url}/api/vouchers/${id}/image`}
+                          src={`${BACKEND_URL}/api/vouchers/${id}/image`}
                           alt="voucher"
                           className="w-10 h-10 rounded-full cursor-pointer  object-contain"
                         />
@@ -77,7 +77,7 @@ export function PaymentsTable({ receiptPayments }: Props) {
                       <DialogContent className="max-w-3xl border-0 bg-transparent p-0">
                         <DialogTitle></DialogTitle>
                         <img
-                          src={`${backend_url}/api/vouchers/${id}/image`}
+                          src={`${BACKEND_URL}/api/vouchers/${id}/image`}
                           alt="voucher"
                           className="h-full w-full object-contain"
                         />

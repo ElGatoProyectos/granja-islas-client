@@ -1,6 +1,6 @@
 "use client";
 
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import { UserSchemaIN } from "@/lib/validations/user";
 import { useSession } from "next-auth/react";
 import {
@@ -52,7 +52,7 @@ export const UserInfoProvider = ({
     setLoading(true);
 
     try {
-      const res = await fetch(`${backend_url}/api/users/${session.user.id}`, {
+      const res = await fetch(`${BACKEND_URL}/api/users/${session.user.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session.user.tokenBack}`,
@@ -70,7 +70,7 @@ export const UserInfoProvider = ({
 
       setUserInfo(data.payload);
       setavatarURL(
-        `${backend_url}/api/users/file/${
+        `${BACKEND_URL}/api/users/file/${
           data.payload.id
         }?t=${new Date().getTime()}`
       );

@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 
 export async function getLabels({
   tokenBack,
@@ -7,7 +7,7 @@ export async function getLabels({
   ruc: string;
   tokenBack: string;
 }) {
-  const resLabel = await fetch(`${backend_url}/api/labels`, {
+  const resLabel = await fetch(`${BACKEND_URL}/api/labels`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${tokenBack}`,

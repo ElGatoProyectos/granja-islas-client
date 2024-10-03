@@ -1,4 +1,4 @@
-import { backend_url } from "@/constants/config";
+import { BACKEND_URL } from "@/constants/config";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
@@ -25,7 +25,7 @@ export const authOptions = {
 
           const { email, password } = credentials;
 
-          const response = await fetch(`${backend_url}/api/auth/login`, {
+          const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
