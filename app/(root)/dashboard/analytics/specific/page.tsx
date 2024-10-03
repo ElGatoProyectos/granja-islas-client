@@ -110,13 +110,13 @@ export default function Page() {
             filterMonth,
           })}
         />
-        <LastShoppingLinechart
+        {/* <LastShoppingLinechart
           specificChart3={specificChart3}
           label={labelSelected?.title}
           date={formatTextDate({
             filterMonth,
           })}
-        />
+        /> */}
       </main>
     </section>
   );
