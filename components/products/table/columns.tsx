@@ -10,6 +10,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CirclePlus } from "lucide-react";
+import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
 
 export const columns: ColumnDef<ProductSchemaINFormated>[] = [
   {
@@ -55,13 +56,15 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
             </Link>
           ) : (
             <>
-              {labels.slice(0, 2).map(({ id, title }) => (
+              {labels.slice(0, 3).map(({ id, title }) => (
                 <Badge key={id} variant="secondary">
-                  <p className="max-w-[130px] truncate leading-snug">{title}</p>
+                  <p className="max-w-[130px] truncate leading-snug">
+                    {capitalizeFirstLetter(title)}
+                  </p>
                 </Badge>
               ))}
               {labels.length > 3 && (
-                <Badge variant="outline">+ {labels.length}</Badge>
+                <Badge variant="outline">+ {labels.length - 3}</Badge>
               )}
               <Link href={`/dashboard/products/${row.original.id}`}>
                 <CirclePlus className="size-4 stroke-primary" />
