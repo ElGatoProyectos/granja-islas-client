@@ -1,20 +1,19 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PrincipalSuppliersSchema } from "@/lib/validations/analytics";
+import { TypeprincipalSuppliers } from "@/types/analytic";
 import { formatNumberWithCommas } from "@/utils/format-number-comas";
 import { Search } from "lucide-react";
 
 export function SuppliersTable({
   suppliers,
 }: {
-  suppliers?: PrincipalSuppliersSchema;
+  suppliers?: TypeprincipalSuppliers[];
 }) {
   return (
     <>

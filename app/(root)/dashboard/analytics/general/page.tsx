@@ -1,54 +1,95 @@
-"use client";
-
 import { ExpenseCompositionPiechart } from "@/components/analytics/general/expense-composition-piechart";
 import { PurchasesPerMoth } from "@/components/analytics/general/puchases-per-month";
 import { SuppliersBarchart } from "@/components/analytics/general/suppliers-barchart";
 import { SuppliersTable } from "@/components/analytics/general/suppliers-table";
-import { LayerPage } from "@/components/layer-page";
-import { buttonVariants } from "@/components/ui/button";
+import { ComandLabel } from "@/components/analytics/specific/comand-label";
+import { RangePeriods } from "@/components/analytics/specific/range-periods";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAnalyticsGeneral } from "@/hooks/useAnalyticsGeneral";
-import { useLabels } from "@/hooks/useLabels";
+import { getCompanyForRuc } from "@/lib/actions/company.actions";
+import {
+  getAnalyticsByLabel,
+  getExpenditureComposition,
+  getTopSuppliers,
+} from "@/lib/actions/general-analytics";
+import { getLabels } from "@/lib/actions/label.actions";
+import { TypeParams } from "@/types/params";
+import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { format } from "date-fns";
-import Link from "next/link";
-import { useEffect } from "react";
+import { es } from "date-fns/locale";
 
-export default function Page() {
-  const { labels } = useLabels();
-  const {
-    setLabelId,
-    generalAnalytics,
+export default async function Page({ searchParams }: TypeParams) {
+  const company_ruc =
+    typeof searchParams.ruc === "string" ? searchParams.ruc : "";
+
+  const labelId =
+    typeof searchParams.labelId === "string" ? searchParams.labelId : "";
+  const startYear =
+    typeof searchParams.startYear === "string" ? searchParams.startYear : "";
+  const startMonth =
+    typeof searchParams.startMonth === "string" ? searchParams.startMonth : "";
+  const endYear =
+    typeof searchParams.endYear === "string" ? searchParams.endYear : "";
+  const endMonth =
+    typeof searchParams.endMonth === "string" ? searchParams.endMonth : "";
+
+  const labels = await getLabels({ company_ruc });
+  const company = await getCompanyForRuc({ ruc: company_ruc });
+  const { yearStarted, monthStarted } = getYearAndMonth({
+    dateString: company.emisor_electronico_desde,
+  });
+
+  const topSuppliers = await getTopSuppliers({
+    endMonth,
+    endYear,
+    ruc: company_ruc,
+    startMonth,
+    startYear,
+  });
+
+  const expComposition = await getExpenditureComposition({
+    endMonth,
+    endYear,
+    ruc: company_ruc,
+    startMonth,
+    startYear,
+  });
+
+  const startDate =
+    startYear && startMonth ? `${startYear}-${startMonth}` : new Date();
+  const endDate = endYear && endMonth ? `${endYear}-${endMonth}` : new Date();
+  const formattedStart = format(startDate, "MMMM yyyy", { locale: es });
+  const formattedEnd = format(endDate, "MMMM yyyy", { locale: es });
+
+  const descriptionRange = `${formattedStart} - ${formattedEnd}`;
+
+  const analyticsByLabel = await getAnalyticsByLabel({
     labelId,
-    setRadio,
-    radio,
-    topSuppliers,
-    monthRadio,
-    setMonthRadio,
-    expComposition,
-  } = useAnalyticsGeneral();
+    ruc: company_ruc,
+  });
 
-  useEffect(() => {
-    if (labels.length) {
-      setLabelId(labels[0].id.toString());
-    }
-  }, [labels, setLabelId]);
-
-  const currentYear = format(new Date(), "yyyy");
   return (
-    <LayerPage title="Detalles generales">
+    <section>
+      <header className="flex justify-between">
+        <h1 className={"text-2xl md:text-3xl font-bold"}>Detalles generales</h1>
+        <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
+      </header>
       <div className="mt-6 w-full flex flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <SuppliersBarchart
-            setRadio={setRadio}
-            radio={radio}
             topSuppliers={topSuppliers}
+            descriptionRange={
+              startYear && startMonth && endYear && endMonth
+                ? descriptionRange
+                : "Seleccione un rango de periodos"
+            }
           />
           <ExpenseCompositionPiechart
-            monthRadio={monthRadio}
-            setMonthRadio={setMonthRadio}
             expComposition={expComposition}
+            descriptionRange={
+              startYear && startMonth && endYear && endMonth
+                ? descriptionRange
+                : "Seleccione un rango de periodos"
+            }
           />
         </div>
       </div>
@@ -57,65 +98,32 @@ export default function Page() {
         <h2 className="text-2xl md:text-3xl font-bold ml-8 mb-6">
           Análisis por etiqueta
         </h2>
-
-        <Tabs className="w-full h-full" value={labelId}>
-          {labels.length ? (
-            <ScrollArea className="w-[calc(100vw-4rem)] lg:w-[calc(100vw-20rem)] whitespace-nowrap rounded-md pb-3">
-              <TabsList className="flex w-max">
-                {labels.map(({ id, title }) => (
-                  <TabsTrigger
-                    key={id}
-                    value={id.toString()}
-                    onClick={() => {
-                      setLabelId(id.toString());
-                    }}
-                    className="hover:bg-background/30 w-fit "
-                  >
-                    {title}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          ) : (
-            <Link
-              href="/dashboard/settings"
-              className={buttonVariants({ variant: "link" })}
-            >
-              Crea una etiqueta para comenzar
-            </Link>
-          )}
-
-          <TabsContent value={labelId ?? ""}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-bold">
-                    Principales proveedores
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SuppliersTable
-                    suppliers={generalAnalytics?.principalSuppliers}
-                  />
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-bold">
-                    Compras por mes de {currentYear}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex justify-center">
-                  <PurchasesPerMoth
-                    buyforMonth={generalAnalytics?.buyForMonth}
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+        <div className="space-y-4 ">
+          <ComandLabel labels={labels.payload} />
+          <div className="grid grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-bold">
+                  Principales proveedores
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SuppliersTable
+                  suppliers={analyticsByLabel?.principalSuppliers}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-bold">Compras por mes</CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-center">
+                <PurchasesPerMoth buyforMonth={analyticsByLabel?.buyForMonth} />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
-    </LayerPage>
+    </section>
   );
 }

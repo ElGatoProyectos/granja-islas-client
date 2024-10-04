@@ -9,6 +9,23 @@ import axios, { AxiosResponse } from "axios";
 import { TypeCompany } from "@/types/company";
 import { TypeResponseApi } from "@/types/api-response";
 
+export async function getCompanyForRuc({ ruc }: { ruc: string | number }) {
+  const session = await getServerSession(authOptions);
+  try {
+    const { data }: AxiosResponse<TypeResponseApi<TypeCompany>> =
+      await axios.get(`${BACKEND_URL}/api/companies/ruc/${ruc}`, {
+        headers: {
+          Authorization: `Bearer ${session.user.tokenBack}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+    return data.payload;
+  } catch (error) {
+    throw new Error("Failed to fetch company");
+  }
+}
+
 export async function getCompany({
   idCompany,
 }: {

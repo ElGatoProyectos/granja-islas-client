@@ -1,7 +1,7 @@
 "use client";
 
 import { Label as LabelRechart, Pie, PieChart } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -20,9 +20,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { Tag } from "lucide-react";
 
 interface Props {
-  monthRadio: string;
-  setMonthRadio: Dispatch<SetStateAction<string>>;
   expComposition: ExpCompositonSchemaIN[];
+  descriptionRange: string;
 }
 
 const colors = [
@@ -33,28 +32,9 @@ const colors = [
   "hsl(var(--chart-5))",
 ];
 
-const dates_radio = [
-  {
-    id: "4",
-    value: "1",
-    label: "1M",
-  },
-  {
-    id: "5",
-    value: "6",
-    label: "6M",
-  },
-  {
-    id: "6",
-    value: "12",
-    label: "1A",
-  },
-];
-
 export function ExpenseCompositionPiechart({
-  monthRadio,
-  setMonthRadio,
   expComposition,
+  descriptionRange,
 }: Props) {
   const expCompositionTop5 = expComposition.slice(0, 5);
   const dataWithColors = expCompositionTop5.map((item, index) => ({
@@ -90,25 +70,7 @@ export function ExpenseCompositionPiechart({
     <Card className="flex flex-col">
       <CardHeader className="flex-row justify-between items-center space-y-0">
         <CardTitle className="font-bold">Composición de gasto</CardTitle>
-        <RadioGroup
-          className="grid-cols-3 gap-1"
-          value={monthRadio}
-          onValueChange={setMonthRadio}
-        >
-          {dates_radio.map(({ value, label, id }) => (
-            <div key={label} className="flex items-center justify-center ">
-              <RadioGroupItem value={value} id={id} className="sr-only" />
-              <Label htmlFor={id} className="cursor-pointer">
-                <Badge
-                  variant={monthRadio === value ? "default" : "outline"}
-                  className="px-5 py-[5px] text-sm"
-                >
-                  {label}
-                </Badge>
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
+        <CardDescription>{descriptionRange}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {expComposition.length ? (

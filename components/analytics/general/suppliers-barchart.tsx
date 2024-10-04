@@ -1,26 +1,21 @@
 "use client";
 
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Dispatch, SetStateAction } from "react";
-import { TopSuppliersSchemaIN } from "@/lib/validations/analytics";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { GeneralTopSupplier } from "@/types/analytic";
 import { Tag } from "lucide-react";
+import Link from "next/link";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
 
 interface Props {
-  radio: string;
-  setRadio: Dispatch<SetStateAction<string>>;
-  topSuppliers: TopSuppliersSchemaIN[];
+  topSuppliers: GeneralTopSupplier[];
+  descriptionRange: string;
 }
 
 const colors = [
@@ -31,25 +26,7 @@ const colors = [
   "hsl(var(--chart-5))",
 ];
 
-const dates_radio = [
-  {
-    id: "1",
-    value: "1",
-    label: "1M",
-  },
-  {
-    id: "2",
-    value: "6",
-    label: "6M",
-  },
-  {
-    id: "3",
-    value: "12",
-    label: "1A",
-  },
-];
-
-export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
+export function SuppliersBarchart({ topSuppliers, descriptionRange }: Props) {
   const top5Suppliers = topSuppliers.slice(0, 5);
   const dataWithColors = top5Suppliers.map((item, index) => ({
     ...item,
@@ -80,25 +57,7 @@ export function SuppliersBarchart({ setRadio, radio, topSuppliers }: Props) {
     <Card>
       <CardHeader className="flex-row justify-between items-center space-y-0">
         <CardTitle className="font-bold">Proveedores</CardTitle>
-        <RadioGroup
-          className="grid-cols-3 gap-1"
-          value={radio}
-          onValueChange={setRadio}
-        >
-          {dates_radio.map(({ value, label, id }) => (
-            <div key={label} className="flex items-center justify-center ">
-              <RadioGroupItem value={value} id={id} className="sr-only" />
-              <Label htmlFor={id} className="cursor-pointer">
-                <Badge
-                  variant={radio === value ? "default" : "outline"}
-                  className="px-5 py-[5px] text-sm"
-                >
-                  {label}
-                </Badge>
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
+        <CardDescription>{descriptionRange}</CardDescription>
       </CardHeader>
       <CardContent>
         {topSuppliers.length ? (

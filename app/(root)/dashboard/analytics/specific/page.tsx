@@ -2,7 +2,7 @@ import { ComandLabel } from "@/components/analytics/specific/comand-label";
 import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fiscal-consumption-linechart";
 import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
 import { RangePeriods } from "@/components/analytics/specific/range-periods";
-import { getCompany } from "@/lib/actions/company.actions";
+import { getCompanyForRuc } from "@/lib/actions/company.actions";
 import { getLabels } from "@/lib/actions/label.actions";
 import {
   getMeasuresSpecific,
@@ -29,7 +29,7 @@ export default async function Page({ searchParams }: TypeParams) {
     typeof searchParams.endMonth === "string" ? searchParams.endMonth : "";
 
   const labels = await getLabels({ company_ruc });
-  const company = await getCompany({ idCompany: "3" });
+  const company = await getCompanyForRuc({ ruc: company_ruc });
   const { yearStarted, monthStarted } = getYearAndMonth({
     dateString: company.emisor_electronico_desde,
   });
@@ -38,13 +38,11 @@ export default async function Page({ searchParams }: TypeParams) {
     labels.payload.find((label) => label.id.toString() === labelId)?.title ??
     "";
 
-  const startDate =
-    startYear && startMonth ? `${startYear}-${startMonth}` : new Date();
-  const endDate = endYear && endMonth ? `${endYear}-${endMonth}` : new Date();
-
-  const formattedStart = format(startDate, "MMMM yyyy", { locale: es });
-  const formattedEnd = format(endDate, "MMMM yyyy", { locale: es });
-  const descriptionRange = `${formattedStart} - ${formattedEnd}`;
+  const startDate = new Date(Date.UTC(Number(startYear), Number(startMonth)));
+  const formatStart = format(startDate, "MMMM yyyy", { locale: es });
+  const endDate = new Date(Date.UTC(Number(endYear), Number(endMonth)));
+  const formatEnd = format(endDate, "MMMM yyyy", { locale: es });
+  const descriptionRange = `${formatStart} - ${formatEnd}`;
 
   const charts = await getSpecificCharts({
     idLabel: labelId,
@@ -83,13 +81,6 @@ export default async function Page({ searchParams }: TypeParams) {
               : "Seleccione un rango de periodos"
           }
         />
-        {/* <LastShoppingLinechart
-          specificChart3={specificChart3}
-          label={labelSelected?.title}
-          date={formatTextDate({
-            filterMonth,
-          })}
-        /> */}
       </main>
     </section>
   );

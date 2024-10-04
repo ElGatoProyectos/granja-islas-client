@@ -14,7 +14,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Specific3Formated } from "@/hooks/useAnalyticsSpecific";
+
 import { formatWithCommas } from "@/utils/format-number-comas";
 
 const chartConfig = {
@@ -26,10 +26,9 @@ const chartConfig = {
 interface Props {
   label: string;
   date: string;
-  specificChart3: Specific3Formated[];
 }
 
-export function LastShoppingLinechart({ label, date, specificChart3 }: Props) {
+export function LastShoppingLinechart({ label, date }: Props) {
   return (
     <Card>
       <CardHeader>
@@ -40,7 +39,6 @@ export function LastShoppingLinechart({ label, date, specificChart3 }: Props) {
         <ChartContainer config={chartConfig} className="h-[300px]">
           <LineChart
             accessibilityLayer
-            data={specificChart3}
             margin={{
               left: 12,
               right: 12,
