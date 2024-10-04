@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,8 +15,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { SpecificAnalyticChart } from "@/types/analytic";
 import { formatNumberWithCommas } from "@/utils/format-number-comas";
-import { SpecificSchemaIN } from "@/lib/validations/analytics";
 
 const chartConfig = {
   amount: {
@@ -30,18 +29,20 @@ const chartConfig = {
 
 export function FiscalConsumptionLinechart({
   label,
-  date,
   specificChart,
+  descriptionRange,
 }: {
   label: string;
-  date: string;
-  specificChart: SpecificSchemaIN[];
+  specificChart: SpecificAnalyticChart[];
+  descriptionRange: string;
 }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-bold">Consumo fiscal de {label}</CardTitle>
-        <CardDescription>{date}</CardDescription>
+        <CardTitle className="font-bold">
+          {label ? `Consumo fiscal de ${label}` : "Seleccione una etiqueta"}
+        </CardTitle>
+        <CardDescription>{descriptionRange}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px]">

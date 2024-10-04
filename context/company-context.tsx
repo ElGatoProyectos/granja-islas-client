@@ -1,10 +1,12 @@
 "use client";
 
 import { CompanySchemaIN } from "@/lib/validations/auth/company";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   createContext,
   Dispatch,
   SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -24,30 +26,27 @@ export const CompanyProvider = ({
   children: React.ReactNode;
 }) => {
   const [company, setCompany] = useState<CompanySchemaIN | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const createQueryString = useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
 
-  // const getCompanies = useCallback(async () => {
-  //   try {
-  //     const res = await fetch(`${backend_url}/api/companies`, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${tokenBack}`,
-  //       },
-  //     });
+      for (const [key, value] of Object.entries(params)) {
+        if (
+          value === null ||
+          (typeof value === "string" && value.trim() === "")
+        ) {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
 
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch companies");
-  //     }
-
-  //     const data = await res.json();
-  //     const parseData = responseArraySchema.parse(data);
-  //     const parseCompany = companyArraySchemaIN.parse(parseData.payload);
-  //   } catch (error) {
-  //     console.error("Error to fetch data", error);
-  //   }
-  // }, [tokenBack]);
-  // useEffect(() => {
-  //   getCompanies();
-  // }, [getCompanies]);
+      return newSearchParams.toString();
+    },
+    [searchParams]
+  );
 
   useEffect(() => {
     const storedCompany = localStorage.getItem("selectedCompany");
@@ -59,10 +58,14 @@ export const CompanyProvider = ({
   useEffect(() => {
     if (company) {
       localStorage.setItem("selectedCompany", JSON.stringify(company));
+
+      // Aquí agregamos el ruc a la URL como query param
+      const queryString = createQueryString({ ruc: company.ruc });
+      router.replace(`?${queryString}`); // Modifica la URL sin recargar la página
     } else {
       localStorage.removeItem("selectedCompany");
     }
-  }, [company]);
+  }, [company, createQueryString, router]);
 
   const value = useMemo(() => ({ company, setCompany }), [company]);
   return (

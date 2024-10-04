@@ -107,11 +107,14 @@ export async function updateLabel({
 
 export async function getLabels({ company_ruc }: { company_ruc: string }) {
   const session = await getServerSession(authOptions);
+
   try {
     const { data }: AxiosResponse<TypeResponseApi<TypeLabel[]>> =
       await axios.get(`${BACKEND_URL}/api/labels`, {
-        headers: { Authorization: `Bearer ${session.tokenBack}` },
-        params: { ruc: company_ruc },
+        headers: {
+          Authorization: `Bearer ${session.user.tokenBack}`,
+          ruc: company_ruc,
+        },
       });
     return data;
   } catch (e) {

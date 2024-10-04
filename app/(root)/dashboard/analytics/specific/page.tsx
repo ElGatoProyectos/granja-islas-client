@@ -1,262 +1,87 @@
-"use client";
-
+import { ComandLabel } from "@/components/analytics/specific/comand-label";
 import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fiscal-consumption-linechart";
 import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
-import { LastShoppingLinechart } from "@/components/analytics/specific/last-shopping-linechart";
-import { RadioDates } from "@/components/radio-dates";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { RangePeriods } from "@/components/analytics/specific/range-periods";
+import { getCompany } from "@/lib/actions/company.actions";
+import { getLabels } from "@/lib/actions/label.actions";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useAnalyticsSpecific } from "@/hooks/useAnalyticsSpecific";
+  getMeasuresSpecific,
+  getSpecificCharts,
+} from "@/lib/actions/specific-analytic";
+import { TypeParams } from "@/types/params";
+import { getYearAndMonth } from "@/utils/getYearAndMonth";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
-import { useLabels } from "@/hooks/useLabels";
-import { formatTextDate } from "@/utils/format-text-date";
-import Link from "next/link";
-import { useState } from "react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+export default async function Page({ searchParams }: TypeParams) {
+  const company_ruc =
+    typeof searchParams.ruc === "string" ? searchParams.ruc : "";
 
-const dates_radio = [
-  {
-    id: "1",
-    value: "1",
-    label: "1M",
-  },
-  {
-    id: "2",
-    value: "6",
-    label: "6M",
-  },
-  {
-    id: "3",
-    value: "12",
-    label: "1A",
-  },
-];
+  const labelId =
+    typeof searchParams.labelId === "string" ? searchParams.labelId : "";
+  const startYear =
+    typeof searchParams.startYear === "string" ? searchParams.startYear : "";
+  const startMonth =
+    typeof searchParams.startMonth === "string" ? searchParams.startMonth : "";
+  const endYear =
+    typeof searchParams.endYear === "string" ? searchParams.endYear : "";
+  const endMonth =
+    typeof searchParams.endMonth === "string" ? searchParams.endMonth : "";
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "gatsby",
-    label: "Gatsby",
-  },
-  {
-    value: "angular",
-    label: "Angular",
-  },
-  {
-    value: "vue",
-    label: "Vue.js",
-  },
-  {
-    value: "react",
-    label: "React",
-  },
-  {
-    value: "ember",
-    label: "Ember.js",
-  },
-  {
-    value: "solid",
-    label: "Solid.js",
-  },
-  {
-    value: "backbone",
-    label: "Backbone.js",
-  },
-  {
-    value: "express",
-    label: "Express.js",
-  },
-  {
-    value: "koa",
-    label: "Koa.js",
-  },
-  {
-    value: "hapi",
-    label: "Hapi.js",
-  },
-  {
-    value: "quasar",
-    label: "Quasar",
-  },
-  {
-    value: "blitz",
-    label: "Blitz.js",
-  },
-  {
-    value: "eleventy",
-    label: "Eleventy",
-  },
-  {
-    value: "preact",
-    label: "Preact",
-  },
-  {
-    value: "alpine",
-    label: "Alpine.js",
-  },
-];
+  const labels = await getLabels({ company_ruc });
+  const company = await getCompany({ idCompany: "3" });
+  const { yearStarted, monthStarted } = getYearAndMonth({
+    dateString: company.emisor_electronico_desde,
+  });
 
-export default function Page() {
-  const { labels } = useLabels();
-  const {
-    filterMonth,
-    setFilterMonth,
-    labelId,
-    setLabelId,
-    measure,
-    measureSelect,
-    setMeasureSelect,
-    specificChart,
-    specificChart2,
-    specificChart3,
-  } = useAnalyticsSpecific({ label: labels[0] });
+  const labelTitle =
+    labels.payload.find((label) => label.id.toString() === labelId)?.title ??
+    "";
 
-  const [labelSelected] = labels.filter(
-    (selected) => selected.id.toString() === labelId
-  );
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const startDate =
+    startYear && startMonth ? `${startYear}-${startMonth}` : new Date();
+  const endDate = endYear && endMonth ? `${endYear}-${endMonth}` : new Date();
+
+  const formattedStart = format(startDate, "MMMM yyyy", { locale: es });
+  const formattedEnd = format(endDate, "MMMM yyyy", { locale: es });
+  const descriptionRange = `${formattedStart} - ${formattedEnd}`;
+
+  const charts = await getSpecificCharts({
+    idLabel: labelId,
+    startMonth,
+    startYear,
+    endMonth,
+    endYear,
+    ruc: company_ruc,
+  });
+
+  const measures = await getMeasuresSpecific({ ruc: company_ruc });
+
   return (
     <section>
       <header className="flex justify-between mb-4">
-        <div className="flex justify-center items-center gap-2">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-[250px] justify-between"
-              >
-                {value
-                  ? frameworks.find((framework) => framework.value === value)
-                      ?.label
-                  : "Select framework..."}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[250px] p-0">
-              <Command>
-                <CommandInput placeholder="Search framework..." />
-                <CommandList>
-                  <CommandEmpty>No framework found.</CommandEmpty>
-                  <CommandGroup>
-                    {frameworks.map((framework) => (
-                      <CommandItem
-                        key={framework.value}
-                        value={framework.value}
-                        onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
-                          setOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value === framework.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {framework.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-
-          {/*  old */}
-          {labels.length ? (
-            <Select value={labelId} onValueChange={setLabelId}>
-              <SelectTrigger className="w-[230px]">
-                <SelectValue placeholder="Selecciona una etiqueta" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Etiquetas</SelectLabel>
-                  {labels.map(({ id, title }) => (
-                    <SelectItem key={id} value={id.toString()}>
-                      {title}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          ) : (
-            <Link
-              href="/dashboard/settings"
-              className={buttonVariants({ variant: "link" })}
-            >
-              Crea una etiqueta para comenzar
-            </Link>
-          )}
-        </div>
-        <RadioDates
-          setRadio={setFilterMonth}
-          radio={filterMonth}
-          dates={dates_radio}
-        />
+        <ComandLabel labels={labels.payload} />
+        <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
       </header>
       <main className="grid grid-cols-1 gap-4">
         <FiscalConsumptionLinechart
-          label={labelSelected?.title}
-          specificChart={specificChart}
-          date={formatTextDate({
-            filterMonth,
-          })}
+          label={labelTitle}
+          specificChart={charts.chart1}
+          descriptionRange={
+            startYear && startMonth && endYear && endMonth
+              ? descriptionRange
+              : "Seleccione un rango de periodos"
+          }
         />
         <FiscalConsumptionMeasureLinechart
-          label={labelSelected?.title}
-          specificChart={specificChart2}
-          measure={measure}
-          measureSelect={measureSelect}
-          setMeasureSelect={setMeasureSelect}
-          date={formatTextDate({
-            filterMonth,
-          })}
+          label={labelTitle}
+          specificChart={charts.chart2}
+          measures={measures}
+          descriptionRange={
+            startYear && startMonth && endYear && endMonth
+              ? descriptionRange
+              : "Seleccione un rango de periodos"
+          }
         />
         {/* <LastShoppingLinechart
           specificChart3={specificChart3}

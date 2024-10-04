@@ -1,6 +1,5 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -23,8 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction } from "react";
-import { SpecificSchemaIN } from "@/lib/validations/analytics";
+import { useQueryParams } from "@/hooks/useQueryParams";
+import { SpecificAnalyticChart } from "@/types/analytic";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
   amount: {
@@ -37,38 +38,50 @@ const chartConfig = {
 
 interface Props {
   label: string;
-  date: string;
-  measure: string[];
-  measureSelect: string;
-  setMeasureSelect: Dispatch<SetStateAction<string>>;
-  specificChart: SpecificSchemaIN[];
+  descriptionRange: string;
+  measures: string[];
+  specificChart: SpecificAnalyticChart[];
 }
 
 export function FiscalConsumptionMeasureLinechart({
   label,
-  date,
-  measure,
-  measureSelect,
-  setMeasureSelect,
   specificChart,
+  measures,
+  descriptionRange,
 }: Props) {
+  const searchParams = useSearchParams();
+  const { createQueryString } = useQueryParams();
+  const pathname = usePathname();
+  const { push } = useRouter();
+  const measure = searchParams.get("measure") ?? "";
   return (
     <Card>
       <CardHeader>
         <CardTitle className="font-bold">
-          Consumo fiscal de {label} en Medida
+          {label
+            ? `Consumo fiscal de ${label} en Medida`
+            : "Seleccione una etiqueta"}
         </CardTitle>
         <div className="flex gap-3 items-center">
-          <CardDescription>{date}</CardDescription>
-          <Select value={measureSelect} onValueChange={setMeasureSelect}>
-            <SelectTrigger className="w-[180px]">
+          <CardDescription>{descriptionRange}</CardDescription>
+          <Select
+            value={measure}
+            onValueChange={(value: string) => {
+              push(pathname + "?" + createQueryString({ measure: value }));
+            }}
+          >
+            <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Selecciona una medida" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Medida</SelectLabel>
-                {measure.map((measure) => (
-                  <SelectItem key={measure} value={measure}>
+                <SelectLabel>Medidas</SelectLabel>
+                {measures.map((measure) => (
+                  <SelectItem
+                    key={measure}
+                    value={measure}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {measure}
                   </SelectItem>
                 ))}

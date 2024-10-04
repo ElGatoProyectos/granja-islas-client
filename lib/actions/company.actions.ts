@@ -5,6 +5,9 @@ import { BACKEND_URL } from "@/constants/config";
 import { getServerSession } from "next-auth";
 import { CompanySchemaIN } from "../validations/auth/company";
 import { revalidatePath } from "next/cache";
+import axios, { AxiosResponse } from "axios";
+import { TypeCompany } from "@/types/company";
+import { TypeResponseApi } from "@/types/api-response";
 
 export async function getCompany({
   idCompany,
@@ -14,24 +17,17 @@ export async function getCompany({
   const session = await getServerSession(authOptions);
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/companies/${idCompany}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session.user.tokenBack}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch company");
-    }
-
-    const data = await res.json();
+    const { data }: AxiosResponse<TypeResponseApi<TypeCompany>> =
+      await axios.get(`${BACKEND_URL}/api/companies/${idCompany}`, {
+        headers: {
+          Authorization: `Bearer ${session.user.tokenBack}`,
+          "Content-Type": "application/json",
+        },
+      });
 
     return data.payload;
   } catch (error) {
-    console.error("Error to fetch company data", error);
-    return null;
+    throw new Error("Failed to fetch company");
   }
 }
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Ellipsis, LogOut } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +26,8 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const { userInfo } = useUserInfo();
+  const searchParams = useSearchParams();
+  const ruc = searchParams.get("ruc") ?? "";
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -92,7 +94,12 @@ export function Menu({ isOpen }: MenuProps) {
                                 className="w-full justify-start mb-1"
                                 asChild
                               >
-                                <Link href={href}>
+                                <Link
+                                  href={{
+                                    pathname: href,
+                                    query: { ruc },
+                                  }}
+                                >
                                   <span
                                     className={cn(
                                       isOpen === false ? "" : "mr-3"
@@ -129,7 +136,12 @@ export function Menu({ isOpen }: MenuProps) {
                                 className="w-full justify-start h-10 mb-1"
                                 asChild
                               >
-                                <Link href={href}>
+                                <Link
+                                  href={{
+                                    pathname: href,
+                                    query: { ruc },
+                                  }}
+                                >
                                   <span
                                     className={cn(
                                       isOpen === false ? "" : "mr-4"
@@ -169,6 +181,7 @@ export function Menu({ isOpen }: MenuProps) {
                           active={active}
                           submenus={submenus}
                           isOpen={isOpen}
+                          ruc={ruc}
                         />
                       ) : href === "/receipts" ? (
                         <CollapseMenuButton
@@ -177,6 +190,7 @@ export function Menu({ isOpen }: MenuProps) {
                           active={active}
                           submenus={submenus}
                           isOpen={isOpen}
+                          ruc={ruc}
                         />
                       ) : null}
                     </div>
