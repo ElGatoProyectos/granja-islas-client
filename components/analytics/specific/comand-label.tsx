@@ -24,10 +24,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { push } = useRouter();
+  const labelId = searchParams.get("labelId") ?? "";
 
   const createQueryString = useCallback(
     (params: Record<string, string | number | null>) => {
@@ -58,8 +58,8 @@ export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
           aria-expanded={open}
           className="w-[250px] justify-between"
         >
-          {value
-            ? labels.find((label) => label.id.toString() === value)?.title
+          {labelId
+            ? labels.find((label) => label.id.toString() === labelId)?.title
             : "Escoje una etiqueta"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -75,7 +75,6 @@ export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
                   key={id}
                   value={title}
                   onSelect={() => {
-                    setValue(id.toString());
                     push(pathname + "?" + createQueryString({ labelId: id }));
                     setOpen(false);
                   }}
@@ -83,7 +82,7 @@ export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === id.toString() ? "opacity-100" : "opacity-0"
+                      labelId === id.toString() ? "opacity-100" : "opacity-0"
                     )}
                   />
                   {capitalizeFirstLetter(title)}
