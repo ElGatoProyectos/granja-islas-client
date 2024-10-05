@@ -12,6 +12,7 @@ import { TypeParams } from "@/types/params";
 import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { Suspense } from "react";
 
 export default async function Page({ searchParams }: TypeParams) {
   const company_ruc =
@@ -58,8 +59,12 @@ export default async function Page({ searchParams }: TypeParams) {
   return (
     <section>
       <header className="flex justify-between mb-4">
-        <ComandLabel labels={labels.payload} />
-        <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
+        <Suspense fallback={"Cargando lista de etiquetas"}>
+          <ComandLabel labels={labels.payload} />
+        </Suspense>
+        <Suspense fallback={"Cargando rango de periodos"}>
+          <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
+        </Suspense>
       </header>
       <main className="grid grid-cols-1 gap-4">
         <FiscalConsumptionLinechart
@@ -71,16 +76,18 @@ export default async function Page({ searchParams }: TypeParams) {
               : "Seleccione un rango de periodos"
           }
         />
-        <FiscalConsumptionMeasureLinechart
-          label={labelTitle}
-          specificChart={charts.chart2}
-          measures={measures}
-          descriptionRange={
-            startYear && startMonth && endYear && endMonth
-              ? descriptionRange
-              : "Seleccione un rango de periodos"
-          }
-        />
+        <Suspense fallback={"Cargando graficos"}>
+          <FiscalConsumptionMeasureLinechart
+            label={labelTitle}
+            specificChart={charts.chart2}
+            measures={measures}
+            descriptionRange={
+              startYear && startMonth && endYear && endMonth
+                ? descriptionRange
+                : "Seleccione un rango de periodos"
+            }
+          />
+        </Suspense>
       </main>
     </section>
   );

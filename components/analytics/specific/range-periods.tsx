@@ -19,7 +19,7 @@ export function RangePeriods({
   monthStarted,
 }: {
   yearStarted: number;
-  monthStarted: number;
+  monthStarted?: number;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();

@@ -25,16 +25,21 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { getCompany } from "@/lib/actions/company.actions";
 import { CompanySchemaIN } from "@/lib/validations/auth/company";
+import { useQueryParams } from "@/hooks/useQueryParams";
+import { usePathname, useRouter } from "next/navigation";
 
 export function UserDropdown({ companies }: { companies?: CompanySchemaIN[] }) {
   const { loading, userInfo, avatarURL } = useUserInfo();
   const { company, setCompany } = useCompanySession();
   const [changeCompany, setChangeCompany] = useState("");
-
+  const { createQueryString } = useQueryParams();
+   const pathname = usePathname();
+   const { push } = useRouter();
   const handleCompany = async (value: string) => {
     setChangeCompany(value);
     const companyformated = await getCompany({ idCompany: value });
     setCompany(companyformated);
+    push(pathname + "?" + createQueryString({ ruc: companyformated.ruc }));
   };
 
   useEffect(() => {

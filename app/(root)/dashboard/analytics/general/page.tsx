@@ -16,6 +16,7 @@ import { TypeParams } from "@/types/params";
 import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { Suspense } from "react";
 
 export default async function Page({ searchParams }: TypeParams) {
   const company_ruc =
@@ -71,7 +72,9 @@ export default async function Page({ searchParams }: TypeParams) {
     <section>
       <header className="flex justify-between">
         <h1 className={"text-2xl md:text-3xl font-bold"}>Detalles generales</h1>
-        <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
+        <Suspense fallback={"Cargando rango de periodos"}>
+          <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
+        </Suspense>
       </header>
       <div className="mt-6 w-full flex flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
@@ -99,7 +102,9 @@ export default async function Page({ searchParams }: TypeParams) {
           Análisis por etiqueta
         </h2>
         <div className="space-y-4 ">
-          <ComandLabel labels={labels.payload} />
+          <Suspense fallback={"Cargando lista de etiquetas"}>
+            <ComandLabel labels={labels.payload} />
+          </Suspense>
           <div className="grid grid-cols-2 gap-4">
             <Card>
               <CardHeader>

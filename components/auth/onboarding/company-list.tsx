@@ -7,22 +7,25 @@ import { CompanyDelete } from "./company-delete";
 import { useCompanySession } from "@/context/company-context";
 import { useRouter } from "next/navigation";
 import { useUserInfo } from "@/context/user-context";
-import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
+import { SUPERADMIN, USER } from "@/constants/roles";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CompanySchemaIN } from "@/lib/validations/auth/company";
+import { useQueryParams } from "@/hooks/useQueryParams";
 
 export function CompanyList({ companies }: { companies?: CompanySchemaIN[] }) {
   const { setCompany } = useCompanySession();
   const route = useRouter();
   const { userInfo } = useUserInfo();
+  const { createQueryString } = useQueryParams();
 
   const handleCompany = ({ company }: { company: CompanySchemaIN }) => {
     setCompany(company);
+    const queryString = createQueryString({ ruc: company.ruc });
     if (userInfo?.role === USER) {
-      route.push("/receipts");
+      route.push(`/receipts?${queryString}`);
       return;
     }
-    route.push("/dashboard");
+    route.push(`/dashboard?${queryString}`);
   };
 
   return (

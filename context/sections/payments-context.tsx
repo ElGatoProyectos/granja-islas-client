@@ -54,7 +54,7 @@ interface PaymentContextType {
     idVoucher: string;
     statusNew: string;
   }) => Promise<void>;
-  exportExcel: () => void;
+  exportExcel: () => any;
   deleteVoucher: (idVoucher: number) => void;
 }
 

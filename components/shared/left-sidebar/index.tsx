@@ -5,6 +5,7 @@ import { SidebarToggle } from "./sidebar-toggle";
 import { cn } from "@/lib/utils";
 import { CompanyCard } from "../company-card";
 import { Menu } from "./menu";
+import { Suspense } from "react";
 
 export function LeftSidebar() {
   const [sidebar, toogleSidebar] = useToggle();
@@ -18,7 +19,9 @@ export function LeftSidebar() {
     >
       <SidebarToggle isOpen={!sidebar} setIsOpen={toogleSidebar} />
       <CompanyCard isOpen={!sidebar} />
-      <Menu isOpen={!sidebar} />
+      <Suspense fallback={<div>Cargando...</div>}>
+        <Menu isOpen={!sidebar} />
+      </Suspense>
     </aside>
   );
 }

@@ -7,6 +7,7 @@ import { Notifications } from "../notifications";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth-options";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
+import { Suspense } from "react";
 
 export async function TopBar() {
   const now = new Date();
@@ -34,7 +35,9 @@ export async function TopBar() {
           )}
           <ModeToggle />
           <div className="flex gap-x-2">
-            <UserDropdown companies={companies} />
+            <Suspense fallback="Cargando empresas">
+              <UserDropdown companies={companies} />
+            </Suspense>
           </div>
         </div>
       </CardHeader>
