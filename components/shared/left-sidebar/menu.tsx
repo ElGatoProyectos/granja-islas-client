@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { Ellipsis, LogOut } from "lucide-react";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { signOut } from "next-auth/react";
 import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
+import { useEffect } from "react";
 
 interface MenuProps {
   isOpen: boolean;
@@ -28,6 +34,12 @@ export function Menu({ isOpen }: MenuProps) {
   const { userInfo } = useUserInfo();
   const searchParams = useSearchParams();
   const ruc = searchParams.get("ruc") ?? "";
+  const { push } = useRouter();
+  useEffect(() => {
+    if (!ruc) {
+      push("/onboarding");
+    }
+  }, [ruc, push]);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">

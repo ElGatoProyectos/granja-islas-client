@@ -1,11 +1,11 @@
 "use client";
 
 import { useToggle } from "@/hooks/use-toggle";
-import { SidebarToggle } from "./sidebar-toggle";
 import { cn } from "@/lib/utils";
+import { Suspense } from "react";
 import { CompanyCard } from "../company-card";
 import { Menu } from "./menu";
-import { Suspense } from "react";
+import { SidebarToggle } from "./sidebar-toggle";
 
 export function LeftSidebar() {
   const [sidebar, toogleSidebar] = useToggle();
