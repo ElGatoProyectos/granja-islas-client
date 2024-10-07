@@ -55,13 +55,11 @@ export default async function Page({ searchParams }: TypeParams) {
     startYear,
   });
 
-  const startDate =
-    startYear && startMonth ? `${startYear}-${startMonth}` : new Date();
-  const endDate = endYear && endMonth ? `${endYear}-${endMonth}` : new Date();
-  const formattedStart = format(startDate, "MMMM yyyy", { locale: es });
-  const formattedEnd = format(endDate, "MMMM yyyy", { locale: es });
-
-  const descriptionRange = `${formattedStart} - ${formattedEnd}`;
+  const startDate = new Date(Date.UTC(Number(startYear), Number(startMonth)));
+  const formatStart = format(startDate, "MMMM yyyy", { locale: es });
+  const endDate = new Date(Date.UTC(Number(endYear), Number(endMonth)));
+  const formatEnd = format(endDate, "MMMM yyyy", { locale: es });
+  const descriptionRange = `${formatStart} - ${formatEnd}`;
 
   const analyticsByLabel = await getAnalyticsByLabel({
     labelId,
@@ -98,7 +96,7 @@ export default async function Page({ searchParams }: TypeParams) {
       </div>
 
       <div className="mt-8 w-full flex flex-col">
-        <h2 className="text-2xl md:text-3xl font-bold ml-8 mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">
           Análisis por etiqueta
         </h2>
         <div className="space-y-4 ">

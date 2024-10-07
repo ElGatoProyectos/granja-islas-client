@@ -56,7 +56,7 @@ export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[250px] justify-between"
+          className="w-[250px] justify-between truncate"
         >
           {labelId
             ? labels.find((label) => label.id.toString() === labelId)?.title

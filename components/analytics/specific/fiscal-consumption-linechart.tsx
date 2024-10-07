@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/chart";
 import { SpecificAnalyticChart } from "@/types/analytic";
 import { formatNumberWithCommas } from "@/utils/format-number-comas";
+import { cn } from "@/lib/utils";
 
 const chartConfig = {
   amount: {
@@ -42,7 +43,15 @@ export function FiscalConsumptionLinechart({
         <CardTitle className="font-bold">
           {label ? `Consumo fiscal de ${label}` : "Seleccione una etiqueta"}
         </CardTitle>
-        <CardDescription>{descriptionRange}</CardDescription>
+        <CardDescription
+          className={cn(
+            "Seleccione un rango de periodos" !== descriptionRange
+              ? "capitalize"
+              : ""
+          )}
+        >
+          {descriptionRange}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px]">

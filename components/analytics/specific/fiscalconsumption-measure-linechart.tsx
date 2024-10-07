@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQueryParams } from "@/hooks/useQueryParams";
+import { cn } from "@/lib/utils";
 import { SpecificAnalyticChart } from "@/types/analytic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -63,7 +64,15 @@ export function FiscalConsumptionMeasureLinechart({
             : "Seleccione una etiqueta"}
         </CardTitle>
         <div className="flex gap-3 items-center">
-          <CardDescription>{descriptionRange}</CardDescription>
+          <CardDescription
+            className={cn(
+              "Seleccione un rango de periodos" !== descriptionRange
+                ? "capitalize"
+                : ""
+            )}
+          >
+            {descriptionRange}
+          </CardDescription>
           <Select
             value={measure}
             onValueChange={(value: string) => {

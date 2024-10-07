@@ -1,7 +1,13 @@
 "use client";
 
-import { Label as LabelRechart, Pie, PieChart } from "recharts";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -10,14 +16,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { cn } from "@/lib/utils";
 import { ExpCompositonSchemaIN } from "@/lib/validations/analytics";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 import { Tag } from "lucide-react";
+import Link from "next/link";
+import { useMemo } from "react";
+import { Label as LabelRechart, Pie, PieChart } from "recharts";
 
 interface Props {
   expComposition: ExpCompositonSchemaIN[];
@@ -70,13 +74,26 @@ export function ExpenseCompositionPiechart({
     <Card className="flex flex-col">
       <CardHeader className="flex-row justify-between items-center space-y-0">
         <CardTitle className="font-bold">Composición de gasto</CardTitle>
-        <CardDescription>{descriptionRange}</CardDescription>
+        <CardDescription
+          className={cn(
+            "Seleccione un rango de periodos" !== descriptionRange
+              ? "capitalize"
+              : ""
+          )}
+        >
+          {descriptionRange}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        {expComposition.length ? (
+      <CardContent
+        className={cn(
+          "Seleccione un rango de periodos" === descriptionRange ? "p-0" : ""
+        )}
+      >
+        {"Seleccione un rango de periodos" ===
+        descriptionRange ? null : expComposition.length ? (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[320px]"
+            className="mx-auto aspect-square max-h-[330px]"
           >
             <PieChart>
               <ChartTooltip

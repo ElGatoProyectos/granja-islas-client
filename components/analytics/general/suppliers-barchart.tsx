@@ -1,13 +1,20 @@
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { cn } from "@/lib/utils";
 import { GeneralTopSupplier } from "@/types/analytic";
 import { Tag } from "lucide-react";
 import Link from "next/link";
@@ -57,10 +64,23 @@ export function SuppliersBarchart({ topSuppliers, descriptionRange }: Props) {
     <Card>
       <CardHeader className="flex-row justify-between items-center space-y-0">
         <CardTitle className="font-bold">Proveedores</CardTitle>
-        <CardDescription>{descriptionRange}</CardDescription>
+        <CardDescription
+          className={cn(
+            "Seleccione un rango de periodos" !== descriptionRange
+              ? "capitalize"
+              : ""
+          )}
+        >
+          {descriptionRange}
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        {topSuppliers.length ? (
+      <CardContent
+        className={cn(
+          "Seleccione un rango de periodos" === descriptionRange ? "p-0" : ""
+        )}
+      >
+        {"Seleccione un rango de periodos" ===
+        descriptionRange ? null : topSuppliers.length ? (
           <ChartContainer config={chartConfig} className="aspect-video">
             <BarChart
               accessibilityLayer
