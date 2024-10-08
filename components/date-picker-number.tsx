@@ -15,64 +15,103 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Calendar, X } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
 import { months } from "@/constants/dates";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryParams } from "@/hooks/useQueryParams";
+import { getYearsArray } from "@/utils/getYearArray";
+import axios from "axios";
+import { getCompanyForRuc } from "@/lib/actions/company.actions";
+import { TypeCompany } from "@/types/company";
+import { getYearAndMonth } from "@/utils/getYearAndMonth";
 
 interface Props {
-  availableYears: string[];
-  getAvailableMonths: (year: number) => { value: string; label: string }[];
-  selectedMonth: number;
-  selectedYear: number;
-  setSelectedMonth: Dispatch<SetStateAction<number>>;
-  setSelectedYear: Dispatch<SetStateAction<number>>;
-  title: string;
+  yearStarted: number;
+  monthStarted: number;
 }
 
-export function DatePickerNumber({
-  availableYears,
-  getAvailableMonths,
-  selectedMonth,
-  selectedYear,
-  setSelectedMonth,
-  setSelectedYear,
-  title,
-}: Props) {
-  const resetValues = () => {
-    setSelectedMonth(0);
-    setSelectedYear(0);
+export function DatePickerNumber() {
+  const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const company_ruc = searchParams.get("ruc") ?? "";
+  const year = searchParams.get("year") ?? "";
+  const month = searchParams.get("month") ?? "";
+  const [yearStarted, setYearStarted] = useState(year);
+  const [monthStarted, setMonthStarted] = useState(month);
+  useEffect(() => {
+    if (company_ruc) {
+      const getData = async () => {
+        const company = await getCompanyForRuc({ ruc: company_ruc });
+        const { yearStarted, monthStarted } = getYearAndMonth({
+          dateString: company.emisor_electronico_desde,
+        });
+        setYearStarted(yearStarted.toString());
+        setMonthStarted(monthStarted.toString());
+      };
+      getData();
+    }
+  }, [company_ruc]);
+
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const { createQueryString } = useQueryParams();
+  const yearsCompany = getYearsArray({ startYear: Number(yearStarted) });
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  const initialYear = year || currentYear.toString();
+  const initialMonth = month || currentMonth.toString();
+
+  const monthView = months.find(
+    (month) => parseInt(month.value, 10) === Number(initialMonth)
+  );
+
+  const filteredMonths = months.filter(({ value }) => {
+    if (!initialYear) return true;
+    const selectedYear = parseInt(initialYear);
+    if (selectedYear === Number(yearStarted)) {
+      return parseInt(value) >= Number(monthStarted);
+    }
+    if (selectedYear === currentYear) {
+      return parseInt(value) <= currentMonth;
+    }
+    return true;
+  });
+
+  const handleYearChange = (value: string) => {
+    replace(pathname + "?" + createQueryString({ year: value }));
   };
 
-  const [open, setOpen] = useState(false);
-  const [monthView] = months.filter(
-    (month) => parseInt(month.value, 10) === selectedMonth
-  );
+  const handleMonthChange = (value: string) => {
+    replace(pathname + "?" + createQueryString({ month: value }));
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="border-dashed">
           <Calendar className="mr-2 h-4 w-4" />
-          {title}
-          <span className="sr-only">Escojer periodo</span>
-          {selectedMonth !== 0 ? (
+          Fecha
+          {month ? (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
               <Badge
                 variant="secondary"
                 className="rounded-sm px-1 font-normal"
               >
-                {monthView.label}
+                {monthView?.label}
               </Badge>
             </>
           ) : null}
-          {selectedYear !== 0 && (
+          {year && (
             <Badge
               variant="secondary"
               className="rounded-sm px-1 font-normal ml-2"
             >
-              {selectedYear}
+              {year}
             </Badge>
           )}
         </Button>
@@ -86,51 +125,48 @@ export function DatePickerNumber({
               <span className="sr-only">Cerrar modal</span>
             </Button>
           </div>
-          <Select
-            name="year"
-            value={
-              selectedYear.toString() === "0" ? "" : selectedYear.toString()
-            }
-            onValueChange={(value: string) =>
-              setSelectedYear(parseInt(value, 10))
-            }
-          >
+          <Select value={year} onValueChange={handleYearChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecciona el año" />
+              <SelectValue placeholder="Año" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {availableYears.map((year) => (
-                  <SelectItem key={year} value={year.toString()}>
+                {yearsCompany.map((year) => (
+                  <SelectItem
+                    key={year}
+                    value={year.toString()}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {year}
                   </SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Select
-            name="month"
-            value={
-              selectedMonth.toString() === "0" ? "" : selectedMonth.toString()
-            }
-            onValueChange={(value: string) =>
-              setSelectedMonth(parseInt(value, 10))
-            }
-          >
+          <Select value={month} onValueChange={handleMonthChange}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Selecciona el mes" />
+              <SelectValue placeholder="Mes" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {getAvailableMonths(selectedYear).map(({ label, value }) => (
-                  <SelectItem key={value} value={value}>
+                {filteredMonths.map(({ label, value }) => (
+                  <SelectItem
+                    key={value}
+                    value={value}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {label}
                   </SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button variant="secondary" onClick={resetValues}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              //resetear valores
+            }}
+          >
             Ver Todo
           </Button>
         </div>

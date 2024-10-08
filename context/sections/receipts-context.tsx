@@ -1,10 +1,23 @@
 "use client";
 
 import { BACKEND_URL } from "@/constants/config";
+import { typesSpanishFormat } from "@/constants/type-document";
+import { useDebounce } from "@/hooks/use-debounce";
+import { getCompanyForRuc } from "@/lib/actions/company.actions";
+import { paginationSchema } from "@/lib/validations/pagination";
+import {
+  receiptArraySchemaIN,
+  ReceiptSchemaIN,
+} from "@/lib/validations/receipt";
+import { responseSchema } from "@/lib/validations/response";
 import {
   supplierArraySchemaFilter,
   SupplierSchemaFilter,
 } from "@/lib/validations/supplier";
+import { getSuppliers } from "@/service/suppliers";
+import { formatDate } from "@/utils/format-date";
+import { getYearAndMonth } from "@/utils/getYearAndMonth";
+import { useSearchParams } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -15,19 +28,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
-import { useDebounce } from "@/hooks/use-debounce";
-import {
-  receiptArraySchemaIN,
-  ReceiptSchemaIN,
-} from "@/lib/validations/receipt";
-import { responseSchema } from "@/lib/validations/response";
-import { paginationSchema } from "@/lib/validations/pagination";
-import { typesSpanishFormat } from "@/constants/type-document";
-import { getSuppliers } from "@/service/suppliers";
-import { formatDate } from "@/utils/format-date";
-import { useDatesFilter } from "../dates-filter-context";
+import { useUserInfo } from "../user-context";
 
 interface ReceiptContextType {
   receipts: ReceiptSchemaIN[];
@@ -41,13 +43,6 @@ interface ReceiptContextType {
   setCurrentPage: Dispatch<SetStateAction<number>>;
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
-
-  availableYears: string[];
-  getAvailableMonths: (year: number) => { value: string; label: string }[];
-  selectedMonth: number;
-  selectedYear: number;
-  setSelectedMonth: Dispatch<SetStateAction<number>>;
-  setSelectedYear: Dispatch<SetStateAction<number>>;
 
   idSupplier: string;
   setIdSupplier: Dispatch<SetStateAction<string>>;
@@ -82,14 +77,41 @@ export const ReceiptProvider = ({
   );
   const [idsTypeDocument, setIdsTypeDocument] = useState("");
   const [typesPayment, setTypesPayment] = useState("");
-  const {
-    selectedMonth,
-    selectedYear,
-    availableYears,
-    getAvailableMonths,
-    setSelectedMonth,
-    setSelectedYear,
-  } = useDatesFilter();
+
+  const searchParams = useSearchParams();
+  const [yearStarted, setYearStarted] = useState(
+    Number(searchParams.get("year")) ?? new Date().getFullYear()
+  );
+  const [monthStarted, setMonthStarted] = useState(
+    Number(searchParams.get("month")) ?? new Date().getMonth() + 1
+  );
+  const company_ruc = searchParams.get("ruc") ?? "";
+  // useEffect(() => {
+  //   if (company_ruc) {
+  //     const getData = async () => {
+  //       const company = await getCompanyForRuc({ ruc: company_ruc });
+  //       const { yearStarted, monthStarted } = getYearAndMonth({
+  //         dateString: company.emisor_electronico_desde,
+  //       });
+  //       setYearStarted(yearStarted);
+  //       setMonthStarted(monthStarted);
+  //     };
+  //     getData();
+  //   }
+  // }, [company_ruc]);
+
+  useEffect(() => {
+    const year = searchParams.get("year");
+    const month = searchParams.get("month");
+
+    if (year) {
+      setYearStarted(Number(year));
+    }
+
+    if (month) {
+      setMonthStarted(Number(month));
+    }
+  }, [searchParams]);
 
   const getFilters = useCallback(async () => {
     if (!company) return;
@@ -115,17 +137,8 @@ export const ReceiptProvider = ({
       if (currentPage) queryParams.append("page", currentPage.toString());
       if (limit) queryParams.append("limit", limit.toString());
       if (input) queryParams.append("filter", input);
-      if (selectedMonth)
-        queryParams.append(
-          "month",
-          selectedMonth === 0 ? "" : selectedMonth.toString()
-        );
-
-      if (selectedYear)
-        queryParams.append(
-          "year",
-          selectedYear === 0 ? "" : selectedYear.toString()
-        );
+      if (monthStarted) queryParams.append("month", monthStarted.toString());
+      if (yearStarted) queryParams.append("year", yearStarted.toString());
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idsTypeDocument) queryParams.append("document_type", idsTypeDocument);
       if (typesPayment) queryParams.append("type_payment", typesPayment);
@@ -184,8 +197,8 @@ export const ReceiptProvider = ({
     currentPage,
     limit,
     input,
-    selectedMonth,
-    selectedYear,
+    monthStarted,
+    yearStarted,
     idSupplier,
     idsTypeDocument,
     typesPayment,
@@ -205,8 +218,8 @@ export const ReceiptProvider = ({
       queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
-      if (selectedMonth) queryParams.append("month", selectedMonth.toString());
-      if (selectedYear) queryParams.append("year", selectedYear.toString());
+      if (monthStarted) queryParams.append("month", monthStarted.toString());
+      if (yearStarted) queryParams.append("year", yearStarted.toString());
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
       const url = `${BACKEND_URL}/api/documents?${queryParams
@@ -248,7 +261,7 @@ export const ReceiptProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, input, selectedMonth, selectedYear, idSupplier]);
+  }, [company, tokenBack, input, monthStarted, yearStarted, idSupplier]);
 
   const value = useMemo(
     () => ({
@@ -263,13 +276,6 @@ export const ReceiptProvider = ({
       totalElements,
       setSearch,
       search,
-
-      selectedMonth,
-      selectedYear,
-      availableYears,
-      getAvailableMonths,
-      setSelectedMonth,
-      setSelectedYear,
 
       setIdSupplier,
       idSupplier,
@@ -289,12 +295,6 @@ export const ReceiptProvider = ({
       totalPages,
       totalElements,
       search,
-      selectedMonth,
-      selectedYear,
-      availableYears,
-      getAvailableMonths,
-      setSelectedMonth,
-      setSelectedYear,
       idSupplier,
       supplierFilter,
       exportExcel,

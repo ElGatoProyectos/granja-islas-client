@@ -1,11 +1,11 @@
-import { FormatedTotalAmountReceipts } from "@/hooks/useDashboard";
 import { ReceiptSchemaIN } from "@/lib/validations/receipt";
+import { FormatedTotalAmountReceipts } from "@/types/dashboard";
 
 export function calculateTotals({
   receipts,
   document_type,
 }: {
-  receipts: ReceiptSchemaIN[];
+  receipts?: ReceiptSchemaIN[];
   document_type:
     | "01 - Factura"
     | "03 - Boleta de venta"
@@ -18,6 +18,18 @@ export function calculateTotals({
   let total_amount_base = 0;
   let total_amount_dgng_igv = 0;
   let total_amount_dgng_base = 0;
+  if (!receipts)
+    return {
+      document_type,
+      total_documents,
+
+      total_amount_documents,
+      total_amount_igv,
+      total_amount_base,
+
+      total_amount_dgng_igv,
+      total_amount_dgng_base,
+    };
 
   for (const receipt of receipts) {
     total_documents += 1;

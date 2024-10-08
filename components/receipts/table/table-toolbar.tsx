@@ -36,13 +36,6 @@ export function DataTableToolbar<TData>({
     setIdsTypeDocument,
     setCurrentPage,
     setTypesPayment,
-
-    selectedMonth,
-    selectedYear,
-    availableYears,
-    getAvailableMonths,
-    setSelectedMonth,
-    setSelectedYear,
   } = useReceipt();
 
   const { toast } = useToast();
@@ -123,15 +116,7 @@ export function DataTableToolbar<TData>({
       </div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
-          <DatePickerNumber
-            setSelectedMonth={setSelectedMonth}
-            setSelectedYear={setSelectedYear}
-            selectedYear={selectedYear}
-            selectedMonth={selectedMonth}
-            availableYears={availableYears}
-            getAvailableMonths={getAvailableMonths}
-            title="Fecha"
-          />
+          <DatePickerNumber />
           {table.getColumn("business_name") && (
             <DataTableFacetedFilter
               column={table.getColumn("business_name")}
