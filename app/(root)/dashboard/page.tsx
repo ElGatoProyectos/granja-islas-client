@@ -10,6 +10,7 @@ import { getDataDashboard } from "@/lib/actions/dashboard";
 import { TypeParams } from "@/types/params";
 import { calculateTotalCards, calculateTotals } from "@/utils/calculateTotals";
 import { getYearAndMonth } from "@/utils/getYearAndMonth";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 interface TypeCardsInfo {
@@ -21,6 +22,9 @@ interface TypeCardsInfo {
 export default async function Home({ searchParams }: TypeParams) {
   const company_ruc =
     typeof searchParams.ruc === "string" ? searchParams.ruc : "";
+  if (!company_ruc) {
+    redirect("/onboarding");
+  }
   const year =
     typeof searchParams.year === "string"
       ? searchParams.year

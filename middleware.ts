@@ -15,7 +15,7 @@ export default withAuth(
 
     // Redirigir desde "/" a "/dashboard" si está autenticado
     if (pathname === "/") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL("/onboarding", req.url));
     }
 
     // Verificar accesos según el rol del usuario
