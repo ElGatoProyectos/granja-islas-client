@@ -3,7 +3,6 @@
 import { BACKEND_URL } from "@/constants/config";
 import { typesSpanishFormat } from "@/constants/type-document";
 import { useDebounce } from "@/hooks/use-debounce";
-import { getCompanyForRuc } from "@/lib/actions/company.actions";
 import { paginationSchema } from "@/lib/validations/pagination";
 import {
   receiptArraySchemaIN,
@@ -16,7 +15,6 @@ import {
 } from "@/lib/validations/supplier";
 import { getSuppliers } from "@/service/suppliers";
 import { formatDate } from "@/utils/format-date";
-import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { useSearchParams } from "next/navigation";
 import {
   createContext,
@@ -64,7 +62,7 @@ export const ReceiptProvider = ({
   const [receipts, setReceipts] = useState<ReceiptSchemaIN[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(20);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [totalPages, setTotalPages] = useState(1);
@@ -79,39 +77,36 @@ export const ReceiptProvider = ({
   const [typesPayment, setTypesPayment] = useState("");
 
   const searchParams = useSearchParams();
-  const [yearStarted, setYearStarted] = useState(
-    Number(searchParams.get("year")) ?? new Date().getFullYear()
-  );
-  const [monthStarted, setMonthStarted] = useState(
-    Number(searchParams.get("month")) ?? new Date().getMonth() + 1
-  );
-  const company_ruc = searchParams.get("ruc") ?? "";
-  // useEffect(() => {
-  //   if (company_ruc) {
-  //     const getData = async () => {
-  //       const company = await getCompanyForRuc({ ruc: company_ruc });
-  //       const { yearStarted, monthStarted } = getYearAndMonth({
-  //         dateString: company.emisor_electronico_desde,
-  //       });
-  //       setYearStarted(yearStarted);
-  //       setMonthStarted(monthStarted);
-  //     };
-  //     getData();
-  //   }
-  // }, [company_ruc]);
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  const startYearP = searchParams.get("startYear") ?? currentYear.toString();
+  const startMonthP = searchParams.get("startMonth") ?? currentMonth.toString();
+  const endYearP = searchParams.get("endYear") ?? currentYear.toString();
+  const endMonthP = searchParams.get("endMonth") ?? currentMonth.toString();
+  const [startYear, setStartYear] = useState(startYearP);
+  const [startMonth, setstartMonth] = useState(startMonthP);
+  const [endYear, setEndYear] = useState(endYearP);
+  const [endMonth, setendMonth] = useState(endMonthP);
 
   useEffect(() => {
-    const year = searchParams.get("year");
-    const month = searchParams.get("month");
-
-    if (year) {
-      setYearStarted(Number(year));
+    if (startYear && startMonth && endYear && endMonth) {
+      setStartYear(startYearP);
+      setstartMonth(startMonthP);
+      setEndYear(endYearP);
+      setendMonth(endMonthP);
     }
-
-    if (month) {
-      setMonthStarted(Number(month));
-    }
-  }, [searchParams]);
+  }, [
+    endMonth,
+    endMonthP,
+    endYear,
+    endYearP,
+    searchParams,
+    startMonth,
+    startMonthP,
+    startYear,
+    startYearP,
+  ]);
 
   const getFilters = useCallback(async () => {
     if (!company) return;
@@ -130,15 +125,17 @@ export const ReceiptProvider = ({
   const getReceipts = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
+    if (!startYear || !startMonth || !endYear || !endMonth) return;
     setLoading(true);
-
+    const start = `${startYear}-${startMonth}`;
+    const end = `${endYear}-${endMonth}`;
     try {
       const queryParams = new URLSearchParams();
       if (currentPage) queryParams.append("page", currentPage.toString());
       if (limit) queryParams.append("limit", limit.toString());
       if (input) queryParams.append("filter", input);
-      if (monthStarted) queryParams.append("month", monthStarted.toString());
-      if (yearStarted) queryParams.append("year", yearStarted.toString());
+      queryParams.append("start", start);
+      queryParams.append("end", end);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idsTypeDocument) queryParams.append("document_type", idsTypeDocument);
       if (typesPayment) queryParams.append("type_payment", typesPayment);
@@ -194,11 +191,13 @@ export const ReceiptProvider = ({
   }, [
     company,
     tokenBack,
+    startYear,
+    startMonth,
+    endYear,
+    endMonth,
     currentPage,
     limit,
     input,
-    monthStarted,
-    yearStarted,
     idSupplier,
     idsTypeDocument,
     typesPayment,
@@ -211,15 +210,18 @@ export const ReceiptProvider = ({
   const exportExcel = useCallback(async () => {
     if (!company) return;
     if (!tokenBack) return;
+    if (!startYear || !startMonth || !endYear || !endMonth) return;
     setLoading(true);
+    const start = `${startYear}-${startMonth}`;
+    const end = `${endYear}-${endMonth}`;
 
     try {
       const queryParams = new URLSearchParams();
       queryParams.append("page", "1");
       queryParams.append("limit", "10000");
       if (input) queryParams.append("filter", input);
-      if (monthStarted) queryParams.append("month", monthStarted.toString());
-      if (yearStarted) queryParams.append("year", yearStarted.toString());
+      queryParams.append("start", start);
+      queryParams.append("end", end);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
 
       const url = `${BACKEND_URL}/api/documents?${queryParams
@@ -261,7 +263,16 @@ export const ReceiptProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [company, tokenBack, input, monthStarted, yearStarted, idSupplier]);
+  }, [
+    company,
+    tokenBack,
+    startYear,
+    startMonth,
+    endYear,
+    endMonth,
+    input,
+    idSupplier,
+  ]);
 
   const value = useMemo(
     () => ({

@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Select,
   SelectContent,
@@ -13,27 +14,30 @@ import { useQueryParams } from "@/hooks/useQueryParams";
 import { getYearsArray } from "@/utils/getYearArray";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export function RangePeriods({
+export function PeriodsRange({
   yearStarted,
   monthStarted,
+  currentDate = false,
 }: {
   yearStarted: number;
   monthStarted: number;
+  currentDate?: boolean;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const { createQueryString } = useQueryParams();
 
-  const startYear = searchParams.get("startYear") ?? "";
-  const startMonth = searchParams.get("startMonth") ?? "";
-  const endYear = searchParams.get("endYear") ?? "";
-  const endMonth = searchParams.get("endMonth") ?? "";
-
   const yearsCompany = getYearsArray({ startYear: yearStarted });
-
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
+  const startCurrentYear = currentDate ? currentYear.toString() : "";
+  const startCurrentMonth = currentDate ? currentMonth.toString() : "";
+
+  const startYear = searchParams.get("startYear") ?? startCurrentYear;
+  const startMonth = searchParams.get("startMonth") ?? startCurrentMonth;
+  const endYear = searchParams.get("endYear") ?? startCurrentYear;
+  const endMonth = searchParams.get("endMonth") ?? startCurrentMonth;
 
   const filteredStartMonths = months.filter(({ value }) => {
     if (!startYear) return true;
@@ -45,7 +49,6 @@ export function RangePeriods({
     if (selectedYear === currentYear) {
       return parseInt(value) <= currentMonth;
     }
-
     return true;
   });
 
@@ -59,12 +62,11 @@ export function RangePeriods({
     if (selectedYear === currentYear) {
       return parseInt(value) <= currentMonth;
     }
-
     return true;
   });
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 items-center">
       <div className="flex justify-center items-center gap-2">
         <p className="text-sm">Inicio</p>
         <Select
@@ -114,7 +116,7 @@ export function RangePeriods({
           </SelectContent>
         </Select>
       </div>
-      <Separator orientation="vertical" />
+      <Separator orientation="vertical" className="h-8" />
       <div className="flex justify-center items-center gap-2">
         <p className="text-sm">Fin</p>
         <Select

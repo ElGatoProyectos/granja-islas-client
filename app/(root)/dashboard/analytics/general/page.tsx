@@ -3,7 +3,7 @@ import { PurchasesPerMoth } from "@/components/analytics/general/puchases-per-mo
 import { SuppliersBarchart } from "@/components/analytics/general/suppliers-barchart";
 import { SuppliersTable } from "@/components/analytics/general/suppliers-table";
 import { ComandLabel } from "@/components/analytics/specific/comand-label";
-import { RangePeriods } from "@/components/analytics/specific/range-periods";
+import { PeriodsRange } from "@/components/periods-range";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCompanyForRuc } from "@/lib/actions/company.actions";
 import {
@@ -16,7 +16,6 @@ import { TypeParams } from "@/types/params";
 import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Suspense } from "react";
 
 export default async function Page({ searchParams }: TypeParams) {
   const company_ruc =
@@ -70,9 +69,7 @@ export default async function Page({ searchParams }: TypeParams) {
     <section>
       <header className="flex justify-between">
         <h1 className={"text-2xl md:text-3xl font-bold"}>Detalles generales</h1>
-        <Suspense fallback={"Cargando rango de periodos"}>
-          <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
-        </Suspense>
+        <PeriodsRange yearStarted={yearStarted} monthStarted={monthStarted} />
       </header>
       <div className="mt-6 w-full flex flex-col">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
@@ -100,9 +97,7 @@ export default async function Page({ searchParams }: TypeParams) {
           Análisis por etiqueta
         </h2>
         <div className="space-y-4 ">
-          <Suspense fallback={"Cargando lista de etiquetas"}>
-            <ComandLabel labels={labels.payload} />
-          </Suspense>
+          <ComandLabel labels={labels.payload} />
           <div className="grid grid-cols-2 gap-4">
             <Card>
               <CardHeader>

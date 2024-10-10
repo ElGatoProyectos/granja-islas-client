@@ -1,7 +1,7 @@
 import { ComandLabel } from "@/components/analytics/specific/comand-label";
 import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fiscal-consumption-linechart";
 import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
-import { RangePeriods } from "@/components/analytics/specific/range-periods";
+import { PeriodsRange } from "@/components/periods-range";
 import { getCompanyForRuc } from "@/lib/actions/company.actions";
 import { getLabels } from "@/lib/actions/label.actions";
 import {
@@ -63,7 +63,7 @@ export default async function Page({ searchParams }: TypeParams) {
           <ComandLabel labels={labels.payload} />
         </Suspense>
         <Suspense fallback={"Cargando rango de periodos"}>
-          <RangePeriods yearStarted={yearStarted} monthStarted={monthStarted} />
+          <PeriodsRange yearStarted={yearStarted} monthStarted={monthStarted} />
         </Suspense>
       </header>
       <main className="grid grid-cols-1 gap-4">

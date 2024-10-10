@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <DataTableToolbar table={table} />
       {loading ? (
         <DataTableSkeleton columnCount={7} rowCount={10} />
@@ -148,6 +148,7 @@ export function DataTable<TData, TValue>({
         setLimit={setLimit}
         currentPage={currentPage}
         totalElements={totalElements}
+        arrayOfRows={[20, 50, 100]}
       />
     </div>
   );

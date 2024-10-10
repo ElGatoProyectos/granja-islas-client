@@ -1,21 +1,21 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { PeriodsRange } from "@/components/periods-range";
+import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
+import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { ADMIN, SUPERADMIN } from "@/constants/roles";
+import { arrayOfTypesDocument } from "@/constants/type-document";
+import { useReceipt } from "@/context/sections/receipts-context";
+import { useUserInfo } from "@/context/user-context";
+import { useDateStarted } from "@/hooks/use-date-started";
+import { receiptViewTable, transformData } from "@/utils/change-name";
+import { exportToExcel2 } from "@/utils/export-excel";
 import { Table } from "@tanstack/react-table";
 import { Download, X } from "lucide-react";
-import { DataTableViewOptions } from "@/components/ui-custom/table-view-options";
-import { useReceipt } from "@/context/sections/receipts-context";
-import { receiptViewTable, transformData } from "@/utils/change-name";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { exportToExcel2 } from "@/utils/export-excel";
-import { arrayOfTypesDocument } from "@/constants/type-document";
-import { DataTableFacetedFilter } from "@/components/ui-custom/table-faceted-filter";
-import { useUserInfo } from "@/context/user-context";
-import { ADMIN, SUPERADMIN } from "@/constants/roles";
-import { DatePickerNumber } from "@/components/date-picker-number";
-import { useToast } from "@/components/ui/use-toast";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -51,21 +51,67 @@ export function DataTableToolbar<TData>({
   ];
 
   const { userInfo } = useUserInfo();
+  const { monthStarted, yearStarted } = useDateStarted();
 
   return (
-    <div className="flex flex-col space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-1 items-center space-x-2">
-          <Input
-            placeholder="Buscar por serie o número"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-[150px] lg:w-[450px]"
-          />
+    <section className="flex flex-col space-y-3">
+      <div className="flex space-x-2">
+        <Input
+          placeholder="Buscar por serie o número"
+          value={search}
+          onChange={(event) => {
+            setSearch(event.target.value);
+            setCurrentPage(1);
+          }}
+          className="w-[150px] lg:w-[450px]"
+        />
+        <div className="flex gap-2 items-center">
+          {table.getColumn("business_name") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("business_name")}
+              title="Proveedores"
+              options={options}
+              setFilter={setIdSupplier}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
+          {table.getColumn("document_description") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("document_description")}
+              title="Tipo de documento"
+              options={arrayOfTypesDocument}
+              setFilter={setIdsTypeDocument}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
+          {table.getColumn("bill_status_payment") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("bill_status_payment")}
+              title="Tipo de pago"
+              options={typesOfPayments}
+              setFilter={setTypesPayment}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
+          {isFiltered && (
+            <Button
+              variant="ghost"
+              onClick={() => table.resetColumnFilters()}
+              className="px-2 lg:px-3 "
+            >
+              Reset
+              <X className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
+      </div>
+
+      <div className="flex items-center justify-between ">
+        <PeriodsRange
+          monthStarted={Number(monthStarted)}
+          yearStarted={Number(yearStarted)}
+          currentDate
+        />
         <div className="flex space-x-2">
           {userInfo?.role === SUPERADMIN || userInfo?.role === ADMIN ? (
             <>
@@ -107,58 +153,14 @@ export function DataTableToolbar<TData>({
                 <Download className="h-4 w-4 mr-2" />
                 Excel
               </Button>
-              <Link href={`${pathname}/create`} className={buttonVariants()}>
+              {/* <Link href={`${pathname}/create`} className={buttonVariants()}>
                 Agregar comprobante
-              </Link>
+              </Link> */}
             </>
           ) : null}
-        </div>
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2 items-center">
-          <DatePickerNumber />
-          {table.getColumn("business_name") && (
-            <DataTableFacetedFilter
-              column={table.getColumn("business_name")}
-              title="Proveedores"
-              options={options}
-              setFilter={setIdSupplier}
-              setCurrentPage={setCurrentPage}
-            />
-          )}
-          {table.getColumn("document_description") && (
-            <DataTableFacetedFilter
-              column={table.getColumn("document_description")}
-              title="Tipo de documento"
-              options={arrayOfTypesDocument}
-              setFilter={setIdsTypeDocument}
-              setCurrentPage={setCurrentPage}
-            />
-          )}
-          {table.getColumn("bill_status_payment") && (
-            <DataTableFacetedFilter
-              column={table.getColumn("bill_status_payment")}
-              title="Tipo de pago"
-              options={typesOfPayments}
-              setFilter={setTypesPayment}
-              setCurrentPage={setCurrentPage}
-            />
-          )}
-          {isFiltered && (
-            <Button
-              variant="ghost"
-              onClick={() => table.resetColumnFilters()}
-              className="px-2 lg:px-3 "
-            >
-              Reset
-              <X className="ml-2 h-4 w-4" />
-            </Button>
-          )}
-        </div>
-        <div className="flex space-x-2">
           <DataTableViewOptions table={table} changeTitle={receiptViewTable} />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

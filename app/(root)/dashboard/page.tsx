@@ -1,9 +1,7 @@
 import { CardsInfo } from "@/components/home/cards-info";
-import { PeriodsDashboard } from "@/components/home/periods";
 import { ShoppingRecordTable } from "@/components/home/shopping-record-table";
 import { DataTableSkeletonTest } from "@/components/home/table-skeleton";
-import { LayerPage } from "@/components/layer-page";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { PeriodsRange } from "@/components/periods-range";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCompanyForRuc } from "@/lib/actions/company.actions";
 import { getDataDashboard } from "@/lib/actions/dashboard";
@@ -25,20 +23,36 @@ export default async function Home({ searchParams }: TypeParams) {
   if (!company_ruc) {
     redirect("/onboarding");
   }
-  const year =
-    typeof searchParams.year === "string"
-      ? searchParams.year
+
+  const startYear =
+    typeof searchParams.startYear === "string"
+      ? searchParams.startYear
       : new Date().getFullYear().toString();
-  const month =
-    typeof searchParams.month === "string"
-      ? searchParams.month
+  const startMonth =
+    typeof searchParams.startMonth === "string"
+      ? searchParams.startMonth
       : (new Date().getMonth() + 1).toString();
+  const endYear =
+    typeof searchParams.endYear === "string"
+      ? searchParams.endYear
+      : new Date().getFullYear().toString();
+  const endMonth =
+    typeof searchParams.endMonth === "string"
+      ? searchParams.endMonth
+      : (new Date().getMonth() + 1).toString();
+
   const company = await getCompanyForRuc({ ruc: company_ruc });
   const { yearStarted, monthStarted } = getYearAndMonth({
     dateString: company.emisor_electronico_desde,
   });
 
-  const data = await getDataDashboard({ year, month, ruc: company_ruc });
+  const data = await getDataDashboard({
+    ruc: company_ruc,
+    endMonth,
+    endYear,
+    startMonth,
+    startYear,
+  });
 
   const formatedBills = calculateTotals({
     receipts: data?.bills,
@@ -88,28 +102,26 @@ export default async function Home({ searchParams }: TypeParams) {
   ];
 
   return (
-    <LayerPage title="Registro de compras" className="pl-8">
-      <ScrollArea className="w-[calc(100vw-3.75rem)] lg:w-full whitespace-nowrap rounded-md">
-        <Suspense
-          fallback={
-            <div className="flex w-max pb-6 lg:grid lg:grid-cols-2 xl:grid-cols-4 lg:w-full gap-4 justify-center items-center">
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
-            </div>
-          }
-        >
-          <CardsInfo cardsInfo={cardsInfo} />
-        </Suspense>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-      <Suspense fallback={"cargando datos?"}>
-        <PeriodsDashboard
-          yearStarted={yearStarted}
-          monthStarted={monthStarted}
-          formatedReceipts={formatedReceipts}
-        />
+    <section className="space-y-4">
+      <h1 className={"text-2xl md:text-3xl font-bold mb-6"}>
+        Registro de compras
+      </h1>
+      <PeriodsRange
+        yearStarted={yearStarted}
+        monthStarted={monthStarted}
+        currentDate
+      />
+      <Suspense
+        fallback={
+          <div className="flex w-max pb-6 lg:grid lg:grid-cols-2 xl:grid-cols-4 lg:w-full gap-4 justify-center items-center">
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        }
+      >
+        <CardsInfo cardsInfo={cardsInfo} />
       </Suspense>
       <Suspense
         fallback={
@@ -128,6 +140,6 @@ export default async function Home({ searchParams }: TypeParams) {
           totalAmountofAll={cardsInfo.length ? cardsInfo[3].value : 0}
         />
       </Suspense>
-    </LayerPage>
+    </section>
   );
 }

@@ -6,16 +6,23 @@ import axios, { AxiosResponse } from "axios";
 import { getServerSession } from "next-auth";
 
 export async function getDataDashboard({
-  year,
-  month,
+  startYear,
+  startMonth,
+  endYear,
+  endMonth,
   ruc,
 }: {
-  year: string;
-  month: string;
+  startYear: string;
+  startMonth: string;
+  endYear: string;
+  endMonth: string;
   ruc: string;
 }) {
-  if (!year || !month || !ruc) return;
+  if (!startYear || !startMonth || !endYear || !endMonth || !ruc) return;
   const session = await getServerSession(authOptions);
+  const start = `${startYear}-${startMonth}`;
+  const end = `${endYear}-${endMonth}`;
+
   try {
     const {
       data: { payload },
@@ -27,8 +34,8 @@ export async function getDataDashboard({
           ruc,
         },
         params: {
-          year,
-          month,
+          start,
+          end,
         },
       }
     );

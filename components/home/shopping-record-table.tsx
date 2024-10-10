@@ -27,14 +27,13 @@ export function ShoppingRecordTable({
   ruc,
 }: Props) {
   const searchParams = useSearchParams();
-  const year = searchParams.get("year") ?? "";
-  const month = searchParams.get("month") ?? "";
-
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
-  const initialYear = year || currentYear.toString();
-  const initialMonth = month || currentMonth.toString();
+  const startYear = searchParams.get("startYear") ?? currentYear;
+  const startMonth = searchParams.get("startMonth") ?? currentMonth;
+  const endYear = searchParams.get("endYear") ?? currentYear;
+  const endMonth = searchParams.get("endMonth") ?? currentMonth;
 
   return (
     <Table>
@@ -75,7 +74,13 @@ export function ShoppingRecordTable({
                 <Link
                   href={{
                     pathname: "/receipts",
-                    query: { ruc, year: initialYear, month: initialMonth },
+                    query: {
+                      ruc,
+                      startYear,
+                      startMonth,
+                      endYear,
+                      endMonth,
+                    },
                   }}
                   className={`${buttonVariants({ variant: "link" })} !p-0`}
                 >
