@@ -1,18 +1,8 @@
 "use client";
 
-import { useDateRange } from "@/hooks/useDateRange";
-import { useSyncSunat } from "@/hooks/useSyncSunat";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-} from "@/components/ui/select";
+import { BankForm } from "@/components/settings/bank-form";
+import { LabelForm } from "@/components/settings/label-form";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -20,76 +10,72 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { START_MONTH_SYNC, START_YEAR_SYNC } from "@/constants/start-sync";
 import { useCompanySession } from "@/context/company-context";
-import { LabelForm } from "@/components/settings/label-form";
-import { BankForm } from "@/components/settings/bank-form";
+import { syncWithSunat } from "@/lib/actions/sync-sunat";
+import { filterMonthsByYear } from "@/utils/filter-months-by-year";
+import { getYearsArray } from "@/utils/getYearArray";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Page() {
   const { company } = useCompanySession();
-
-  const startYear = company?.emisor_electronico_desde
-    ? new Date(company.emisor_electronico_desde).getFullYear().toString()
-    : "";
-
-  const {
-    selectedYearStart,
-    selectedMonthStart,
-    selectedYearEnd,
-    selectedMonthEnd,
-    availableYears,
-    getAvailableMonths,
-    setSelectedYearStart,
-    setSelectedMonthStart,
-    setSelectedYearEnd,
-    setSelectedMonthEnd,
-  } = useDateRange(startYear);
-
-  const {
-    syncSunatperMonth,
-    loading,
-    setYearStart,
-    setMonthStart,
-    setYearEnd,
-    setMonthEnd,
-  } = useSyncSunat();
-
-  const handleYearStartChange = (year: string) => {
-    setSelectedYearStart(year);
-    setYearStart(year);
-    if (
-      year === new Date().getFullYear().toString() &&
-      parseInt(selectedMonthStart, 10) > new Date().getMonth() + 1
-    ) {
-      setSelectedMonthStart((new Date().getMonth() + 1).toString());
-      setMonthStart((new Date().getMonth() + 1).toString());
-    }
+  const [period, setPeriod] = useState({
+    startYear: "",
+    startMonth: "",
+    endYear: "",
+    endMonth: "",
+  });
+  const handleSelectChange = (field: string, value: string) => {
+    setPeriod((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
 
-  const handleMonthStartChange = (month: string) => {
-    setSelectedMonthStart(month);
-    setMonthStart(month);
-  };
+  const yearsCompany = getYearsArray({ startYear: START_YEAR_SYNC });
+  const filteredStartMonths = filterMonthsByYear({
+    selectedYear: period.startYear,
+    yearStarted: START_YEAR_SYNC,
+    monthStarted: START_MONTH_SYNC,
+  });
 
-  const handleYearEndChange = (year: string) => {
-    setSelectedYearEnd(year);
-    setYearEnd(year);
-    if (
-      year === new Date().getFullYear().toString() &&
-      parseInt(selectedMonthEnd, 10) > new Date().getMonth() + 1
-    ) {
-      setSelectedMonthEnd((new Date().getMonth() + 1).toString());
-      setMonthEnd((new Date().getMonth() + 1).toString());
-    }
-  };
-
-  const handleMonthEndChange = (month: string) => {
-    setSelectedMonthEnd(month);
-    setMonthEnd(month);
-  };
+  const filteredEndMonths = filterMonthsByYear({
+    selectedYear: period.endYear,
+    yearStarted: START_YEAR_SYNC,
+    monthStarted: START_MONTH_SYNC,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await syncSunatperMonth();
+    if (!company) return;
+    try {
+      const data = await syncWithSunat({
+        startYear: period.startYear,
+        startMonth: period.startMonth,
+        endYear: period.endYear,
+        endMonth: period.endMonth,
+        ruc: company?.ruc,
+      });
+      if (data.error) {
+        toast.error(`${data.message}`);
+        return;
+      }
+      toast.success(
+        `La sincronización ha comenzado. Recibirás una notificación cuando el proceso haya finalizado.`
+      );
+    } catch (e: any) {
+      toast.error(e.message || "Ocurrió un error desconocido.");
+    }
   };
 
   return (
@@ -101,110 +87,103 @@ export default function Page() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
-          {loading ? (
-            <div className="flex flex-col gap-2 justify-center items-center my-2">
-              <p className="text-muted-foreground w-[40ch] text-center">
-                Por favor, espere mientras se sincronizan los datos. No cierre
-                la ventana
-              </p>
-              <div className="text-muted-foreground flex gap-2 justify-center items-center my-2">
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Sincronizando datos...
+          <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+            <div className="flex gap-3">
+              <div className="w-full">
+                <p className="text-sm font-semibold">Inicio del periodo</p>
+                <div className="flex gap-2 mt-2">
+                  <Select
+                    value={period.startYear}
+                    onValueChange={(value) =>
+                      handleSelectChange("startYear", value)
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar año" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Año</SelectLabel>
+                        {yearsCompany.map((year) => (
+                          <SelectItem key={year} value={year}>
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={period.startMonth}
+                    onValueChange={(value) =>
+                      handleSelectChange("startMonth", value)
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar mes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Mes</SelectLabel>
+                        {filteredStartMonths.map((month) => (
+                          <SelectItem key={month.value} value={month.value}>
+                            {month.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="w-full">
+                <p className="text-sm font-semibold">Fin del periodo</p>
+                <div className="flex gap-2 mt-2">
+                  <Select
+                    value={period.endYear}
+                    onValueChange={(value) =>
+                      handleSelectChange("endYear", value)
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar año" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Año</SelectLabel>
+                        {yearsCompany.map((year) => (
+                          <SelectItem key={year} value={year}>
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={period.endMonth}
+                    onValueChange={(value) =>
+                      handleSelectChange("endMonth", value)
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar mes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Mes</SelectLabel>
+                        {filteredEndMonths.map((month) => (
+                          <SelectItem key={month.value} value={month.value}>
+                            {month.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
-          ) : (
-            <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-              <div className="flex gap-3">
-                <div className="w-full">
-                  <p className="text-sm font-semibold">Inicio del periodo</p>
-                  <div className="flex gap-2 mt-2">
-                    <Select
-                      value={selectedYearStart}
-                      onValueChange={handleYearStartChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar año" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Año</SelectLabel>
-                          {availableYears.map((year) => (
-                            <SelectItem key={year} value={year}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <Select
-                      value={selectedMonthStart}
-                      onValueChange={handleMonthStartChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar mes" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Mes</SelectLabel>
-                          {getAvailableMonths(selectedYearStart).map(
-                            (month) => (
-                              <SelectItem key={month.value} value={month.value}>
-                                {month.label}
-                              </SelectItem>
-                            )
-                          )}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="w-full">
-                  <p className="text-sm font-semibold">Fin del periodo</p>
-                  <div className="flex gap-2 mt-2">
-                    <Select
-                      value={selectedYearEnd}
-                      onValueChange={handleYearEndChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar año" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Año</SelectLabel>
-                          {availableYears.map((year) => (
-                            <SelectItem key={year} value={year}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <Select
-                      value={selectedMonthEnd}
-                      onValueChange={handleMonthEndChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar mes" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Mes</SelectLabel>
-                          {getAvailableMonths(selectedYearEnd).map((month) => (
-                            <SelectItem key={month.value} value={month.value}>
-                              {month.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button className="w-60">Sincronizar</Button>
-              </div>
-            </form>
-          )}
+            <div className="flex justify-end">
+              <Button className="w-60">Sincronizar</Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
       <Card>

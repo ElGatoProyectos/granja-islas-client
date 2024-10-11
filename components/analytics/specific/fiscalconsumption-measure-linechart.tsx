@@ -26,6 +26,7 @@ import { useQueryParams } from "@/hooks/useQueryParams";
 import { cn } from "@/lib/utils";
 import { SpecificAnalyticChart } from "@/types/analytic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
@@ -51,10 +52,11 @@ export function FiscalConsumptionMeasureLinechart({
   descriptionRange,
 }: Props) {
   const searchParams = useSearchParams();
-  const { createQueryString } = useQueryParams();
   const pathname = usePathname();
-  const { push } = useRouter();
+  const { replace } = useRouter();
+  const { createQueryString } = useQueryParams();
   const measure = searchParams.get("measure") ?? "";
+  const [isPending, startTransition] = useTransition();
   return (
     <Card>
       <CardHeader>
@@ -76,8 +78,14 @@ export function FiscalConsumptionMeasureLinechart({
           <Select
             value={measure}
             onValueChange={(value: string) => {
-              push(pathname + "?" + createQueryString({ measure: value }));
+              startTransition(() => {
+                replace(
+                  pathname + "?" + createQueryString({ measure: value }),
+                  { scroll: false }
+                );
+              });
             }}
+            disabled={isPending}
           >
             <SelectTrigger className="w-[230px]">
               <SelectValue placeholder="Selecciona una medida" />

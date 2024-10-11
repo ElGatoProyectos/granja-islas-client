@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
+import { START_MONTH_SYNC, START_YEAR_SYNC } from "@/constants/start-sync";
 import { arrayOfTypesDocument } from "@/constants/type-document";
 import { useReceipt } from "@/context/sections/receipts-context";
 import { useUserInfo } from "@/context/user-context";
-import { useDateStarted } from "@/hooks/use-date-started";
 import { receiptViewTable, transformData } from "@/utils/change-name";
 import { exportToExcel2 } from "@/utils/export-excel";
 import { Table } from "@tanstack/react-table";
@@ -51,7 +51,6 @@ export function DataTableToolbar<TData>({
   ];
 
   const { userInfo } = useUserInfo();
-  const { monthStarted, yearStarted } = useDateStarted();
 
   return (
     <section className="flex flex-col space-y-3">
@@ -108,8 +107,8 @@ export function DataTableToolbar<TData>({
 
       <div className="flex items-center justify-between ">
         <PeriodsRange
-          monthStarted={Number(monthStarted)}
-          yearStarted={Number(yearStarted)}
+          monthStarted={START_MONTH_SYNC}
+          yearStarted={START_YEAR_SYNC}
           currentDate
         />
         <div className="flex space-x-2">

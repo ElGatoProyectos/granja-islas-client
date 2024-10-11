@@ -6,7 +6,6 @@ import { type ThemeProviderProps } from "next-themes/dist/types";
 import { AuthProvider } from "./auth-provider";
 import { CompanyProvider } from "./company-context";
 import { UserInfoProvider } from "./user-context";
-import { Suspense } from "react";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (

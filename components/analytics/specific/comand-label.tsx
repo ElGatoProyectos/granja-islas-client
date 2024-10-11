@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -14,40 +14,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { useQueryParams } from "@/hooks/useQueryParams";
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { TypeLabel } from "@/types/label";
-import Link from "next/link";
 import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
+import { Check, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
 
 export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
-  const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { push } = useRouter();
+  const { replace } = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const { createQueryString } = useQueryParams();
+
+  const [open, setOpen] = useState(false);
   const labelId = searchParams.get("labelId") ?? "";
-
-  const createQueryString = useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString());
-
-      for (const [key, value] of Object.entries(params)) {
-        if (
-          value === null ||
-          (typeof value === "string" && value.trim() === "")
-        ) {
-          newSearchParams.delete(key);
-        } else {
-          newSearchParams.set(key, String(value));
-        }
-      }
-
-      return newSearchParams.toString();
-    },
-    [searchParams]
-  );
 
   return labels.length ? (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,6 +41,7 @@ export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
           role="combobox"
           aria-expanded={open}
           className="w-[250px] justify-between truncate"
+          disabled={isPending}
         >
           {labelId
             ? labels.find((label) => label.id.toString() === labelId)?.title
@@ -75,7 +60,12 @@ export function ComandLabel({ labels }: { labels: TypeLabel[] }) {
                   key={id}
                   value={title}
                   onSelect={() => {
-                    push(pathname + "?" + createQueryString({ labelId: id }));
+                    startTransition(() => {
+                      replace(
+                        pathname + "?" + createQueryString({ labelId: id }),
+                        { scroll: false }
+                      );
+                    });
                     setOpen(false);
                   }}
                 >

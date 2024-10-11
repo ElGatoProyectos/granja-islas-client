@@ -12,22 +12,35 @@ import { TypeParams } from "@/types/params";
 import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
 export default async function Page({ searchParams }: TypeParams) {
   const company_ruc =
     typeof searchParams.ruc === "string" ? searchParams.ruc : "";
-
+  if (!company_ruc) {
+    redirect("/onboarding");
+  }
   const labelId =
     typeof searchParams.labelId === "string" ? searchParams.labelId : "";
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
   const startYear =
-    typeof searchParams.startYear === "string" ? searchParams.startYear : "";
+    typeof searchParams.startYear === "string"
+      ? searchParams.startYear
+      : (currentYear - 1).toString();
   const startMonth =
-    typeof searchParams.startMonth === "string" ? searchParams.startMonth : "";
+    typeof searchParams.startMonth === "string"
+      ? searchParams.startMonth
+      : currentMonth.toString();
   const endYear =
-    typeof searchParams.endYear === "string" ? searchParams.endYear : "";
+    typeof searchParams.endYear === "string"
+      ? searchParams.endYear
+      : currentYear.toString();
   const endMonth =
-    typeof searchParams.endMonth === "string" ? searchParams.endMonth : "";
+    typeof searchParams.endMonth === "string"
+      ? searchParams.endMonth
+      : currentMonth.toString();
 
   const labels = await getLabels({ company_ruc });
   const company = await getCompanyForRuc({ ruc: company_ruc });
@@ -59,12 +72,13 @@ export default async function Page({ searchParams }: TypeParams) {
   return (
     <section>
       <header className="flex justify-between mb-4">
-        <Suspense fallback={"Cargando lista de etiquetas"}>
-          <ComandLabel labels={labels.payload} />
-        </Suspense>
-        <Suspense fallback={"Cargando rango de periodos"}>
-          <PeriodsRange yearStarted={yearStarted} monthStarted={monthStarted} />
-        </Suspense>
+        <ComandLabel labels={labels.payload} />
+        <PeriodsRange
+          yearStarted={yearStarted}
+          monthStarted={monthStarted}
+          currentDate
+          yearDiference
+        />
       </header>
       <main className="grid grid-cols-1 gap-4">
         <FiscalConsumptionLinechart
@@ -76,18 +90,16 @@ export default async function Page({ searchParams }: TypeParams) {
               : "Seleccione un rango de periodos"
           }
         />
-        <Suspense fallback={"Cargando graficos"}>
-          <FiscalConsumptionMeasureLinechart
-            label={labelTitle}
-            specificChart={charts.chart2}
-            measures={measures}
-            descriptionRange={
-              startYear && startMonth && endYear && endMonth
-                ? descriptionRange
-                : "Seleccione un rango de periodos"
-            }
-          />
-        </Suspense>
+        <FiscalConsumptionMeasureLinechart
+          label={labelTitle}
+          specificChart={charts.chart2}
+          measures={measures}
+          descriptionRange={
+            startYear && startMonth && endYear && endMonth
+              ? descriptionRange
+              : "Seleccione un rango de periodos"
+          }
+        />
       </main>
     </section>
   );
