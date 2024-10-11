@@ -9,14 +9,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { months } from "@/constants/dates";
 import { START_MONTH_SYNC, START_YEAR_SYNC } from "@/constants/start-sync";
-import { useQueryParams } from "@/hooks/useQueryParams";
 import { filterMonthsByYear } from "@/utils/filter-months-by-year";
 import { getYearsArray } from "@/utils/getYearArray";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useTransition } from "react";
-
 export function PeriodsRange({
   yearStarted,
   monthStarted,
@@ -28,25 +25,31 @@ export function PeriodsRange({
   currentDate?: boolean;
   yearDiference?: boolean;
 }) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-  const { createQueryString } = useQueryParams();
   const [isPending, startTransition] = useTransition();
-
-  const yearsCompany = getYearsArray({ startYear: START_YEAR_SYNC });
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const startCurrentYear = currentDate ? currentYear.toString() : "";
   const startCurrentMonth = currentDate ? currentMonth.toString() : "";
   const yearDif = yearDiference ? currentYear - 1 : currentYear;
 
-  const startYear =
-    searchParams.get("startYear") ??
-    (yearDiference ? yearDif.toString() : startCurrentYear);
-  const startMonth = searchParams.get("startMonth") ?? startCurrentMonth;
-  const endYear = searchParams.get("endYear") ?? startCurrentYear;
-  const endMonth = searchParams.get("endMonth") ?? startCurrentMonth;
+  const [startYear, setStartYear] = useQueryState("startYear", {
+    defaultValue: yearDif.toString(),
+    startTransition,
+  });
+  const [startMonth, setStartMonth] = useQueryState("startMonth", {
+    defaultValue: startCurrentMonth,
+    startTransition,
+  });
+  const [endYear, setEndYear] = useQueryState("endYear", {
+    defaultValue: startCurrentYear,
+    startTransition,
+  });
+  const [endMonth, setEndMonth] = useQueryState("endMonth", {
+    defaultValue: startCurrentMonth,
+    startTransition,
+  });
+
+  const yearsCompany = getYearsArray({ startYear: START_YEAR_SYNC });
 
   const filteredStartMonths = filterMonthsByYear({
     selectedYear: startYear,
@@ -66,11 +69,7 @@ export function PeriodsRange({
         <p className="text-sm">Inicio</p>
         <Select
           value={startYear}
-          onValueChange={(value: string) => {
-            startTransition(() => {
-              replace(pathname + "?" + createQueryString({ startYear: value }));
-            });
-          }}
+          onValueChange={(value) => setStartYear(value)}
           disabled={isPending}
         >
           <SelectTrigger className="w-[180px]">
@@ -90,15 +89,10 @@ export function PeriodsRange({
             </SelectGroup>
           </SelectContent>
         </Select>
+
         <Select
           value={startMonth}
-          onValueChange={(value: string) => {
-            startTransition(() => {
-              replace(
-                pathname + "?" + createQueryString({ startMonth: value })
-              );
-            });
-          }}
+          onValueChange={(value: string) => setStartMonth(value)}
           disabled={isPending}
         >
           <SelectTrigger className="w-[180px]">
@@ -124,11 +118,7 @@ export function PeriodsRange({
         <p className="text-sm">Fin</p>
         <Select
           value={endYear}
-          onValueChange={(value: string) => {
-            startTransition(() => {
-              replace(pathname + "?" + createQueryString({ endYear: value }));
-            });
-          }}
+          onValueChange={(value: string) => setEndYear(value)}
           disabled={isPending}
         >
           <SelectTrigger className="w-[180px]">
@@ -150,11 +140,7 @@ export function PeriodsRange({
         </Select>
         <Select
           value={endMonth}
-          onValueChange={(value: string) => {
-            startTransition(() => {
-              replace(pathname + "?" + createQueryString({ endMonth: value }));
-            });
-          }}
+          onValueChange={(value: string) => setEndMonth(value)}
           disabled={isPending}
         >
           <SelectTrigger className="w-[180px]">
