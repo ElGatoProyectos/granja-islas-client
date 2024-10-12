@@ -14,6 +14,7 @@ import { filterMonthsByYear } from "@/utils/filter-months-by-year";
 import { getYearsArray } from "@/utils/getYearArray";
 import { useQueryState } from "nuqs";
 import { useTransition } from "react";
+
 export function PeriodsRange({
   yearStarted,
   monthStarted,

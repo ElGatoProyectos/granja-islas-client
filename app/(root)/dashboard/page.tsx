@@ -1,13 +1,13 @@
 import { CardsInfo } from "@/components/home/cards-info";
 import { ShoppingRecordTable } from "@/components/home/shopping-record-table";
-import { DataTableSkeletonTest } from "@/components/home/table-skeleton";
+import { DataTableSkeletonHome } from "@/components/home/table-skeleton";
 import { PeriodsRange } from "@/components/periods-range";
 import { Skeleton } from "@/components/ui/skeleton";
+import { START_MONTH_SYNC, START_YEAR_SYNC } from "@/constants/start-sync";
 import { getCompanyForRuc } from "@/lib/actions/company.actions";
 import { getDataDashboard } from "@/lib/actions/dashboard";
 import { TypeParams } from "@/types/params";
 import { calculateTotalCards, calculateTotals } from "@/utils/calculateTotals";
-import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -42,9 +42,6 @@ export default async function Home({ searchParams }: TypeParams) {
       : (new Date().getMonth() + 1).toString();
 
   const company = await getCompanyForRuc({ ruc: company_ruc });
-  const { yearStarted, monthStarted } = getYearAndMonth({
-    dateString: company.emisor_electronico_desde,
-  });
 
   const data = await getDataDashboard({
     ruc: company_ruc,
@@ -107,8 +104,8 @@ export default async function Home({ searchParams }: TypeParams) {
         Registro de compras
       </h1>
       <PeriodsRange
-        yearStarted={yearStarted}
-        monthStarted={monthStarted}
+        yearStarted={START_YEAR_SYNC}
+        monthStarted={START_MONTH_SYNC}
         currentDate
       />
       <Suspense
@@ -125,7 +122,7 @@ export default async function Home({ searchParams }: TypeParams) {
       </Suspense>
       <Suspense
         fallback={
-          <DataTableSkeletonTest
+          <DataTableSkeletonHome
             columnCount={7}
             rowCount={5}
             withPagination={false}

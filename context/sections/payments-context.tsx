@@ -1,6 +1,19 @@
 "use client";
 
 import { BACKEND_URL } from "@/constants/config";
+import { statusPayment_formatSpanish } from "@/constants/status-payment";
+import { useDebounce } from "@/hooks/use-debounce";
+import { paginationSchema } from "@/lib/validations/pagination";
+import {
+  paymentGeneralArraySchemaIN,
+  PaymentGeneralSchemaIN,
+} from "@/lib/validations/payment";
+import {
+  responseArraySchema,
+  responseSchema,
+} from "@/lib/validations/response";
+import { userArraySchemaIN, UserSchemaIN } from "@/lib/validations/user";
+import { formatDate } from "@/utils/format-date";
 import {
   createContext,
   Dispatch,
@@ -11,23 +24,9 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
-import { useDebounce } from "@/hooks/use-debounce";
-import {
-  responseArraySchema,
-  responseSchema,
-} from "@/lib/validations/response";
-import { paginationSchema } from "@/lib/validations/pagination";
-import {
-  paymentGeneralArraySchemaIN,
-  PaymentGeneralSchemaIN,
-} from "@/lib/validations/payment";
-import { userArraySchemaIN, UserSchemaIN } from "@/lib/validations/user";
-import { getUsers } from "@/service/users";
-import { statusPayment_formatSpanish } from "@/constants/status-payment";
-import { formatDate } from "@/utils/format-date";
-import { formatWithCommas } from "@/utils/format-number-comas";
+import { useUserInfo } from "../user-context";
+import { getUsers } from "@/lib/actions/users.actions";
 
 interface PaymentContextType {
   payments: PaymentGeneralSchemaIN[];
@@ -84,12 +83,7 @@ export const PaymentProvider = ({
 
   const getFilters = useCallback(async () => {
     if (!tokenBack) return;
-    const resUsersJSON = await getUsers({ tokenBack });
-    const { payload: dataUsers, error: ErrorUsers } =
-      responseArraySchema.parse(resUsersJSON);
-    if (ErrorUsers) {
-      throw new Error("error to fetch users");
-    }
+    const dataUsers = await getUsers();
     const parseusers = userArraySchemaIN.parse(dataUsers);
     setUsersFilters(parseusers);
   }, [tokenBack]);

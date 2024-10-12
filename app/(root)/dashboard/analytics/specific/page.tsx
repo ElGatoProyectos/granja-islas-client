@@ -2,14 +2,13 @@ import { ComandLabel } from "@/components/analytics/specific/comand-label";
 import { FiscalConsumptionLinechart } from "@/components/analytics/specific/fiscal-consumption-linechart";
 import { FiscalConsumptionMeasureLinechart } from "@/components/analytics/specific/fiscalconsumption-measure-linechart";
 import { PeriodsRange } from "@/components/periods-range";
-import { getCompanyForRuc } from "@/lib/actions/company.actions";
+import { START_MONTH_SYNC, START_YEAR_SYNC } from "@/constants/start-sync";
 import { getLabels } from "@/lib/actions/label.actions";
 import {
   getMeasuresSpecific,
   getSpecificCharts,
 } from "@/lib/actions/specific-analytic";
 import { TypeParams } from "@/types/params";
-import { getYearAndMonth } from "@/utils/getYearAndMonth";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { redirect } from "next/navigation";
@@ -43,10 +42,6 @@ export default async function Page({ searchParams }: TypeParams) {
       : currentMonth.toString();
 
   const labels = await getLabels({ company_ruc });
-  const company = await getCompanyForRuc({ ruc: company_ruc });
-  const { yearStarted, monthStarted } = getYearAndMonth({
-    dateString: company.emisor_electronico_desde,
-  });
 
   const labelTitle =
     labels.payload.find((label) => label.id.toString() === labelId)?.title ??
@@ -74,8 +69,8 @@ export default async function Page({ searchParams }: TypeParams) {
       <header className="flex justify-between mb-4">
         <ComandLabel labels={labels.payload} />
         <PeriodsRange
-          yearStarted={yearStarted}
-          monthStarted={monthStarted}
+          yearStarted={START_YEAR_SYNC}
+          monthStarted={START_MONTH_SYNC}
           currentDate
           yearDiference
         />

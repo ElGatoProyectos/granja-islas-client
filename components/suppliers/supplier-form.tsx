@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/dialog";
 import { CodeCountry } from "../auth/onboarding/code-country";
 import {
-  CreateSupplierSchema,
   createSupplierSchema,
   SupplierSchemaIN,
 } from "@/lib/validations/supplier";

@@ -11,3 +11,11 @@ export interface TypeResponseApi<T> {
   message: string;
   payload: T;
 }
+
+export interface TypePaginationNode<T> {
+  total: number;
+  page: number;
+  limit: number;
+  pageCount: number;
+  data: T;
+}

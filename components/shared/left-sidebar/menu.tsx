@@ -23,6 +23,7 @@ import { signOut } from "next-auth/react";
 import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
 import { useEffect } from "react";
+import { useCompanySession } from "@/context/company-context";
 
 interface MenuProps {
   isOpen: boolean;
@@ -32,14 +33,26 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const { userInfo } = useUserInfo();
+
+  const { company } = useCompanySession();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const ruc = searchParams.get("ruc") ?? "";
-  const { push } = useRouter();
+
   useEffect(() => {
-    if (!ruc) {
-      push("/onboarding");
+    const currentRuc = searchParams.get("ruc");
+
+    if (!company?.ruc) {
+      router.push("/onboarding");
+      return;
     }
-  }, [ruc, push]);
+
+    if (!currentRuc && company.ruc) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("ruc", company.ruc);
+      router.replace(`?${newParams.toString()}`);
+    }
+  }, [searchParams, company, router]);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">

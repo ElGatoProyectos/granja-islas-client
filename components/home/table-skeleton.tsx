@@ -68,7 +68,7 @@ interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   shrinkZero?: boolean;
 }
 
-export function DataTableSkeletonTest(props: DataTableSkeletonProps) {
+export function DataTableSkeletonHome(props: DataTableSkeletonProps) {
   const {
     columnCount,
     rowCount = 10,

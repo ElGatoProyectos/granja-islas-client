@@ -2,6 +2,11 @@
 
 import { BACKEND_URL } from "@/constants/config";
 import { CreateSupplierSchema } from "../validations/supplier";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth-options";
+import axios, { AxiosResponse } from "axios";
+import { TypeResponseApi } from "@/types/api-response";
+import { TypeSupplier } from "@/types/supplier";
 
 export async function createSupplier({
   tokenBack,
@@ -75,4 +80,23 @@ export async function updateSupplier({
   } catch (e: any) {
     throw new Error(e.details);
   }
+}
+
+export async function getSuppliers({ ruc }: { ruc: string }) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user?.tokenBack) {
+    throw new Error("User session is not available.");
+  }
+  const response: AxiosResponse<TypeResponseApi<TypeSupplier[]>> =
+    await axios.get(`${BACKEND_URL}/api/suppliers/no-pagination`, {
+      headers: {
+        Authorization: `Bearer ${session.user.tokenBack}`,
+        ruc,
+      },
+    });
+  const { payload, error } = response.data;
+  if (error) {
+    throw new Error("No data found");
+  }
+  return payload;
 }
