@@ -211,7 +211,7 @@ export function useDataTable<TData>({
         // Faceted filter
         acc[field.value as string] = parseAsArrayOf(
           parseAsString,
-          "."
+          "," // important to separate array filters
         ).withOptions(queryStateOptions);
       } else {
         // Search filter
@@ -319,15 +319,18 @@ export function useDataTable<TData>({
           }
         });
 
+        setPage(1); // reset page 1
+
         debouncedSetFilterValues(filterUpdates);
         return next;
       });
     },
     [
-      debouncedSetFilterValues,
-      filterableColumns,
-      searchableColumns,
       enableAdvancedFilter,
+      setPage,
+      debouncedSetFilterValues,
+      searchableColumns,
+      filterableColumns,
     ]
   );
 

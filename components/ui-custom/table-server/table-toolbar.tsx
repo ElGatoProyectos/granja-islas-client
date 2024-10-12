@@ -39,7 +39,7 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className={cn("flex flex-col w-full space-y-3", className)} {...props}>
-      <div className="flex w-full items-center justify-between space-x-2 overflow-auto">
+      <div className="flex w-full items-center justify-between space-x-2">
         <div className="flex flex-1 items-center space-x-2">
           {searchableColumns.length > 0 &&
             searchableColumns.map(
