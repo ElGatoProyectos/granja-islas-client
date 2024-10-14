@@ -1,29 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import { Ellipsis, LogOut } from "lucide-react";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
   TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getMenuList } from "@/utils/menu-list";
-import { CollapseMenuButton } from "./collapse-menu-button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { signOut } from "next-auth/react";
-import { useUserInfo } from "@/context/user-context";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
-import { useEffect } from "react";
 import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
+import { cn } from "@/lib/utils";
+import { getMenuList } from "@/utils/menu-list";
+import { Ellipsis, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { CollapseMenuButton } from "./collapse-menu-button";
 
 interface MenuProps {
   isOpen: boolean;
@@ -33,26 +28,22 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const { userInfo } = useUserInfo();
-
   const { company } = useCompanySession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const ruc = searchParams.get("ruc") ?? "";
 
   useEffect(() => {
-    const currentRuc = searchParams.get("ruc");
-
-    if (!company?.ruc) {
+    if (!ruc) {
+      if (company) {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set("ruc", company.ruc);
+        router.replace(`?${newParams.toString()}`);
+        return;
+      }
       router.push("/onboarding");
-      return;
     }
-
-    if (!currentRuc && company.ruc) {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set("ruc", company.ruc);
-      router.replace(`?${newParams.toString()}`);
-    }
-  }, [searchParams, company, router]);
+  }, [searchParams, company, router, ruc]);
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">

@@ -143,3 +143,18 @@ export async function getReceiptsForExcel(input: GetReceiptsSchema) {
     throw new Error("Failed to get receipts");
   }
 }
+
+export async function exportPdfs({
+  ids,
+  type_document = "FACTURA",
+}: {
+  ids: string;
+  type_document?: string;
+}) {
+   noStore();
+
+   const session = await getServerSession(authOptions);
+   if (!session || !session.user?.tokenBack) {
+     throw new Error("User session is not available.");
+   }
+}

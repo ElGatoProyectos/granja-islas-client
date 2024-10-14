@@ -54,18 +54,22 @@ export default async function Home({ searchParams }: TypeParams) {
   const formatedBills = calculateTotals({
     receipts: data?.bills,
     document_type: "01 - Factura",
+    href: "BILL",
   });
   const formatedCreditNotes = calculateTotals({
     receipts: data?.creditNotes,
     document_type: "07 - Nota de crédito",
+    href: "CREDIT_NOTE",
   });
   const formatedDebitNotes = calculateTotals({
     receipts: data?.debitNotes,
     document_type: "08 - Nota de débito",
+    href: "DEBIT_NOTE",
   });
   const formatedTickets = calculateTotals({
     receipts: data?.tickets,
-    document_type: "03 - Boleta de venta",
+    document_type: "14 - Servicios",
+    href: "SERVICE",
   });
 
   const formatedReceipts = [

@@ -4,13 +4,15 @@ import { FormatedTotalAmountReceipts } from "@/types/dashboard";
 export function calculateTotals({
   receipts,
   document_type,
+  href,
 }: {
   receipts?: ReceiptSchemaIN[];
   document_type:
     | "01 - Factura"
-    | "03 - Boleta de venta"
+    | "08 - Nota de débito"
     | "07 - Nota de crédito"
-    | "08 - Nota de débito";
+    | "14 - Servicios";
+  href: string;
 }): FormatedTotalAmountReceipts {
   let total_documents = 0;
   let total_amount_documents = 0;
@@ -22,7 +24,7 @@ export function calculateTotals({
     return {
       document_type,
       total_documents,
-
+      href,
       total_amount_documents,
       total_amount_igv,
       total_amount_base,
@@ -45,6 +47,7 @@ export function calculateTotals({
 
   return {
     document_type,
+    href,
     total_documents,
 
     total_amount_documents,

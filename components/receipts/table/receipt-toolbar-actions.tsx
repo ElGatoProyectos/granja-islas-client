@@ -12,6 +12,7 @@ import { Download } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { DownloadPdfsDialog } from "./receipt-download-pdfs";
 
 interface ReceiptsTableToolbarActionsProps {
   table: Table<TypeReceipt>;
@@ -25,14 +26,14 @@ export function ReceiptsTableToolbarActions({
 
   return (
     <div className="flex items-center gap-2">
-      {/* {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-        <DeleteTasksDialog
+      {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+        <DownloadPdfsDialog
           tasks={table
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original)}
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
-      ) : null} */}
+      ) : null}
 
       <Button
         variant="outline"

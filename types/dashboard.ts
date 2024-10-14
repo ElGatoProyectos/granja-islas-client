@@ -10,7 +10,7 @@ export interface TypeDashboard {
 export interface FormatedTotalAmountReceipts {
   document_type:
     | "01 - Factura"
-    | "03 - Boleta de venta"
+    | "14 - Servicios"
     | "07 - Nota de crédito"
     | "08 - Nota de débito";
   total_documents: number;
@@ -19,4 +19,5 @@ export interface FormatedTotalAmountReceipts {
   total_amount_base: number;
   total_amount_dgng_igv: number;
   total_amount_dgng_base: number;
+  href: string;
 }

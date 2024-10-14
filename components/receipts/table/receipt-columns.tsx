@@ -2,6 +2,7 @@
 
 import { DataTableColumnHeader } from "@/components/ui-custom/table-column-header";
 import { buttonVariants } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { USD } from "@/constants/currency";
 import { cn } from "@/lib/utils";
 import { TypeReceipt } from "@/types/receipt";
@@ -12,6 +13,30 @@ import Link from "next/link";
 
 export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
   return [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="translate-y-0.5"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-0.5"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "num_serie",
       header: ({ column }) => (

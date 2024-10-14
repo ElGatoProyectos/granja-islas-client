@@ -18,6 +18,7 @@ interface DataTableToolbarProps<TData>
   table: Table<TData>;
   filterFields?: DataTableFilterField<TData>[];
   changeTitle: (id: string) => string;
+  isPending: boolean;
 }
 
 export function DataTableToolbar<TData>({
@@ -26,6 +27,7 @@ export function DataTableToolbar<TData>({
   children,
   className,
   changeTitle,
+  isPending,
   ...props
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -58,7 +60,8 @@ export function DataTableToolbar<TData>({
                         .getColumn(String(column.value))
                         ?.setFilterValue(event.target.value)
                     }
-                    className="w-[150px] lg:w-[450px]"
+                    disabled={isPending}
+                    className="w-[150px] lg:w-[270px]"
                   />
                 )
             )}
@@ -73,6 +76,7 @@ export function DataTableToolbar<TData>({
                     )}
                     title={column.label}
                     options={column.options ?? []}
+                    isLoading={isPending}
                   />
                 )
             )}
@@ -82,6 +86,7 @@ export function DataTableToolbar<TData>({
               variant="ghost"
               className="px-3"
               onClick={() => table.resetColumnFilters()}
+              disabled={isPending}
             >
               Reset
               <X className="ml-2 size-4" aria-hidden="true" />
@@ -96,6 +101,7 @@ export function DataTableToolbar<TData>({
       <PeriodsRange
         monthStarted={START_MONTH_SYNC}
         yearStarted={START_YEAR_SYNC}
+        isLoading={isPending}
         currentDate
       />
     </div>

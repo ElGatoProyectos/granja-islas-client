@@ -1,6 +1,13 @@
 "use client";
 
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import { useDataTable } from "@/hooks/use-data-table";
 import { getReceipts } from "@/lib/actions/receipt";
 import { getReceiptsColumns } from "./receipt-columns";
@@ -10,7 +17,12 @@ import { getSuppliers } from "@/lib/actions/supplier.actions";
 import { useCompanySession } from "@/context/company-context";
 import { TypeSupplier } from "@/types/supplier";
 import { DataTableRoot } from "@/components/ui-custom/table-server/table-root";
-import { BILL, CREDIT_NOTE, DEBIT_NOTE } from "@/constants/type-document";
+import {
+  BILL,
+  CREDIT_NOTE,
+  DEBIT_NOTE,
+  SERVICES,
+} from "@/constants/type-document";
 import { DataTableToolbar } from "@/components/ui-custom/table-server/table-toolbar";
 import { ReceiptsTableToolbarActions } from "./receipt-toolbar-actions";
 import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
@@ -75,10 +87,11 @@ export function ReceiptsTable({ receiptsPromise }: ReceiptsTableProps) {
         { value: BILL, label: "Factura" },
         { value: CREDIT_NOTE, label: "Nota de crédito" },
         { value: DEBIT_NOTE, label: "Nota de débito" },
+        { value: SERVICES, label: "Servicios" },
       ],
     },
   ];
-
+  const [isPending, startTransition] = useTransition();
   const { table } = useDataTable({
     data,
     columns,
@@ -87,14 +100,16 @@ export function ReceiptsTable({ receiptsPromise }: ReceiptsTableProps) {
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
     shallow: false,
     clearOnDefault: true,
+    startTransition,
   });
 
   return (
-    <DataTableRoot table={table} totalElements={total}>
+    <DataTableRoot table={table} totalElements={total} isPending={isPending}>
       <DataTableToolbar
         table={table}
         filterFields={filterFields}
         changeTitle={receiptViewTable}
+        isPending={isPending}
       >
         <ReceiptsTableToolbarActions table={table} />
       </DataTableToolbar>

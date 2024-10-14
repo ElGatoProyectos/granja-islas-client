@@ -69,6 +69,7 @@ export function ShoppingRecordTable({
             total_amount_dgng_base,
             total_amount_dgng_igv,
             total_amount_documents,
+            href,
           }) => (
             <TableRow key={document_type}>
               <TableCell className="font-medium">
@@ -81,6 +82,7 @@ export function ShoppingRecordTable({
                       startMonth,
                       endYear,
                       endMonth,
+                      document_description: href,
                     },
                   }}
                   className={`${buttonVariants({ variant: "link" })} !p-0`}

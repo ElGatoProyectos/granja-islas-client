@@ -20,11 +20,13 @@ export function PeriodsRange({
   monthStarted,
   currentDate = false,
   yearDiference = false,
+  isLoading = false,
 }: {
   yearStarted: number;
   monthStarted: number;
   currentDate?: boolean;
   yearDiference?: boolean;
+  isLoading?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const currentYear = new Date().getFullYear();
@@ -36,18 +38,30 @@ export function PeriodsRange({
   const [startYear, setStartYear] = useQueryState("startYear", {
     defaultValue: yearDif.toString(),
     startTransition,
+    scroll: false,
+    shallow: true,
+    clearOnDefault: true,
   });
   const [startMonth, setStartMonth] = useQueryState("startMonth", {
     defaultValue: startCurrentMonth,
     startTransition,
+    scroll: false,
+    shallow: true,
+    clearOnDefault: true,
   });
   const [endYear, setEndYear] = useQueryState("endYear", {
     defaultValue: startCurrentYear,
     startTransition,
+    scroll: false,
+    shallow: true,
+    clearOnDefault: true,
   });
   const [endMonth, setEndMonth] = useQueryState("endMonth", {
     defaultValue: startCurrentMonth,
     startTransition,
+    scroll: false,
+    shallow: true,
+    clearOnDefault: true,
   });
 
   const yearsCompany = getYearsArray({ startYear: START_YEAR_SYNC });
@@ -71,7 +85,7 @@ export function PeriodsRange({
         <Select
           value={startYear}
           onValueChange={(value) => setStartYear(value)}
-          disabled={isPending}
+          disabled={isPending || isLoading}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Año" />
@@ -94,7 +108,7 @@ export function PeriodsRange({
         <Select
           value={startMonth}
           onValueChange={(value: string) => setStartMonth(value)}
-          disabled={isPending}
+          disabled={isPending || isLoading}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Mes" />
@@ -120,7 +134,7 @@ export function PeriodsRange({
         <Select
           value={endYear}
           onValueChange={(value: string) => setEndYear(value)}
-          disabled={isPending}
+          disabled={isPending || isLoading}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Año" />
@@ -142,7 +156,7 @@ export function PeriodsRange({
         <Select
           value={endMonth}
           onValueChange={(value: string) => setEndMonth(value)}
-          disabled={isPending}
+          disabled={isPending || isLoading}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Mes" />

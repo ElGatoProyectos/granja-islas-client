@@ -25,19 +25,25 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
   options: Option[];
+  isLoading:boolean
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
   options,
+  isLoading,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="border-dashed">
+        <Button
+          variant="outline"
+          className="border-dashed"
+          disabled={isLoading}
+        >
           <Plus className="mr-2 size-4" />
           {title}
           {selectedValues?.size > 0 && (
