@@ -4,6 +4,7 @@ import { DataTableColumnHeader } from "@/components/ui-custom/table-column-heade
 import { buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { USD } from "@/constants/currency";
+import { typesSpanishFormat } from "@/constants/type-document";
 import { cn } from "@/lib/utils";
 import { TypeReceipt } from "@/types/receipt";
 import { formatDate } from "@/utils/format-date";
@@ -50,7 +51,7 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
             href={`/receipts/${id}-${document_code}`}
             className={`${buttonVariants({
               variant: "link",
-            })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+            })} capitalize font-medium !px-0 !h-auto`}
           >
             {row.getValue("num_serie")}
           </Link>
@@ -71,7 +72,7 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
             href={`/receipts/${id}-${document_code}`}
             className={`${buttonVariants({
               variant: "link",
-            })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+            })} capitalize font-medium !px-0 !h-auto`}
           >
             {row.getValue("num_cpe")}
           </Link>
@@ -85,11 +86,11 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
         <DataTableColumnHeader column={column} title="Tipo de documento" />
       ),
       cell: ({ row }) => {
-        return (
-          <span className="w-fit truncate">
-            {row.getValue("document_description")}
-          </span>
-        );
+        const type_document = row.getValue("document_description") as string;
+        const type = typesSpanishFormat.find(
+          (item) => item.value.toUpperCase() === type_document.toUpperCase()
+        )?.label;
+        return <p>{type}</p>;
       },
       enableSorting: false,
     },
@@ -128,19 +129,23 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
     {
       accessorKey: "currency_code",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Moneda" />
+        <DataTableColumnHeader
+          column={column}
+          title="Moneda"
+          className="text-center"
+        />
       ),
       cell: ({ row }) => {
         const currency_code = row.getValue("currency_code") as string;
         return (
-          <span
+          <p
             className={cn(
-              "text-balance truncate capitalize font-bold",
+              "text-center truncate capitalize font-bold",
               currency_code === USD ? "text-green-500" : "text-slate-500"
             )}
           >
             {currency_code}
-          </span>
+          </p>
         );
       },
       enableSorting: false,
@@ -148,13 +153,17 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
     {
       accessorKey: "amount_base",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Monto" />
+        <DataTableColumnHeader
+          column={column}
+          title="Monto"
+          className="text-right"
+        />
       ),
       cell: ({ row }) => {
         return (
-          <span className="text-right">
+          <p className="text-right">
             {formatWithCommas(row.getValue("amount_base"))}
-          </span>
+          </p>
         );
       },
       enableSorting: false,
@@ -162,46 +171,70 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
     {
       accessorKey: "igv",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="IGV" />
+        <DataTableColumnHeader
+          column={column}
+          title="IGV"
+          className="text-right"
+        />
       ),
       cell: ({ row }) => {
-        return <span>{formatWithCommas(row.getValue("igv"))}</span>;
+        return (
+          <p className="text-right">{formatWithCommas(row.getValue("igv"))}</p>
+        );
       },
       enableSorting: false,
     },
     {
       accessorKey: "base_igv",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="%IGV" />
+        <DataTableColumnHeader
+          column={column}
+          title="%IGV"
+          className="text-right"
+        />
       ),
       cell: ({ row }) => {
-        return <span>{row.getValue("base_igv")}%</span>;
+        const percentage = row.getValue("base_igv") as number;
+        const value = percentage === 0.18 ? "18" : "10";
+        return <p className="text-right">{value}%</p>;
       },
       enableSorting: false,
     },
     {
       accessorKey: "total",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Importe Total" />
+        <DataTableColumnHeader
+          column={column}
+          title="Importe Total"
+          className="text-right"
+        />
       ),
       cell: ({ row }) => {
-        return <span>{formatWithCommas(row.getValue("total"))}</span>;
+        return (
+          <p className="text-right">
+            {formatWithCommas(row.getValue("total"))}
+          </p>
+        );
       },
       enableSorting: false,
     },
     {
       accessorKey: "bill_status_payment",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tipo de pago" />
+        <DataTableColumnHeader
+          column={column}
+          title="Tipo de pago"
+          className="text-center"
+        />
       ),
       cell: ({ row }) => {
         const bill_status_payment = row.getValue(
           "bill_status_payment"
         ) as string;
         return (
-          <span className="capitalize">
+          <p className="capitalize text-center">
             {bill_status_payment.toLowerCase()}
-          </span>
+          </p>
         );
       },
       enableSorting: false,
@@ -209,11 +242,17 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
     {
       accessorKey: "bill_status",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Estado" />
+        <DataTableColumnHeader
+          column={column}
+          title="Estado"
+          className="text-center"
+        />
       ),
       cell: ({ row }) => {
         const bill_status = row.getValue("bill_status") as string;
-        return <span className="capitalize">{bill_status.toLowerCase()}</span>;
+        return (
+          <p className="capitalize text-center">{bill_status.toLowerCase()}</p>
+        );
       },
       enableSorting: false,
     },

@@ -58,9 +58,9 @@ export function DataTableRoot<TData>({
                       <TableHead
                         key={header.id}
                         colSpan={header.colSpan}
-                        style={{
-                          ...getCommonPinningStyles({ column: header.column }),
-                        }}
+                        // style={{
+                        //   ...getCommonPinningStyles({ column: header.column }),
+                        // }}
                       >
                         {header.isPlaceholder
                           ? null
@@ -84,9 +84,9 @@ export function DataTableRoot<TData>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        style={{
-                          ...getCommonPinningStyles({ column: cell.column }),
-                        }}
+                        // style={{
+                        //   ...getCommonPinningStyles({ column: cell.column }),
+                        // }}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -102,7 +102,7 @@ export function DataTableRoot<TData>({
                     colSpan={table.getAllColumns().length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    Sin resultados.
                   </TableCell>
                 </TableRow>
               )}
