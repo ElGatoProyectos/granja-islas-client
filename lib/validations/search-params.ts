@@ -19,3 +19,18 @@ export const searchParamsSchema = z.object({
 
 export const getReceiptsSchema = searchParamsSchema;
 export type GetReceiptsSchema = z.infer<typeof getReceiptsSchema>;
+
+export const searchParamsProductsSchema = z.object({
+  ruc: z.string(),
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(20),
+  startYear: z.coerce.number().optional().default(currentYear),
+  startMonth: z.coerce.number().optional().default(currentMonth),
+  endYear: z.coerce.number().optional().default(currentYear),
+  endMonth: z.coerce.number().optional().default(currentMonth),
+  title: z.string().optional(),
+  supplier_name: z.string().optional(),
+  labels: z.string().optional(),
+});
+export const getProductsSchema = searchParamsProductsSchema;
+export type GetProductsSchema = z.infer<typeof getProductsSchema>;

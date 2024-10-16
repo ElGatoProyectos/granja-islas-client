@@ -2,6 +2,7 @@ import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { labelArraySchemaIN, LabelSchemaIN } from "@/lib/validations/label";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 export function useLabels() {
@@ -46,7 +47,7 @@ export function useLabels() {
     getProductDetails,
   }: {
     id_product: string;
-    getProductDetails: () => Promise<void>;
+    getProductDetails?: () => Promise<void>;
   }) => {
     if (!company) return;
     const res = await fetch(
@@ -68,8 +69,7 @@ export function useLabels() {
     if (data.error) {
       throw new Error("Failed to asign labels");
     }
-
-    await getProductDetails();
+    if (getProductDetails) await getProductDetails();
   };
 
   return {

@@ -116,7 +116,7 @@ export async function getLabels({ company_ruc }: { company_ruc: string }) {
           ruc: company_ruc,
         },
       });
-    return data;
+    return data.payload;
   } catch (e) {
     console.error(e);
     throw new Error("Failed to get labels");
