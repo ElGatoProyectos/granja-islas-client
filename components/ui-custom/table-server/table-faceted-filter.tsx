@@ -25,7 +25,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
   options: Option[];
-  isLoading:boolean
+  isLoading: boolean;
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
@@ -41,7 +41,7 @@ export function DataTableFacetedFilter<TData, TValue>({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="border-dashed"
+          className="border-dashed overflow-hidden"
           disabled={isLoading}
         >
           <Plus className="mr-2 size-4" />
@@ -61,7 +61,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {selectedValues.size} selected
+                    {selectedValues.size} Seleccionados
                   </Badge>
                 ) : (
                   options
@@ -84,9 +84,9 @@ export function DataTableFacetedFilter<TData, TValue>({
       <PopoverContent className="w-[12.5rem] p-0" align="start">
         <Command>
           <CommandInput placeholder={title} />
+          <CommandEmpty>Sin resultados</CommandEmpty>
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup className="max-h-[18.75rem] overflow-y-auto overflow-x-hidden">
+            <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
 

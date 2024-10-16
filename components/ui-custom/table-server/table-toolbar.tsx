@@ -60,7 +60,6 @@ export function DataTableToolbar<TData>({
                         .getColumn(String(column.value))
                         ?.setFilterValue(event.target.value)
                     }
-                    disabled={isPending}
                     className="w-[150px] lg:w-[270px]"
                   />
                 )

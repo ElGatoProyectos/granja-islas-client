@@ -100,6 +100,7 @@ export function ReceiptsTable({ receiptsPromise }: ReceiptsTableProps) {
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
     shallow: false,
     clearOnDefault: true,
+    history: "push",
     startTransition,
   });
 

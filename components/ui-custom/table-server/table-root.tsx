@@ -1,7 +1,6 @@
-import * as React from "react";
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
+import * as React from "react";
 
-import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -10,10 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { getCommonPinningStyles } from "./getCommonPinningStyles";
-import { DataTablePagination } from "./table-pagination";
+import { cn } from "@/lib/utils";
 import { DataTableSkeleton } from "@/components/data-table-skeleton";
+import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -55,13 +53,7 @@ export function DataTableRoot<TData>({
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead
-                        key={header.id}
-                        colSpan={header.colSpan}
-                        // style={{
-                        //   ...getCommonPinningStyles({ column: header.column }),
-                        // }}
-                      >
+                      <TableHead key={header.id} colSpan={header.colSpan}>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -82,12 +74,7 @@ export function DataTableRoot<TData>({
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        // style={{
-                        //   ...getCommonPinningStyles({ column: cell.column }),
-                        // }}
-                      >
+                      <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

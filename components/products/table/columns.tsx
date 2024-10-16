@@ -1,16 +1,16 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { AssignLabel } from "@/components/assign-label";
 import { DataTableColumnHeader } from "@/components/ui-custom/table-column-header";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { ProductSchemaINFormated } from "@/lib/validations/product";
-import { DataTableRowActions } from "./table-row-actions";
+import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ColumnDef } from "@tanstack/react-table";
 import { CirclePlus } from "lucide-react";
-import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
+import Link from "next/link";
 
 export const columns: ColumnDef<ProductSchemaINFormated>[] = [
   {
@@ -44,16 +44,15 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     ),
     cell: ({ row }) => {
       const labels = row.original.labels;
+      const id_product = row.original.id;
 
       return (
         <div className="w-[150px] flex flex-wrap gap-2 items-center">
           {!labels.length ? (
-            <Link
-              href={`/dashboard/products/${row.original.id}`}
-              className={`${buttonVariants({ variant: "link" })} !p-0`}
-            >
-              Etiquetar
-            </Link>
+            <AssignLabel
+              id_product={id_product.toString()}
+              savedLabels={labels}
+            />
           ) : (
             <>
               {labels.slice(0, 3).map(({ id, title }) => (
@@ -109,17 +108,6 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
     },
     enableSorting: false,
   },
-  // {
-  //   accessorKey: "ruc",
-  //   accessorFn: (row) => `${row.Supplier.ruc}`,
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="RUC" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return <span className="w-fit truncate">{row.getValue("ruc")}</span>;
-  //   },
-  //   enableSorting: false,
-  // },
   {
     accessorKey: "business_name",
     accessorFn: (row) => `${row.Supplier.business_name}`,

@@ -117,8 +117,8 @@ export const ProductProvider = ({
       if (currentPage) queryParams.append("page", currentPage.toString());
       if (limit) queryParams.append("limit", limit.toString());
       if (input) queryParams.append("filter", input);
-      if (month) queryParams.append("month", month);
-      if (year) queryParams.append("year", year);
+      queryParams.append("start", `2024-08`);
+      queryParams.append("end", `2024-10`);
       if (idSupplier) queryParams.append("supplier_group_id", idSupplier);
       if (idLabel) queryParams.append("label_group_id", idLabel);
 
@@ -140,6 +140,7 @@ export const ProductProvider = ({
         throw new Error("Failed to fetch companies");
       }
 
+      console.log(payload);
       const {
         data,
         limit: MaxLimit,
@@ -147,6 +148,8 @@ export const ProductProvider = ({
         pageCount,
         total,
       } = paginationSchema.parse(payload);
+
+      console.log(data);
       const parseproductTable = productTableArrayReportIN.parse(data);
       const formatProduct = formatProductTable(parseproductTable);
 
@@ -160,17 +163,7 @@ export const ProductProvider = ({
     } finally {
       setLoading(false);
     }
-  }, [
-    company,
-    tokenBack,
-    currentPage,
-    limit,
-    input,
-    month,
-    year,
-    idSupplier,
-    idLabel,
-  ]);
+  }, [company, tokenBack, currentPage, limit, input, idSupplier, idLabel]);
 
   useEffect(() => {
     getProducts();

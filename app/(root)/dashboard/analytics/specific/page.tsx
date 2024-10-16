@@ -44,8 +44,7 @@ export default async function Page({ searchParams }: TypeParams) {
   const labels = await getLabels({ company_ruc });
 
   const labelTitle =
-    labels.payload.find((label) => label.id.toString() === labelId)?.title ??
-    "";
+    labels.find((label) => label.id.toString() === labelId)?.title ?? "";
 
   const startDate = new Date(Date.UTC(Number(startYear), Number(startMonth)));
   const formatStart = format(startDate, "MMMM yyyy", { locale: es });
@@ -67,7 +66,7 @@ export default async function Page({ searchParams }: TypeParams) {
   return (
     <section>
       <header className="flex justify-between mb-4">
-        <ComandLabel labels={labels.payload} />
+        <ComandLabel labels={labels} />
         <PeriodsRange
           yearStarted={START_YEAR_SYNC}
           monthStarted={START_MONTH_SYNC}

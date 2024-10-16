@@ -1,28 +1,28 @@
 "use client";
 
-import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "./ui/scroll-area";
-import { io, Socket } from "socket.io-client";
+import { BACKEND_URL } from "@/constants/config";
+import { PEN } from "@/constants/currency";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
+import { cn } from "@/lib/utils";
 import {
   NotificationSchema,
   NotificationsSchemaIN,
 } from "@/lib/validations/notifications";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
-import { useUserInfo } from "@/context/user-context";
-import { useCompanySession } from "@/context/company-context";
-import { BACKEND_URL } from "@/constants/config";
-import { PEN } from "@/constants/currency";
 import { formatWithCommas } from "@/utils/format-number-comas";
-import { cn } from "@/lib/utils";
-import { Badge } from "./ui/badge";
+import { Bell, X } from "lucide-react";
 import Link from "next/link";
-import { Card } from "./ui/card";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import { Badge } from "./ui/badge";
+import { ScrollArea } from "./ui/scroll-area";
+import { Separator } from "./ui/separator";
 
 export function Notifications() {
   const { tokenBack } = useUserInfo();
@@ -49,9 +49,9 @@ export function Notifications() {
       });
     }
   }, [company, tokenBack]);
-
+  const [open, setOpen] = useState(false);
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           {(notifications?.length || syncInfo) && (
@@ -66,18 +66,24 @@ export function Notifications() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0">
-        <ScrollArea className="h-96 w-full">
-          <div className="grid gap-6 p-6">
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Notificaciones</h4>
-              <p className="text-sm text-muted-foreground">
-                Mantente al tanto de los últimos cambios en tu sistema.
-              </p>
-            </div>
+        <div className="flex flex-col gap-4 p-4 relative">
+          <Button
+            size="icon"
+            className="absolute top-2 right-2 hover:bg-transparent"
+            variant="ghost"
+            onClick={() => setOpen(false)}
+          >
+            <X className="size-5" />
+          </Button>
+          <div className="flex flex-col gap-3 px-3">
+            <h4 className="font-medium">Notificaciones</h4>
+            <Separator />
+          </div>
+          <ScrollArea className="h-96 w-full">
             <div className="grid gap-3">
               {syncInfo ? (
                 <p
-                  className="text-sm border border-border p-4 rounded-md text-green-500 bg-green-300/20 dark:bg-green-900/20 cursor-pointer"
+                  className="text-sm border p-3 rounded-md text-green-500 bg-green-300/20 dark:bg-green-900/20 cursor-pointer"
                   onClick={() => {
                     setSyncInfo(null);
                   }}
@@ -95,56 +101,53 @@ export function Notifications() {
                       type_currency,
                       exchange_rate,
                     }) => (
-                      <Card key={id} className="p-4">
-                        <Link
-                          href={"/dashboard/payments"}
-                          className="flex flex-col "
-                        >
-                          <span className="text-sm">
-                            Pago pendiente de aprobación
+                      <Link
+                        key={id}
+                        href={"/dashboard/payments"}
+                        className="flex flex-col hover:bg-muted/50 p-3 rounded-xl"
+                      >
+                        <span className="text-sm">Pendiente de aprobación</span>
+                        <p className="text-sm">
+                          Monto:{" "}
+                          <span className="font-mono text-muted-foreground">
+                            {formatWithCommas(amount_original)}{" "}
                           </span>
-                          <p className="text-sm">
-                            Monto:{" "}
-                            <span className="font-mono text-muted-foreground">
-                              {formatWithCommas(amount_original)}{" "}
-                            </span>
-                          </p>
-                          <p className="text-sm">
-                            Equivalente en soles:{" "}
-                            <span className="font-mono text-muted-foreground">
-                              S/.
-                              {formatWithCommas(amount_converted)}
-                            </span>
-                          </p>
-                          <div className="space-x-2">
-                            {exchange_rate === 1 ? null : (
-                              <Badge variant="secondary">
-                                TC {exchange_rate}
-                              </Badge>
-                            )}
-
-                            <Badge
-                              variant="secondary"
-                              className={cn(
-                                "font-bold",
-                                type_currency !== PEN
-                                  ? "text-green-600"
-                                  : "text-orange-700"
-                              )}
-                            >
-                              {type_currency === PEN
-                                ? "PEN/Soles"
-                                : type_currency}
+                        </p>
+                        <p className="text-sm">
+                          Equivalente en soles:{" "}
+                          <span className="font-mono text-muted-foreground">
+                            S/.
+                            {formatWithCommas(amount_converted)}
+                          </span>
+                        </p>
+                        <div className="space-x-2">
+                          {exchange_rate === 1 ? null : (
+                            <Badge variant="secondary">
+                              TC {exchange_rate}
                             </Badge>
-                          </div>
-                        </Link>
-                      </Card>
+                          )}
+
+                          <Badge
+                            variant="secondary"
+                            className={cn(
+                              "font-bold",
+                              type_currency !== PEN
+                                ? "text-green-600"
+                                : "text-orange-700"
+                            )}
+                          >
+                            {type_currency === PEN
+                              ? "PEN/Soles"
+                              : type_currency}
+                          </Badge>
+                        </div>
+                      </Link>
                     )
                   )
                 : null}
             </div>
-          </div>
-        </ScrollArea>
+          </ScrollArea>
+        </div>
       </PopoverContent>
     </Popover>
   );

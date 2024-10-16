@@ -146,7 +146,7 @@ export function useDataTable<TData>({
   scroll = false,
   shallow = true,
   throttleMs = 50,
-  debounceMs = 300,
+  debounceMs = 500,
   clearOnDefault = false,
   startTransition,
   initialState,
@@ -162,17 +162,8 @@ export function useDataTable<TData>({
       throttleMs,
       debounceMs,
       clearOnDefault,
-      startTransition,
     };
-  }, [
-    history,
-    scroll,
-    shallow,
-    throttleMs,
-    debounceMs,
-    clearOnDefault,
-    startTransition,
-  ]);
+  }, [history, scroll, shallow, throttleMs, debounceMs, clearOnDefault]);
 
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
     initialState?.rowSelection ?? {}

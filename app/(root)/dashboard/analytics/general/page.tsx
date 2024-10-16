@@ -110,7 +110,7 @@ export default async function Page({ searchParams }: TypeParams) {
           Análisis por etiqueta
         </h2>
         <div className="space-y-4 ">
-          <ComandLabel labels={labels.payload} />
+          <ComandLabel labels={labels} />
           <div className="grid grid-cols-2 gap-4">
             <Card>
               <CardHeader>
