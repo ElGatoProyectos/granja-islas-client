@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/use-toast";
 import { BACKEND_URL } from "@/constants/config";
 import { PEN } from "@/constants/currency";
 import { typesSpanishFormat } from "@/constants/type-document";
@@ -28,6 +27,7 @@ import { formatWithCommas } from "@/utils/format-number-comas";
 import { Download, Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Page() {
   const { code } = useParams();
@@ -46,7 +46,6 @@ export default function Page() {
   const [Loading, setLoading] = useState(false);
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const { toast } = useToast();
 
   function getValueFromLabel(label: string) {
     const found = typesSpanishFormat.find(
@@ -99,10 +98,7 @@ export default function Page() {
         console.error("Error al obtener el PDF:", response.statusText);
       }
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al crear el pdf del documento`,
-      });
+      toast.error(`Ocurrio un error al crear el pdf del documento`);
     } finally {
       setLoading(false);
     }

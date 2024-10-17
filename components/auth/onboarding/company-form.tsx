@@ -1,23 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  CompanySchemaIN,
-  CreateCompanySchema,
-  createCompanySchema,
-} from "@/lib/validations/auth/company";
 import {
   Dialog,
   DialogClose,
@@ -28,7 +11,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { BACKEND_URL } from "@/constants/config";
+import { SUPERADMIN } from "@/constants/roles";
+import { useUserInfo } from "@/context/user-context";
+import { useToggle } from "@/hooks/use-toggle";
+import { createCompany, updateCompany } from "@/lib/actions/company.actions";
+import {
+  CompanySchemaIN,
+  CreateCompanySchema,
+  createCompanySchema,
+} from "@/lib/validations/auth/company";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Image as AddImage,
   EyeIcon,
@@ -39,14 +42,11 @@ import {
   Search,
   Upload,
 } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { CodeCountry } from "./code-country";
-import { BACKEND_URL } from "@/constants/config";
-import { useToast } from "@/components/ui/use-toast";
-import { createCompany, updateCompany } from "@/lib/actions/company.actions";
-import { useUserInfo } from "@/context/user-context";
-import { ADMIN, SUPERADMIN } from "@/constants/roles";
-import { useToggle } from "@/hooks/use-toggle";
 
 interface Props {
   type: "create" | "edit";
@@ -57,7 +57,6 @@ interface Props {
 export function CompanyForm({ type, company, companyId }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof createCompanySchema>>({
     resolver: zodResolver(createCompanySchema),
     defaultValues: {
@@ -116,23 +115,19 @@ export function CompanyForm({ type, company, companyId }: Props) {
         });
       }
 
-      toast({
-        variant: "success",
-        title: `Se ${
-          type === "create" ? "creó" : "editó"
-        } correctamente la empresa`,
-      });
+      toast.success(
+        `Se ${type === "create" ? "creó" : "editó"} correctamente la empresa`
+      );
 
       setOpen(false);
       form.reset();
     } catch (e) {
       console.error(e);
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al ${
+      toast.error(
+        `Ocurrio un error al ${
           type === "create" ? "crear" : "editar"
-        } la empresa, intenta otra vez.`,
-      });
+        } la empresa, intenta otra vez.`
+      );
     } finally {
       setSubmitting(false);
     }
@@ -156,19 +151,13 @@ export function CompanyForm({ type, company, companyId }: Props) {
       );
 
       if (!res.ok) {
-        toast({
-          variant: "destructive",
-          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
-        });
+        toast.error(`Ocurrio un error al buscar por ruc, intenta otra vez.`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
 
       if (data.error) {
-        toast({
-          variant: "destructive",
-          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
-        });
+        toast.error(`Ocurrio un error al buscar por ruc, intenta otra vez.`);
         throw new Error(`Data error backend ${data.statusCode}`);
       }
 
@@ -187,16 +176,9 @@ export function CompanyForm({ type, company, companyId }: Props) {
       form.setValue("business_direction_fiscal", business_direction_fiscal);
       form.setValue("country_code", country_code);
       form.setValue("phone", phone_number);
-      toast({
-        variant: "success",
-        title: `Se encontraron datos con ese ruc`,
-      });
+      toast.success(`Se encontraron datos con ese ruc`);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
-      });
-      console.error("Error fetching data:", error);
+      toast.error(`Ocurrio un error al buscar por ruc, intenta otra vez.`);
     } finally {
       setLoadingDataOfRuc(false);
     }

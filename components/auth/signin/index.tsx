@@ -1,11 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { signinSchema } from "@/lib/validations/auth/signin";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -14,11 +9,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToggle } from "@/hooks/use-toggle";
+import { signinSchema } from "@/lib/validations/auth/signin";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export function SignIn() {
   const form = useForm<z.infer<typeof signinSchema>>({
@@ -30,7 +30,6 @@ export function SignIn() {
   });
 
   const router = useRouter();
-  const { toast } = useToast();
 
   async function onSubmit(values: z.infer<typeof signinSchema>) {
     try {
@@ -41,26 +40,15 @@ export function SignIn() {
       });
 
       if (!res?.ok) {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Ocurrio un error.",
-          description: "Verifica tus credenciales.",
-        });
+        toast.error("Verifica tus credenciales.");
         return;
       }
 
-      toast({
-        variant: "success",
-        title: "Has iniciado sesión",
-      });
+      toast.success("Has iniciado sesión correctamente");
 
       router.push("/onboarding");
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Ocurrio un error.",
-        description: "Verifica tus credenciales.",
-      });
+      toast.error("Verifica tus credenciales.");
     }
   }
 

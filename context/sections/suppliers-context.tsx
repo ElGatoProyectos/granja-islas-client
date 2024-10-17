@@ -1,6 +1,7 @@
 "use client";
 
 import { BACKEND_URL } from "@/constants/config";
+import { useDebounce } from "@/hooks/use-debounce";
 import { SupplierSchemaIN } from "@/lib/validations/supplier";
 import {
   createContext,
@@ -12,10 +13,9 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useUserInfo } from "../user-context";
 import { useCompanySession } from "../company-context";
-import { useDebounce } from "@/hooks/use-debounce";
-import { useToast } from "@/components/ui/use-toast";
+import { useUserInfo } from "../user-context";
+import { toast } from "sonner";
 
 interface UserContextType {
   suppliers: SupplierSchemaIN[];
@@ -51,7 +51,6 @@ export const SupplierProvider = ({
   const [search, setSearch] = useState("");
   const input = useDebounce(search);
   const [statusSupp, setStatusSupp] = useState("");
-  const { toast } = useToast();
 
   const getSuppliers = useCallback(async () => {
     if (!company) return;
@@ -158,21 +157,15 @@ export const SupplierProvider = ({
       if (data.error) {
         throw new Error("Failed to sync suppliers");
       }
-      toast({
-        variant: "success",
-        title: `Se actualizaron los datos con exito`,
-      });
+      toast.success(`Se actualizaron los datos con exito`);
       getSuppliers();
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error actualizar los datos`,
-      });
+      toast.error(`Ocurrio un error actualizar los datos`);
       throw new Error("Failed to sync suppliers");
     } finally {
       setLoading(false);
     }
-  }, [company, getSuppliers, toast, tokenBack]);
+  }, [company, getSuppliers, tokenBack]);
 
   const value = useMemo(
     () => ({

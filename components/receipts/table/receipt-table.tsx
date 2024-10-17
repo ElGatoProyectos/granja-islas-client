@@ -105,7 +105,12 @@ export function ReceiptsTable({ receiptsPromise }: ReceiptsTableProps) {
   });
 
   return (
-    <DataTableRoot table={table} totalElements={total} isPending={isPending}>
+    <DataTableRoot
+      table={table}
+      totalElements={total}
+      isPending={isPending}
+      showElementsSelected
+    >
       <DataTableToolbar
         table={table}
         filterFields={filterFields}

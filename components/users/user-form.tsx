@@ -1,10 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -13,6 +9,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import {
   Dialog,
@@ -24,8 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CodeCountry } from "../auth/onboarding/code-country";
 import { userSchema, UserSchemaIN } from "@/lib/validations/user";
+import { CodeCountry } from "../auth/onboarding/code-country";
 
 import {
   Select,
@@ -34,6 +34,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BACKEND_URL } from "@/constants/config";
+import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
+import { useUserInfo } from "@/context/user-context";
+import { useToggle } from "@/hooks/use-toggle";
+import { createUser, updateUser } from "@/lib/actions/users.actions";
 import {
   Image as AddImage,
   EyeIcon,
@@ -42,15 +47,10 @@ import {
   Plus,
   Upload,
 } from "lucide-react";
-import { useToggle } from "@/hooks/use-toggle";
-import { ADMIN, SUPERADMIN, USER } from "@/constants/roles";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { useUserInfo } from "@/context/user-context";
-import { createUser, updateUser } from "@/lib/actions/users.actions";
-import { BACKEND_URL } from "@/constants/config";
-import { Label } from "../ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Label } from "../ui/label";
+import { toast } from "sonner";
 
 interface Props {
   type: "create" | "edit";
@@ -73,7 +73,6 @@ export function UserForm({ type, userInfo }: Props) {
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { toast } = useToast();
   const { tokenBack, userInfo: currentUser, getUser } = useUserInfo();
 
   async function onSubmit(values: z.infer<typeof userSchema>) {
@@ -107,22 +106,18 @@ export function UserForm({ type, userInfo }: Props) {
         });
         getUser();
       }
-      toast({
-        variant: "success",
-        title: `Se ${
-          type === "create" ? "creó" : "editó"
-        } correctamente el usuario`,
-      });
+      toast.success(
+        `Se ${type === "create" ? "creó" : "editó"} correctamente el usuario`
+      );
       setOpen(false);
       form.reset();
     } catch (e) {
       console.error(e);
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al ${
+      toast.error(
+        `Ocurrio un error al ${
           type === "create" ? "crear" : "editar"
-        } el usuario, intenta otra vez.`,
-      });
+        } el usuario, intenta otra vez.`
+      );
     } finally {
       setSubmitting(false);
     }

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createPaymentSchema,
-  PaymentSchemaIN,
-} from "@/lib/validations/payment";
-import { MutableRefObject, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,12 +9,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
-import { useUserInfo } from "@/context/user-context";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { BACKEND_URL } from "@/constants/config";
-import { Image as AddImage, Search, Upload } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -29,13 +18,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useBanks } from "@/hooks/useBanks";
-import { Button, buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { createPayment } from "@/lib/actions/payment.actions";
-import { useCompanySession } from "@/context/company-context";
+import { BACKEND_URL } from "@/constants/config";
 import { PEN } from "@/constants/currency";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
+import { useBanks } from "@/hooks/useBanks";
+import { createPayment } from "@/lib/actions/payment.actions";
+import {
+  createPaymentSchema,
+  PaymentSchemaIN,
+} from "@/lib/validations/payment";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Image as AddImage, Search, Upload } from "lucide-react";
+import Link from "next/link";
+import { MutableRefObject, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { io, Socket } from "socket.io-client";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface Props {
   type: "create" | "edit";
@@ -52,7 +52,6 @@ export function PaymentForm({
 }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof createPaymentSchema>>({
     resolver: zodResolver(createPaymentSchema),
     defaultValues: {
@@ -105,22 +104,18 @@ export function PaymentForm({
       }
       if (type === "edit") {
       }
-      toast({
-        variant: "success",
-        title: `Se ${
-          type === "create" ? "creó" : "editó"
-        } correctamente el voucher`,
-      });
+      toast.success(
+        `Se ${type === "create" ? "creó" : "editó"} correctamente el voucher`
+      );
       form.reset();
       getReceiptPayments();
       setSelectedImage(null);
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al ${
+      toast.error(
+        `Ocurrio un error al ${
           type === "create" ? "crear" : "editar"
-        } el voucher, intenta otra vez.`,
-      });
+        } el voucher, intenta otra vez.`
+      );
     } finally {
       setSubmitting(false);
     }

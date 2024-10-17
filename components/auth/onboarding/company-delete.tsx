@@ -10,12 +10,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { deleteCompany } from "@/lib/actions/company.actions";
 import { Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function CompanyDelete({
   ruc,
@@ -28,7 +28,7 @@ export function CompanyDelete({
 }) {
   const [value, setValue] = useState<string>("");
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { toast } = useToast();
+
   const route = useRouter();
   const { data: session }: { data: any } = useSession();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,17 +45,11 @@ export function CompanyDelete({
         tokenBack: session.user.tokenBack,
       });
 
-      toast({
-        variant: "success",
-        title: `Se eliminó correctamente la empresa`,
-      });
+      toast.success(`Se eliminó correctamente la empresa`);
       route.refresh();
       setOpen(false);
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al eliminar la empresa, intenta otra vez.`,
-      });
+      toast.error(`Ocurrio un error al eliminar la empresa, intenta otra vez.`);
     } finally {
       setSubmitting(false);
     }

@@ -1,13 +1,12 @@
-import { useToast } from "@/components/ui/use-toast";
 import { BACKEND_URL } from "@/constants/config";
 import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 export function useSyncSunat() {
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
-  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
   const [dateRange, setDateRange] = useState({
@@ -49,28 +48,19 @@ export function useSyncSunat() {
       const data = await res.json();
 
       if (data.error) {
-        toast({
-          variant: "destructive",
-          title: data.message,
-        });
+        toast.error(`${data.message}`);
         return;
       }
 
-      toast({
-        variant: "success",
-        description:
-          "La sincronización ha comenzado. Recibirás una notificación cuando el proceso haya finalizado.",
-      });
+      toast.success(
+        "La sincronización ha comenzado. Recibirás una notificación cuando el proceso haya finalizado."
+      );
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Ocurrio un error.",
-        description: "Verifica tus credenciales.",
-      });
+      toast.error("Verifica tus credenciales.");
     } finally {
       setLoading(false);
     }
-  }, [company, dateRange, toast, tokenBack]);
+  }, [company, dateRange, tokenBack]);
 
   // Funciones para actualizar el rango de fechas
   const setYearStart = (year: string) =>

@@ -59,11 +59,9 @@ export async function getProducts(
         limit,
       },
     });
-    console.log(response);
 
     const { payload, error } = response.data;
     if (error) {
-      console.log(error);
       throw new Error("No data found");
     }
 
@@ -107,7 +105,7 @@ export async function getProductsForExcel(input: GetProductsSchema) {
   }
   const start = `${startYear}-${startMonth}`;
   const end = `${endYear}-${endMonth}`;
-  console.log(title);
+
   try {
     const response: AxiosResponse<
       TypeResponseApi<TypePaginationNode<TypeProductTable[]>>
@@ -185,9 +183,8 @@ export async function assignLabelToProduct({
         },
       }
     );
-    console.log(data);
-    revalidatePath("/dashboard/products");
 
+    revalidatePath("/dashboard/products");
     return data;
   } catch (e) {
     console.error(e);

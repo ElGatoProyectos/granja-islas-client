@@ -1,11 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Loader2, Pencil, SendHorizontal, Trash, X } from "lucide-react";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,11 +11,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useBanks } from "@/hooks/useBanks";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCompanySession } from "@/context/company-context";
-import { createBank, deleteBank, updateBank } from "@/lib/actions/bank.actions";
 import { useUserInfo } from "@/context/user-context";
-import { useToast } from "../ui/use-toast";
+import { useBanks } from "@/hooks/useBanks";
+import { createBank, deleteBank, updateBank } from "@/lib/actions/bank.actions";
+import { cn } from "@/lib/utils";
+import { Loader2, Pencil, SendHorizontal, Trash, X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function BankForm() {
   const [inputValue, setInputValue] = useState("");
@@ -30,7 +30,6 @@ export function BankForm() {
   const { company } = useCompanySession();
   const { banks, getBanks, loadingBanks } = useBanks();
   const { tokenBack } = useUserInfo();
-  const { toast } = useToast();
   const [loading, setloading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,10 +41,7 @@ export function BankForm() {
       setInputValue("");
       getBanks();
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: "Ocurrio un error al crear el banco",
-      });
+      toast.error("Ocurrio un error al crear el banco");
     } finally {
       setloading(false);
     }
@@ -67,10 +63,7 @@ export function BankForm() {
         setEditInputValue("");
         getBanks();
       } catch (e) {
-        toast({
-          variant: "destructive",
-          title: "Ocurrio un error al editar el banco",
-        });
+        toast.error("Ocurrio un error al editar el banco");
       } finally {
         setloading(false);
       }
@@ -87,22 +80,13 @@ export function BankForm() {
       setloading(true);
       await deleteBank({ idBank: id, tokenBack, ruc: company?.ruc });
       getBanks();
-      toast({
-        variant: "success",
-        title: "Se elimino el banco correctamente",
-      });
+      toast.success("Se elimino el banco correctamente");
     } catch (e: any) {
       if (e.message) {
-        toast({
-          variant: "destructive",
-          title: e.message,
-        });
+        toast.error(`${e.message}`);
         return;
       }
-      toast({
-        variant: "destructive",
-        title: "Ocurrio un error al eliminar la etiqueta",
-      });
+      toast.error("Ocurrio un error al eliminar el banco");
     } finally {
       setloading(false);
     }

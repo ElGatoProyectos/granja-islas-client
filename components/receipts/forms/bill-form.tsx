@@ -1,10 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -13,15 +11,34 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { billSchemaCreate } from "@/lib/validations/receipt-forms/bill";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { useUserInfo } from "@/context/user-context";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TabsContent } from "@/components/ui/tabs";
+import { BACKEND_URL } from "@/constants/config";
+import { PEN, USD } from "@/constants/currency";
+import { igv_percentage } from "@/constants/igv";
+import { arrayTypePayments, CONTADO } from "@/constants/type-payments";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
+import { useAllSuppliers } from "@/hooks/useAllSuppliers";
+import { useMeasure } from "@/hooks/useMeause";
+import { createBill } from "@/lib/actions/bill.actions";
+import { cn } from "@/lib/utils";
+import { billSchemaCreate } from "@/lib/validations/receipt-forms/bill";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import {
   BookOpen,
   CalendarIcon,
@@ -30,29 +47,12 @@ import {
   Search,
   Trash,
 } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { PEN, USD } from "@/constants/currency";
-import { useAllSuppliers } from "@/hooks/useAllSuppliers";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 import { SupplierField } from "../supplier-field";
-import { es } from "date-fns/locale";
-import { arrayTypePayments, CONTADO } from "@/constants/type-payments";
-import { BACKEND_URL } from "@/constants/config";
-import { useMeasure } from "@/hooks/useMeause";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TabsContent } from "@/components/ui/tabs";
 import { BillView } from "./bill-view";
-import { createBill } from "@/lib/actions/bill.actions";
-import { useCompanySession } from "@/context/company-context";
-import { igv_percentage } from "@/constants/igv";
+import { toast } from "sonner";
 
 export function BillForm() {
   const form = useForm<z.infer<typeof billSchemaCreate>>({
@@ -67,7 +67,6 @@ export function BillForm() {
   });
 
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { toast } = useToast();
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
 
@@ -75,16 +74,10 @@ export function BillForm() {
     setSubmitting(true);
     try {
       await createBill({ jsonData: values, tokenBack, ruc: company?.ruc });
-      toast({
-        variant: "success",
-        title: `Se creó correctamente la factura`,
-      });
+      toast.success(`Se creó correctamente la factura`);
       form.reset();
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al crear la factura intenta otra vez.`,
-      });
+      toast.error(`Ocurrio un error al crear la factura intenta otra vez.`);
     } finally {
       setSubmitting(false);
     }

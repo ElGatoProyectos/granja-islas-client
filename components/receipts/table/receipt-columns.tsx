@@ -11,6 +11,7 @@ import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+import { ReceiptDownloadPdf } from "./download-pdf";
 
 export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
   return [
@@ -256,9 +257,9 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
       },
       enableSorting: false,
     },
-    //   {
-    //     id: "actions",
-    //     cell: ({ row }) => <DataTableRowActions row={row} />,
-    //   },
+    {
+      id: "actions",
+      cell: ({ row }) => <ReceiptDownloadPdf row={row} />,
+    },
   ];
 }

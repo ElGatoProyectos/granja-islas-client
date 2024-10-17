@@ -29,6 +29,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   floatingBar?: React.ReactNode | null;
   totalElements: number;
   isPending: boolean;
+  showElementsSelected: boolean;
 }
 
 export function DataTableRoot<TData>({
@@ -38,6 +39,7 @@ export function DataTableRoot<TData>({
   className,
   totalElements,
   isPending,
+  showElementsSelected,
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -103,6 +105,7 @@ export function DataTableRoot<TData>({
           table={table}
           pageSizeOptions={[20, 50, 100]}
           totalElements={totalElements}
+          showElementsSelected={showElementsSelected}
         />
       </div>
     </div>

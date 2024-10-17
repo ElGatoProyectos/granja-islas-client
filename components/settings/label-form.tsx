@@ -25,7 +25,7 @@ import {
   deleteLabel,
   updateLabel,
 } from "@/lib/actions/label.actions";
-import { useToast } from "../ui/use-toast";
+import { toast } from "sonner";
 
 export function LabelForm() {
   const [inputValue, setInputValue] = useState("");
@@ -34,7 +34,7 @@ export function LabelForm() {
   const { company } = useCompanySession();
   const { tokenBack } = useUserInfo();
   const { labels, loadingLabel, getLabels } = useLabels();
-  const { toast } = useToast();
+
   const [loading, setloading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,10 +46,7 @@ export function LabelForm() {
       setInputValue("");
       getLabels();
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: "Ocurrio un error al crear la etiqueta",
-      });
+      toast.error("Ocurrio un error al crear la etiqueta");
     } finally {
       setloading(false);
     }
@@ -73,10 +70,7 @@ export function LabelForm() {
         setEditInputValue("");
         getLabels();
       } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Ocurrio un error al editar la etiqueta",
-        });
+        toast.error("Ocurrio un error al editar la etiqueta");
       } finally {
         setloading(false);
       }
@@ -93,22 +87,13 @@ export function LabelForm() {
       setloading(true);
       await deleteLabel({ idLabel: id, tokenBack, ruc: company?.ruc });
       getLabels();
-      toast({
-        variant: "success",
-        title: "Se elimino la etiqueta correctamente",
-      });
+      toast.success("Se elimino la etiqueta correctamente");
     } catch (e: any) {
       if (e.message) {
-        toast({
-          variant: "destructive",
-          title: e.message,
-        });
+        toast.error(`${e.message}`);
         return;
       }
-      toast({
-        variant: "destructive",
-        title: "Ocurrio un error al eliminar la etiqueta",
-      });
+      toast.error("Ocurrio un error al eliminar la etiqueta");
     } finally {
       setloading(false);
     }

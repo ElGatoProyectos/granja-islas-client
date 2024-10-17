@@ -16,10 +16,10 @@ import {
 
 import { useTransition } from "react";
 import { Loader2, TrashIcon } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 import { deleteUser } from "@/lib/actions/users.actions";
 import { useUserInfo } from "@/context/user-context";
 import { UserSchemaIN } from "@/lib/validations/user";
+import { toast } from "sonner";
 
 interface DeleteTasksDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
@@ -35,7 +35,6 @@ export function DeleteTasksDialog({
   ...props
 }: DeleteTasksDialogProps) {
   const [isDeletePending, startDeleteTransition] = useTransition();
-  const { toast } = useToast();
   const { tokenBack } = useUserInfo();
 
   function onDelete() {
@@ -43,15 +42,9 @@ export function DeleteTasksDialog({
       try {
         await deleteUser({ tokenBack, userId: user.id });
 
-        toast({
-          variant: "success",
-          title: `Se eliminó correctamente el usuario`,
-        });
+        toast.success(`Se eliminó correctamente el usuario`);
       } catch (e: any) {
-        toast({
-          variant: "destructive",
-          title: "Ocurrio un error al eliminar usuario",
-        });
+        toast.error("Ocurrio un error al eliminar usuario");
       } finally {
         props.onOpenChange?.(false);
       }

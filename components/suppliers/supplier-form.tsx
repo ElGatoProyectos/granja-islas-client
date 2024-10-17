@@ -1,10 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -13,6 +9,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import {
   Dialog,
@@ -24,19 +24,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CodeCountry } from "../auth/onboarding/code-country";
+import { BACKEND_URL } from "@/constants/config";
+import { useCompanySession } from "@/context/company-context";
+import { useUserInfo } from "@/context/user-context";
+import { createSupplier, updateSupplier } from "@/lib/actions/supplier.actions";
 import {
   createSupplierSchema,
   SupplierSchemaIN,
 } from "@/lib/validations/supplier";
 import { Loader2, Plus, Search } from "lucide-react";
-import { createSupplier, updateSupplier } from "@/lib/actions/supplier.actions";
-import { useUserInfo } from "@/context/user-context";
-import { useCompanySession } from "@/context/company-context";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { BACKEND_URL } from "@/constants/config";
+import { CodeCountry } from "../auth/onboarding/code-country";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface Props {
   type: "create" | "edit";
@@ -67,7 +67,6 @@ export function SupplierForm({
   const { tokenBack } = useUserInfo();
   const { company } = useCompanySession();
   const [submitting, setSubmitting] = useState(false);
-  const { toast } = useToast();
 
   async function onSubmit(values: z.infer<typeof createSupplierSchema>) {
     setSubmitting(true);
@@ -88,29 +87,22 @@ export function SupplierForm({
           supplierID: supplier?.id,
         });
       }
-      toast({
-        variant: "success",
-        title: `Se ${
-          type === "create" ? "creó" : "editó"
-        } correctamente el proveedor`,
-      });
+      toast.success(
+        `Se ${type === "create" ? "creó" : "editó"} correctamente el proveedor`
+      );
       getSuppliers();
       setOpen(false);
       form.reset();
     } catch (e: any) {
       if (e.message) {
-        toast({
-          variant: "destructive",
-          title: e.message,
-        });
+        toast.error(`${e.message}`);
         return;
       }
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al ${
+      toast.error(
+        `Ocurrio un error al ${
           type === "create" ? "crear" : "editar"
-        } el proveedor, intenta otra vez.`,
-      });
+        } el proveedor, intenta otra vez.`
+      );
     } finally {
       setSubmitting(false);
     }
@@ -131,19 +123,13 @@ export function SupplierForm({
       });
 
       if (!res.ok) {
-        toast({
-          variant: "destructive",
-          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
-        });
+        toast.error(`Ocurrio un error al buscar por ruc, intenta otra vez.`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
 
       if (data.error) {
-        toast({
-          variant: "destructive",
-          title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
-        });
+        toast.error(`Ocurrio un error al buscar por ruc, intenta otra vez.`);
         throw new Error(`Data error backend ${data.statusCode}`);
       }
 
@@ -162,15 +148,9 @@ export function SupplierForm({
       form.setValue("business_direction", business_direction_fiscal);
       form.setValue("country_code", country_code);
       form.setValue("phone", phone_number);
-      toast({
-        variant: "success",
-        title: `Se encontraron datos con ese ruc`,
-      });
+      toast.success(`Se encontraron datos con ese ruc`);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al buscar por ruc, intenta otra vez.`,
-      });
+      toast.error(`Ocurrio un error al buscar por ruc, intenta otra vez.`);
       console.error("Error fetching data:", error);
     } finally {
       setloadingDataOfRuc(false);

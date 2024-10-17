@@ -34,10 +34,7 @@ export function ProductsTable({ productsPromise }: ProductsTableProps) {
 
   const [suppliers, setSuppliers] = useState<TypeSupplier[]>([]);
   const [labels, setLabels] = useState<TypeLabel[]>([]);
-  const columns = useMemo(
-    () => getProductsColumns(),
-    []
-  );
+  const columns = useMemo(() => getProductsColumns(), []);
   const [isLoadingSuppliers, setIsLoadingSuppliers] = useState(true);
 
   const getFilters = useCallback(async () => {
@@ -57,8 +54,6 @@ export function ProductsTable({ productsPromise }: ProductsTableProps) {
   useEffect(() => {
     getFilters();
   }, [getFilters]);
-
-  console.log(labels);
 
   const filterFields: DataTableFilterField<TypeProductTableFormat>[] = [
     {

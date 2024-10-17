@@ -1,11 +1,11 @@
 "use client";
 
+import { useLabels } from "@/hooks/useLabels";
+import { LabelSchemaIN } from "@/lib/validations/label";
 import { useState } from "react";
 import MultipleSelector, { Option } from "../ui-custom/multiple-select";
 import { Button } from "../ui/button";
-import { useLabels } from "@/hooks/useLabels";
-import { useToast } from "../ui/use-toast";
-import { LabelSchemaIN } from "@/lib/validations/label";
+import { toast } from "sonner";
 
 export function MultipleSelect({
   id_product,
@@ -18,7 +18,7 @@ export function MultipleSelect({
 }) {
   const [value, setValue] = useState<Option[]>([]);
   const { labels, assignLabelToProduct, setAssignLabel } = useLabels();
-  const { toast } = useToast();
+
   const handleChange = (value: Option[]) => {
     const formated = value.map(({ value }) => Number(value));
     setAssignLabel(formated);
@@ -48,16 +48,10 @@ export function MultipleSelect({
     setloading(true);
     try {
       await assignLabelToProduct({ id_product, getProductDetails });
-      toast({
-        variant: "success",
-        title: `Se asignó la etiqueta`,
-      });
+      toast.success(`Se asignó la etiqueta`);
       setValue([]);
     } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al asignar etiqueta`,
-      });
+      toast.error(`Ocurrio un error al asignar etiqueta`);
     } finally {
       setloading(false);
     }

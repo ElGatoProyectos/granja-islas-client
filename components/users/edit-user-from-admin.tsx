@@ -1,10 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -13,6 +9,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import {
   Dialog,
@@ -24,8 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CodeCountry } from "../auth/onboarding/code-country";
 import { userSchema, UserSchemaIN } from "@/lib/validations/user";
+import { CodeCountry } from "../auth/onboarding/code-country";
 
 import {
   Select,
@@ -34,15 +34,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { useToggle } from "@/hooks/use-toggle";
 import { ADMIN, USER } from "@/constants/roles";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { useUserInfo } from "@/context/user-context";
-import { useRouter } from "next/navigation";
+import { useToggle } from "@/hooks/use-toggle";
 import { createUser, updateUser } from "@/lib/actions/users.actions";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { toast } from "sonner";
 
 interface Props {
   type: "create" | "edit";
@@ -65,7 +65,7 @@ export function EditUserFromAdmin({ type, userInfo }: Props) {
   });
 
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const { toast } = useToast();
+
   const { tokenBack } = useUserInfo();
   const route = useRouter();
 
@@ -100,23 +100,18 @@ export function EditUserFromAdmin({ type, userInfo }: Props) {
         });
       }
 
-      toast({
-        variant: "success",
-        title: `Se ${
-          type === "create" ? "creó" : "editó"
-        } correctamente el usuario`,
-      });
+      toast.success(
+        `Se ${type === "create" ? "creó" : "editó"} correctamente el usuario`
+      );
       route.refresh();
       setOpen(false);
       form.reset();
     } catch (e) {
-      console.error(e);
-      toast({
-        variant: "destructive",
-        title: `Ocurrio un error al ${
+      toast.error(
+        `Ocurrio un error al ${
           type === "create" ? "crear" : "editar"
-        } el usuario, intenta otra vez.`,
-      });
+        } el usuario, intenta otra vez.`
+      );
     } finally {
       setSubmitting(false);
     }
