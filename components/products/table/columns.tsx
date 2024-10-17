@@ -49,10 +49,7 @@ export const columns: ColumnDef<ProductSchemaINFormated>[] = [
       return (
         <div className="w-[150px] flex flex-wrap gap-2 items-center">
           {!labels.length ? (
-            <AssignLabel
-              id_product={id_product.toString()}
-              savedLabels={labels}
-            />
+            <AssignLabel id_product={id_product} labelsProduct={labels} />
           ) : (
             <>
               {labels.slice(0, 3).map(({ id, title }) => (
