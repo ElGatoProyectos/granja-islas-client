@@ -5,14 +5,15 @@ import { DataTableToolbar } from "@/components/ui-custom/table-server/table-tool
 import { useCompanySession } from "@/context/company-context";
 import { useDataTable } from "@/hooks/use-data-table";
 import { getLabels } from "@/lib/actions/label.actions";
-import { getProducts } from "@/lib/actions/product";
-import { getSuppliers } from "@/lib/actions/supplier.actions";
+import {
+  getProductsOfSupplier,
+  getSuppliers,
+} from "@/lib/actions/supplier.actions";
 import { TypeLabel } from "@/types/label";
-import { TypeProductTableFormat } from "@/types/product";
-import { TypeSupplier } from "@/types/supplier";
+import { TypeProductsOfSupplierTable, TypeSupplier } from "@/types/supplier";
 import { type DataTableFilterField } from "@/types/table-filter-field";
 import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
-import { productsViewTable } from "@/utils/change-name";
+import { productsOfSupplierViewTable } from "@/utils/change-name";
 import {
   use,
   useCallback,
@@ -21,29 +22,27 @@ import {
   useState,
   useTransition,
 } from "react";
-import { getProductsColumns } from "./product-columns";
-import { ProductsTableToolbarActions } from "./product-toolbar-actions";
+import { getProductsOfSupplierColumns } from "./supplier-products-columns";
+import { ProductsOfSupplierTableToolbarActions } from "./supplier-products-toolbar-actions";
 
-interface ProductsTableProps {
-  productsPromise: ReturnType<typeof getProducts>;
+interface ProductsOfSupplierTableProps {
+  productsOfSupplierPromise: ReturnType<typeof getProductsOfSupplier>;
 }
 
-export function ProductsTable({ productsPromise }: ProductsTableProps) {
-  const { data, total, pageCount } = use(productsPromise);
+export function ProductsOfSupplierTable({
+  productsOfSupplierPromise,
+}: ProductsOfSupplierTableProps) {
+  const { data, total, pageCount } = use(productsOfSupplierPromise);
   const { company } = useCompanySession();
-
-  const [suppliers, setSuppliers] = useState<TypeSupplier[]>([]);
   const [labels, setLabels] = useState<TypeLabel[]>([]);
-  const columns = useMemo(() => getProductsColumns(), []);
+  const columns = useMemo(() => getProductsOfSupplierColumns(), []);
   const [isLoadingSuppliers, setIsLoadingSuppliers] = useState(true);
 
   const getFilters = useCallback(async () => {
     if (!company) return;
     try {
-      const suppliers = await getSuppliers({ ruc: company.ruc });
       const labels = await getLabels({ company_ruc: company.ruc });
       setLabels(labels);
-      setSuppliers(suppliers);
     } catch (error) {
       console.error("Error loading suppliers", error);
     } finally {
@@ -55,25 +54,15 @@ export function ProductsTable({ productsPromise }: ProductsTableProps) {
     getFilters();
   }, [getFilters]);
 
-  const filterFields: DataTableFilterField<TypeProductTableFormat>[] = [
+  const filterFields: DataTableFilterField<TypeProductsOfSupplierTable>[] = [
     {
       label: "Titulo",
       value: "title",
       placeholder: "Buscar nombre del producto",
     },
     {
-      label: "Proveedor",
-      value: "supplier_name",
-      options: isLoadingSuppliers
-        ? [{ label: "Cargando...", value: "" }]
-        : suppliers.map((supplier) => ({
-            label: capitalizeFirstLetter(supplier.business_name),
-            value: supplier.id.toString(),
-          })),
-    },
-    {
       label: "Etiquetas",
-      value: "labels",
+      value: "product_labels",
       options: isLoadingSuppliers
         ? [{ label: "Cargando...", value: "" }]
         : labels.map((label) => ({
@@ -100,10 +89,10 @@ export function ProductsTable({ productsPromise }: ProductsTableProps) {
       <DataTableToolbar
         table={table}
         filterFields={filterFields}
-        changeTitle={productsViewTable}
+        changeTitle={productsOfSupplierViewTable}
         isPending={isPending}
       >
-        <ProductsTableToolbarActions table={table} />
+        <ProductsOfSupplierTableToolbarActions table={table} />
       </DataTableToolbar>
     </DataTableRoot>
   );

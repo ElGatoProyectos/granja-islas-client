@@ -17,14 +17,6 @@ export const labelSchemaIN = z.object({
 export const labelArraySchemaIN = z.array(labelSchemaIN);
 export type LabelSchemaIN = z.infer<typeof labelSchemaIN>;
 
-/* filter */
-export const labelSchemaFilter = z.object({
-  id: z.number(),
-  title: z.string(),
-});
-export const labelArraySchemaFilter = z.array(labelSchemaFilter);
-export type LabelSchemaFilter = z.infer<typeof labelSchemaFilter>;
-
 /* documents of label */
 
 export const documentsOfLabel = z.object({

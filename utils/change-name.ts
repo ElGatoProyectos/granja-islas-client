@@ -119,8 +119,8 @@ export function documentsLabelViewTable(key: string) {
 
 const productsOfSupplierView: TranslationDict = {
   title: "Producto",
-  labels: "Etiquetas",
-  code: "Número",
+  product_labels: "Etiquetas",
+  document_code: "Número",
   issue_date: "Emisión",
   amount: "Cantidad",
   unit_measure: "Medida",

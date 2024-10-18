@@ -32,5 +32,24 @@ export const searchParamsProductsSchema = z.object({
   supplier_name: z.string().optional(),
   labels: z.string().optional(),
 });
+
 export const getProductsSchema = searchParamsProductsSchema;
 export type GetProductsSchema = z.infer<typeof getProductsSchema>;
+
+export const searchParamsProductsOfSuppliersSchema = z.object({
+  ruc: z.string(),
+  id_supplier: z.string(),
+  page: z.coerce.number().default(1),
+  limit: z.coerce.number().default(20),
+  startYear: z.coerce.number().optional().default(currentYear),
+  startMonth: z.coerce.number().optional().default(currentMonth),
+  endYear: z.coerce.number().optional().default(currentYear),
+  endMonth: z.coerce.number().optional().default(currentMonth),
+  title: z.string().optional(),
+  product_labels: z.string().optional(),
+});
+export const getProductsOfSuppliersSchema =
+  searchParamsProductsOfSuppliersSchema;
+export type GetProductsOfSuppliersSchema = z.infer<
+  typeof getProductsOfSuppliersSchema
+>;

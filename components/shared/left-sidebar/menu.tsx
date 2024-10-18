@@ -9,15 +9,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ADMIN, SUPERADMIN } from "@/constants/roles";
-import { useCompanySession } from "@/context/company-context";
 import { useUserInfo } from "@/context/user-context";
+import { useRuc } from "@/hooks/use-ruc";
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/utils/menu-list";
 import { Ellipsis, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { CollapseMenuButton } from "./collapse-menu-button";
 
 interface MenuProps {
@@ -28,22 +27,7 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const { userInfo } = useUserInfo();
-  const { company } = useCompanySession();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const ruc = searchParams.get("ruc") ?? "";
-
-  useEffect(() => {
-    if (!ruc) {
-      if (company) {
-        const newParams = new URLSearchParams(searchParams);
-        newParams.set("ruc", company.ruc);
-        router.replace(`?${newParams.toString()}`);
-        return;
-      }
-      router.push("/onboarding");
-    }
-  }, [searchParams, company, router, ruc]);
+  const { ruc } = useRuc();
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">

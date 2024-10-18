@@ -5,7 +5,27 @@ import { DataTableColumnHeader } from "@/components/ui-custom/table-column-heade
 import { FormatDocumentsOfLabelType } from "@/lib/validations/label";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { useRuc } from "@/hooks/use-ruc";
 
+function SupplierURL({
+  id,
+  business_name,
+}: {
+  id: number;
+  business_name: string;
+}) {
+  const { ruc } = useRuc();
+  return (
+    <Link
+      href={{ pathname: `/dashboard/suppliers/${id}`, query: { ruc } }}
+      className={`${buttonVariants({
+        variant: "link",
+      })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+    >
+      {business_name.toLowerCase()}
+    </Link>
+  );
+}
 export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
   {
     accessorKey: "issue_date",
@@ -69,16 +89,7 @@ export const columns: ColumnDef<FormatDocumentsOfLabelType>[] = [
     cell: ({ row }) => {
       const id = row.original.id_supplier;
       const business_name = row.getValue("business_name") as string;
-      return (
-        <Link
-          href={`/dashboard/suppliers/${id}`}
-          className={`${buttonVariants({
-            variant: "link",
-          })} "w-[200px] capitalize text-balance font-medium !p-0  !h-auto"`}
-        >
-          {business_name.toLowerCase()}
-        </Link>
-      );
+      return <SupplierURL business_name={business_name} id={id} />;
     },
     enableSorting: false,
   },

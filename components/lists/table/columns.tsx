@@ -1,12 +1,32 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui-custom/table-column-header";
-import { DataTableRowActions } from "./table-row-actions";
-import { formatDate } from "@/utils/format-date";
-import { ListsSchemaIN } from "@/lib/validations/list";
-import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { useRuc } from "@/hooks/use-ruc";
+import { ListsSchemaIN } from "@/lib/validations/list";
+import { formatDate } from "@/utils/format-date";
+import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
+
+function SupplierURL({
+  id,
+  business_name,
+}: {
+  id: number;
+  business_name: string;
+}) {
+  const { ruc } = useRuc();
+  return (
+    <Link
+      href={{ pathname: `/dashboard/suppliers/${id}`, query: { ruc } }}
+      className={`${buttonVariants({
+        variant: "link",
+      })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+    >
+      {business_name.toLowerCase()}
+    </Link>
+  );
+}
 
 export const columns: ColumnDef<ListsSchemaIN>[] = [
   {
@@ -28,6 +48,7 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
         </Link>
       );
     },
+    enableSorting: false,
   },
   {
     accessorKey: "lastPurchaseDate",
@@ -58,7 +79,6 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
     },
     enableSorting: false,
   },
-
   {
     accessorKey: "lastPrice",
     header: ({ column }) => (
@@ -130,16 +150,7 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
     cell: ({ row }) => {
       const id = row.original.supplier.id;
       const business_name = row.getValue("business_name") as string;
-      return (
-        <Link
-          href={`/dashboard/suppliers/${id}`}
-          className={`${buttonVariants({
-            variant: "link",
-          })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
-        >
-          {business_name.toLowerCase()}
-        </Link>
-      );
+      return <SupplierURL business_name={business_name} id={id} />;
     },
     enableSorting: false,
   },
@@ -147,21 +158,20 @@ export const columns: ColumnDef<ListsSchemaIN>[] = [
     accessorKey: "business_status",
     accessorFn: (row) => `${row.supplier.business_status}`,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Estado" />
+      <DataTableColumnHeader
+        column={column}
+        title="Estado del Proveedor"
+        className="text-center"
+      />
     ),
     cell: ({ row }) => {
       const business_status = row.getValue("business_status") as string;
       return (
-        <div className="flex items-center capitalize">
-          <span>{business_status.toLowerCase()}</span>
-        </div>
+        <p className="capitalize text-center">
+          {business_status.toLowerCase()}
+        </p>
       );
     },
     enableSorting: false,
-  },
-
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];

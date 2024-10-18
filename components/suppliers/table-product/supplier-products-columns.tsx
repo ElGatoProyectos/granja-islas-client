@@ -1,39 +1,16 @@
-"use client";
-
 import { AssignLabel } from "@/components/assign-label";
 import { DataTableColumnHeader } from "@/components/ui-custom/table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { useRuc } from "@/hooks/use-ruc";
 import { TypeLabel } from "@/types/label";
-import { TypeProductTableFormat } from "@/types/product";
+import { TypeProductsOfSupplierTable } from "@/types/supplier";
 import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
 import { formatDate } from "@/utils/format-date";
 import { formatWithCommas } from "@/utils/format-number-comas";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
-function SupplierURL({
-  id,
-  business_name,
-}: {
-  id: number;
-  business_name: string;
-}) {
-  const { ruc } = useRuc();
-  return (
-    <Link
-      href={{ pathname: `/dashboard/suppliers/${id}`, query: { ruc } }}
-      className={`${buttonVariants({
-        variant: "link",
-      })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
-    >
-      {business_name.toLowerCase()}
-    </Link>
-  );
-}
-
-export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
+export function getProductsOfSupplierColumns(): ColumnDef<TypeProductsOfSupplierTable>[] {
   return [
     {
       accessorKey: "title",
@@ -42,14 +19,12 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
       ),
       cell: ({ row }) => {
         const title = row.getValue("title") as string;
-        const id = row.original.id;
-
         return (
           <Link
-            href={`/dashboard/products/${id}`}
             className={`${buttonVariants({
               variant: "link",
-            })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+            })} max-w-[180px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+            href={`/dashboard/products/${row.original.id}`}
           >
             {title.toLowerCase()}
           </Link>
@@ -58,9 +33,9 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
       enableSorting: false,
     },
     {
-      accessorKey: "labels",
+      accessorKey: "product_labels",
       accessorFn: (row) => {
-        const labelsProduct = row.labels || [];
+        const labelsProduct = row.product_labels || [];
         const id_product = row.id;
         return {
           labelsProduct,
@@ -77,7 +52,7 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
         />
       ),
       cell: ({ row }) => {
-        const value = row.getValue("labels") as {
+        const value = row.getValue("product_labels") as {
           labelsProduct: TypeLabel[];
           id_product: number;
           hasMoreThanThreeLabels: boolean;
@@ -123,21 +98,23 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
       enableSorting: false,
     },
     {
-      accessorKey: "code",
+      accessorKey: "document_code",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Número" />
       ),
       cell: ({ row }) => {
-        const document_id = row.original.document_id;
-        const document_code = row.original.code;
+        const type_code = row.original.document_type_code;
+        const id = row.original.document_id;
         return (
           <Link
-            href={`/receipts/${document_id}-${document_code}`}
+            href={{
+              pathname: `/receipts/${id}-${type_code}`,
+            }}
             className={`${buttonVariants({
               variant: "link",
-            })} "w-[200px] capitalize text-balance font-medium !p-0 !h-auto"`}
+            })} capitalize font-medium !px-0 !h-auto`}
           >
-            {row.getValue("code")}
+            {row.getValue("document_code")}
           </Link>
         );
       },
@@ -146,60 +123,32 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
     {
       accessorKey: "issue_date",
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="Emisión"
-          className="text-center"
-        />
+        <DataTableColumnHeader column={column} title="Emisión" />
       ),
       cell: ({ row }) => {
-        return (
-          <p className="text-center">
-            {formatDate(row.getValue("issue_date"))}
-          </p>
-        );
-      },
-      enableSorting: false,
-    },
-    {
-      accessorKey: "supplier_name",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Proveedor" />
-      ),
-      cell: ({ row }) => {
-        const id = row.original.supplier_id;
-        const business_name = row.getValue("supplier_name") as string;
-        return <SupplierURL business_name={business_name} id={id} />;
+        const issue_date = row.getValue("issue_date") as string;
+        return <span className="w-fit truncate">{formatDate(issue_date)}</span>;
       },
       enableSorting: false,
     },
     {
       accessorKey: "amount",
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="Cantidad"
-          className="text-right"
-        />
+        <DataTableColumnHeader column={column} title="Cantidad" />
       ),
       cell: ({ row }) => {
-        return <p className="text-right">{row.getValue("amount")}</p>;
+        return <span className="w-fit truncate">{row.getValue("amount")}</span>;
       },
       enableSorting: false,
     },
     {
       accessorKey: "unit_measure",
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="Medida"
-          className="text-center"
-        />
+        <DataTableColumnHeader column={column} title="Medida" />
       ),
       cell: ({ row }) => {
-        const unit_measure = row.getValue("unit_measure") as string;
         return (
-          <p className="text-center capitalize">{unit_measure.toLowerCase()}</p>
+          <span className="w-fit truncate">{row.getValue("unit_measure")}</span>
         );
       },
       enableSorting: false,
@@ -207,17 +156,12 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
     {
       accessorKey: "price",
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="Precio unitario"
-          className="text-right"
-        />
+        <DataTableColumnHeader column={column} title="Precio unitario" />
       ),
       cell: ({ row }) => {
+        const price = row.getValue("price") as string;
         return (
-          <p className="text-right">
-            {formatWithCommas(row.getValue("price"))}
-          </p>
+          <span className="w-fit truncate">{formatWithCommas(price)}</span>
         );
       },
       enableSorting: false,
@@ -225,33 +169,23 @@ export function getProductsColumns(): ColumnDef<TypeProductTableFormat>[] {
     {
       accessorKey: "igv",
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="IGV"
-          className="text-right"
-        />
+        <DataTableColumnHeader column={column} title="IGV Total" />
       ),
       cell: ({ row }) => {
-        return (
-          <p className="text-right">{formatWithCommas(row.getValue("igv"))}</p>
-        );
+        const igv = row.getValue("igv") as string;
+        return <span className="w-fit truncate">{formatWithCommas(igv)}</span>;
       },
       enableSorting: false,
     },
     {
       accessorKey: "total",
       header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="Importe Total"
-          className="text-right"
-        />
+        <DataTableColumnHeader column={column} title="Importe Total" />
       ),
       cell: ({ row }) => {
+        const total = row.getValue("total") as string;
         return (
-          <p className="text-right">
-            {formatWithCommas(row.getValue("total"))}
-          </p>
+          <span className="w-fit truncate">{formatWithCommas(total)}</span>
         );
       },
       enableSorting: false,

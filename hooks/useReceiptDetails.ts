@@ -7,6 +7,7 @@ import {
 } from "@/lib/validations/receipt";
 import { responseSchema } from "@/lib/validations/response";
 import { useCallback, useEffect, useState } from "react";
+
 export function useReceiptDetail({
   document_code,
   document_id,
@@ -23,7 +24,11 @@ export function useReceiptDetail({
     if (!company) return;
     if (!tokenBack) return;
     setloading(true);
+
     const url = `${BACKEND_URL}/api/documents/detail/?document_code=${document_code}&document_id=${document_id}`;
+
+    console.log(document_code);
+    console.log(document_id);
 
     try {
       const res = await fetch(url, {
@@ -36,6 +41,7 @@ export function useReceiptDetail({
       });
 
       const data = await res.json();
+
       const { error, payload } = responseSchema.parse(data);
       if (error) {
         throw new Error("Failed to fetch receipt detail");

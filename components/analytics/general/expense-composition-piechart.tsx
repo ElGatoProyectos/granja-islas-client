@@ -17,14 +17,16 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
-import { ExpCompositonSchemaIN } from "@/lib/validations/analytics";
 import { Tag } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 import { Label as LabelRechart, Pie, PieChart } from "recharts";
 
 interface Props {
-  expComposition: ExpCompositonSchemaIN[];
+  expComposition: {
+    label: string;
+    total: number;
+  }[];
   descriptionRange: string;
 }
 

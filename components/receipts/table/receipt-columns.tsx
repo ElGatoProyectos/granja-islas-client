@@ -13,7 +13,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { ReceiptDownloadPdf } from "./download-pdf";
 
-export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
+export function getReceiptsColumns({
+  ruc,
+}: {
+  ruc: string;
+}): ColumnDef<TypeReceipt>[] {
   return [
     {
       id: "select",
@@ -49,7 +53,9 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
         const document_code = row.original.document_code;
         return (
           <Link
-            href={`/receipts/${id}-${document_code}`}
+            href={{
+              pathname: `/receipts/${id}-${document_code}`,
+            }}
             className={`${buttonVariants({
               variant: "link",
             })} capitalize font-medium !px-0 !h-auto`}
@@ -106,7 +112,12 @@ export function getReceiptsColumns(): ColumnDef<TypeReceipt>[] {
         const business_name = row.getValue("supplier_name") as string;
         return (
           <Link
-            href={`/dashboard/suppliers/${id}`}
+            href={{
+              pathname: `/dashboard/suppliers/${id}`,
+              query: {
+                ruc,
+              },
+            }}
             className={`${buttonVariants({
               variant: "link",
             })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}

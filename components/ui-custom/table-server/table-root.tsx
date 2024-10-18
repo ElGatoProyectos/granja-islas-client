@@ -29,7 +29,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   floatingBar?: React.ReactNode | null;
   totalElements: number;
   isPending: boolean;
-  showElementsSelected: boolean;
+  showElementsSelected?: boolean;
 }
 
 export function DataTableRoot<TData>({

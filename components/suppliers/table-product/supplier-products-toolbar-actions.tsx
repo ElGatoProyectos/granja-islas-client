@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getProductsForExcel } from "@/lib/actions/product";
-import { getReceiptsSchema } from "@/lib/validations/search-params";
-import { TypeProductTableFormat } from "@/types/product";
+import { getProductsOfSupplierForExcel } from "@/lib/actions/supplier.actions";
+import { searchParamsProductsOfSuppliersSchema } from "@/lib/validations/search-params";
+import { TypeProductsOfSupplierTable } from "@/types/supplier";
 import { productsViewTable, transformData } from "@/utils/change-name";
 import { exportToExcel } from "@/utils/export-excel";
 import { type Table } from "@tanstack/react-table";
@@ -12,25 +12,28 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface ProductsTableToolbarActionsProps {
-  table: Table<TypeProductTableFormat>;
+interface ProductsOfSupplierTableToolbarActionsProps {
+  table: Table<TypeProductsOfSupplierTable>;
 }
 
-export function ProductsTableToolbarActions({
+export function ProductsOfSupplierTableToolbarActions({
   table,
-}: ProductsTableToolbarActionsProps) {
+}: ProductsOfSupplierTableToolbarActionsProps) {
   const [isLoading, setisLoading] = useState(false);
   const searchParams = useSearchParams();
 
   const handleExportExcel = async () => {
     setisLoading(true);
     const paramsObject = Object.fromEntries(searchParams.entries());
-    const search = getReceiptsSchema.safeParse(paramsObject);
+    const search =
+      searchParamsProductsOfSuppliersSchema.safeParse(paramsObject);
     try {
       if (search.success) {
-        const products = await getProductsForExcel(search.data);
+        const productsOfSuppliers = await getProductsOfSupplierForExcel(
+          search.data
+        );
         exportToExcel({
-          data: transformData(products, productsViewTable),
+          data: transformData(productsOfSuppliers, productsViewTable),
           filename: "productos",
         });
       }

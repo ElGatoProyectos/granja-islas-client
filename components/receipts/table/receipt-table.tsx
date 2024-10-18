@@ -27,6 +27,7 @@ import { DataTableToolbar } from "@/components/ui-custom/table-server/table-tool
 import { ReceiptsTableToolbarActions } from "./receipt-toolbar-actions";
 import { capitalizeFirstLetter } from "@/utils/capitalize-first-letter";
 import { receiptViewTable } from "@/utils/change-name";
+import { useRuc } from "@/hooks/use-ruc";
 
 interface ReceiptsTableProps {
   receiptsPromise: ReturnType<typeof getReceipts>;
@@ -35,7 +36,8 @@ interface ReceiptsTableProps {
 export function ReceiptsTable({ receiptsPromise }: ReceiptsTableProps) {
   const { data, total, pageCount } = use(receiptsPromise);
   const { company } = useCompanySession();
-  const columns = useMemo(() => getReceiptsColumns(), []);
+  const { ruc } = useRuc();
+  const columns = useMemo(() => getReceiptsColumns({ ruc }), [ruc]);
 
   const [suppliers, setSuppliers] = useState<TypeSupplier[]>([]);
   const [isLoadingSuppliers, setIsLoadingSuppliers] = useState(true);

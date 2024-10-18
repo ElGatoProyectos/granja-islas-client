@@ -8,6 +8,27 @@ import { states } from "./supplier-filters";
 import { SupplierSchemaIN } from "@/lib/validations/supplier";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import { useRuc } from "@/hooks/use-ruc";
+
+function SupplierURL({
+  id,
+  business_name,
+}: {
+  id: number;
+  business_name: string;
+}) {
+  const { ruc } = useRuc();
+  return (
+    <Link
+      href={{ pathname: `/dashboard/suppliers/${id}`, query: { ruc } }}
+      className={`${buttonVariants({
+        variant: "link",
+      })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
+    >
+      {business_name.toLowerCase()}
+    </Link>
+  );
+}
 
 export const columns: ColumnDef<SupplierSchemaIN>[] = [
   {
@@ -33,16 +54,7 @@ export const columns: ColumnDef<SupplierSchemaIN>[] = [
       const business_name = row.getValue("business_name") as string;
       const id = row.original.id;
 
-      return (
-        <Link
-          href={`/dashboard/suppliers/${id}`}
-          className={`${buttonVariants({
-            variant: "link",
-          })} max-w-[150px] capitalize !p-0 !h-auto !text-wrap whitespace-normal !line-clamp-3`}
-        >
-          {business_name.toLowerCase()}
-        </Link>
-      );
+      return <SupplierURL business_name={business_name} id={id} />;
     },
   },
   {

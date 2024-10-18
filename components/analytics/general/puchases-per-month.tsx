@@ -1,6 +1,5 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -9,11 +8,26 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { formatNumberWithCommas } from "@/utils/format-number-comas";
-import { BuyForMonthSchema } from "@/lib/validations/analytics";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatNumberWithCommas } from "@/utils/format-number-comas";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-const monthMapping: Record<keyof BuyForMonthSchema, string> = {
+interface Months {
+  enero: number;
+  febrero: number;
+  marzo: number;
+  abril: number;
+  mayo: number;
+  junio: number;
+  julio: number;
+  agosto: number;
+  septiembre: number;
+  octubre: number;
+  noviembre: number;
+  diciembre: number;
+}
+
+const monthMapping: Record<keyof Months, string> = {
   enero: "Ene",
   febrero: "Feb",
   marzo: "Mar",
@@ -35,11 +49,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PurchasesPerMoth({
-  buyforMonth,
-}: {
-  buyforMonth?: BuyForMonthSchema;
-}) {
+export function PurchasesPerMoth({ buyforMonth }: { buyforMonth?: Months }) {
   if (!buyforMonth)
     return (
       <div>
@@ -48,7 +58,7 @@ export function PurchasesPerMoth({
     );
 
   const purchases = (
-    Object.entries(buyforMonth) as [keyof BuyForMonthSchema, number][]
+    Object.entries(buyforMonth) as [keyof Months, number][]
   ).map(([month, purchase]) => ({
     month: monthMapping[month],
     purchase,
